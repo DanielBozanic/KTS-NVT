@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Payment {
@@ -20,6 +21,9 @@ public class Payment {
     private LocalDateTime dateCreated;
     
     private LocalDateTime dateEnd;
+    
+    @ManyToOne
+    private Employee employee;
     
 	public Integer getId() {
 		return id;
@@ -52,4 +56,14 @@ public class Payment {
 	public void setDateEnd(LocalDateTime dateEnd) {
 		this.dateEnd = dateEnd;
 	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+	
+	
 }

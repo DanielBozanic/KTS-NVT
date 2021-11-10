@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class RestaurantTable {
@@ -18,7 +19,8 @@ public class RestaurantTable {
     
     private TableState state;
    
-    //public Zone zone;
+    @ManyToOne
+    public Zone zone;
 
 	public Integer getId() {
 		return id;
@@ -52,9 +54,9 @@ public class RestaurantTable {
 		this.state = state;
 	}
 	
-	/*
-	 * public Zone getZone() { return zone; }
-	 * 
-	 * public void setZone(Zone zone) { this.zone = zone; }
-	 */
+	
+	 public Zone getZone() { return zone; }
+	  
+	 public void setZone(Zone zone) { this.zone = zone; }
+	 
 }

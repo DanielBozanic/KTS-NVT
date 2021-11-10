@@ -1,11 +1,18 @@
 package com.kts.sigma.model;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class ItemInMenu {
@@ -16,11 +23,15 @@ public class ItemInMenu {
 	
     private BigDecimal sellingPrice;
    
-    //public Item item;
+    @ManyToOne
+    public Item item;
     
-    //public java.util.Collection<Menu> menu;
-    
-    //public ItemInOrder itemInOrder;
+    @ManyToOne
+    public Menu menu;
+  
+    @JsonIgnore
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    private Set<ItemInOrder> items;
     
 	public Integer getId() {
 		return id;
@@ -37,17 +48,30 @@ public class ItemInMenu {
 	public void setSellingPrice(BigDecimal sellingPrice) {
 		this.sellingPrice = sellingPrice;
 	}
-	/*
-	 * public Item getItem() { return item; } public void setItem(Item item) {
-	 * this.item = item; }
-	 */
 
-	/*
-	 * public java.util.Collection<Menu> getMenu() { return menu; } public void
-	 * setMenu(java.util.Collection<Menu> menu) { this.menu = menu; }
-	 */
-	/*
-	 * public ItemInOrder getItemInOrder() { return itemInOrder; } public void
-	 * setItemInOrder(ItemInOrder itemInOrder) { this.itemInOrder = itemInOrder; }
-	 */
+	public Item getItem() {
+		return item;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	public void setMenu(Menu menu) {
+		this.menu = menu;
+	}
+
+	public Set<ItemInOrder> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<ItemInOrder> itemInOrder) {
+		this.items = itemInOrder;
+	}
+	
+	
 }

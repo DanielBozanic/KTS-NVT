@@ -2,7 +2,7 @@ package com.kts.sigma.model;
 
 
 public enum FoodType {
-	APPETISER("Appitiser"),
+	APPETISER("Appetiser"),
 	SALAD("Salad"),
 	MAIN_COURSE("Main course"),
 	DESERT("Desert");
