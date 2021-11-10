@@ -25,6 +25,40 @@ public class Menu {
     private Boolean active;
     
     @JsonIgnore
-	@OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<ItemInMenu> items;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public LocalDateTime getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(LocalDateTime expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Set<ItemInMenu> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<ItemInMenu> items) {
+		this.items = items;
+	}
+    
+    
 }

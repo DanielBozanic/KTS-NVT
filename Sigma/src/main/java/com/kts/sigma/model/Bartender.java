@@ -15,6 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Bartender extends Employee {
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
 	public Set<ItemInOrder> itemInOrder;
 }

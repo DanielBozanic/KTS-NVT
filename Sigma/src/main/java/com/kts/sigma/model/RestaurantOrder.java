@@ -32,7 +32,7 @@ public class RestaurantOrder {
 	public RestaurantTable table;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
 	public Set<ItemInOrder> items;
 
 	public Integer getId() {

@@ -20,7 +20,7 @@ public class Employee extends User {
 	private Boolean active;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "payment", fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE, CascadeType.DETACH,
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE, CascadeType.DETACH,
 			CascadeType.MERGE, CascadeType.REFRESH })
 	public Set<Payment> payment;
 
