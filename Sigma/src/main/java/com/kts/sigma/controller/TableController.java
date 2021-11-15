@@ -6,38 +6,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.service.TableService;
 
 @RestController
+@RequestMapping("/tables")
 public class TableController {
 	@Autowired
 	private TableService tableService;
 	
-	@GetMapping(path="/tables")
-	public Iterable<RestaurantTable> getAll(){
+	@GetMapping(path="")
+	public Iterable<TableDTO> getAll(){
 		return tableService.getAll();
 	}
 	
-	@GetMapping("/tables/{id}")
-	RestaurantTable getOne(@PathVariable Integer id) {
-		RestaurantTable result = tableService.findById(id).orElse(null);
-		if(result == null)
-		{
-			throw new ItemNotFoundException(id);
-		}
-	    return result;
+	@GetMapping("/{id}")
+	TableDTO getOne(@PathVariable Integer id) {
+		return tableService.findById(id);
 	}
 	
-	@PostMapping("/tables")
+	@PostMapping("")
 	RestaurantTable post(@RequestBody RestaurantTable newEntity) {
 	  return tableService.save(newEntity);
 	}
 	
-	@DeleteMapping("/tables/{id}")
+	@DeleteMapping("/{id}")
 	void delete(@PathVariable Integer id) {
 		tableService.deleteById(id);
 	}

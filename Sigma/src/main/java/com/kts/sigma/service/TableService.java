@@ -2,12 +2,13 @@ package com.kts.sigma.service;
 
 import java.util.Optional;
 
+import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.model.RestaurantTable;
 
 public interface TableService {
-	public Iterable<RestaurantTable> getAll();
+	public Iterable<TableDTO> getAll();
 	
-	public Optional<RestaurantTable> findById(Integer id);
+	public TableDTO findById(Integer id);
 	
 	public RestaurantTable save(RestaurantTable item);
 	

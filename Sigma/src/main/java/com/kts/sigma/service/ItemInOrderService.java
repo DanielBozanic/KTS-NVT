@@ -2,12 +2,13 @@ package com.kts.sigma.service;
 
 import java.util.Optional;
 
+import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.model.ItemInOrder;
 
 public interface ItemInOrderService {
-	public Iterable<ItemInOrder> getAll();
+	public Iterable<ItemDTO> getAll();
 	
-	public Optional<ItemInOrder> findById(Integer id);
+	public ItemDTO findById(Integer id);
 	
 	public ItemInOrder save(ItemInOrder item);
 	

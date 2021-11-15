@@ -6,38 +6,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.service.ItemInMenuService;
 
 @RestController
+@RequestMapping("/item-in-menu")
 public class ItemInMenuController {
 	@Autowired
 	private ItemInMenuService itemInMenuService;
 	
-	@GetMapping(path="/item-in-menu")
-	public Iterable<ItemInMenu> getAll(){
+	@GetMapping(path="")
+	public Iterable<ItemDTO> getAll(){
 		return itemInMenuService.getAll();
 	}
 	
-	@GetMapping("/item-in-menu/{id}")
-	ItemInMenu getOne(@PathVariable Integer id) {
-		ItemInMenu result = itemInMenuService.findById(id).orElse(null);
-		if(result == null)
-		{
-			throw new ItemNotFoundException(id);
-		}
-	    return result;
+	@GetMapping("/{id}")
+	ItemDTO getOne(@PathVariable Integer id) {
+		return itemInMenuService.findById(id);
 	}
 	
-	@PostMapping("/item-in-menu")
+	@PostMapping("")
 	ItemInMenu post(@RequestBody ItemInMenu newEntity) {
 	  return itemInMenuService.save(newEntity);
 	}
 	
-	@DeleteMapping("/item-in-menu/{id}")
+	@DeleteMapping("/{id}")
 	void delete(@PathVariable Integer id) {
 		itemInMenuService.deleteById(id);
 	}

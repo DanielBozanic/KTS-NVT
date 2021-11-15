@@ -2,12 +2,13 @@ package com.kts.sigma.service;
 
 import java.util.Optional;
 
+import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.model.ItemInMenu;
 
 public interface ItemInMenuService{
-	public Iterable<ItemInMenu> getAll();
+	public Iterable<ItemDTO> getAll();
 	
-	public Optional<ItemInMenu> findById(Integer id);
+	public ItemDTO findById(Integer id);
 	
 	public ItemInMenu save(ItemInMenu item);
 	

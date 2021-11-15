@@ -11,36 +11,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kts.sigma.model.Food;
 import com.kts.sigma.model.Item;
 import com.kts.sigma.service.ItemService;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.Utility.Mapper;
+import com.kts.sigma.dto.ItemDTO;
 
 @RestController
+@RequestMapping("/items")
 public class ItemController {
 	@Autowired
 	private ItemService itemService;
 	
-	@GetMapping(path="/items")
-	public Iterable<Item> getAll(){
+	@GetMapping(path="")
+	public Iterable<ItemDTO> getAll(){
 		return itemService.getAll();
 	}
 	
-	@GetMapping("/items/{id}")
-	Item getOne(@PathVariable Integer id) {
-		Item result = itemService.findById(id).orElse(null);
-		if(result == null)
-		{
-			throw new ItemNotFoundException(id);
-		}
-	    return result;
+	@GetMapping("/{id}")
+	ItemDTO getOne(@PathVariable Integer id) {
+		
+	    return itemService.findById(id);
 	}
 	
-	@PostMapping("/items")
+	@PostMapping("")
 	Item post(@RequestBody Item newEntity) {
 	  return itemService.save(newEntity);
 	}
 	
-	@DeleteMapping("/items/{id}")
+	@DeleteMapping("/{id}")
 	void delete(@PathVariable Integer id) {
 		itemService.deleteById(id);
 	}

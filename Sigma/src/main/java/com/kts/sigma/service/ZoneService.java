@@ -2,12 +2,13 @@ package com.kts.sigma.service;
 
 import java.util.Optional;
 
+import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.Zone;
 
 public interface ZoneService {
-	public Iterable<Zone> getAll();
+	public Iterable<ZoneDTO> getAll();
 	
-	public Optional<Zone> findById(Integer id);
+	public ZoneDTO findById(Integer id);
 	
 	public Zone save(Zone Zone);
 	

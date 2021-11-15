@@ -13,34 +13,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.service.ZoneService;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.Zone;
 
 @RestController
+@RequestMapping("/zones")
 public class ZoneController {
 	@Autowired
 	private ZoneService zoneService;
 	
-	@GetMapping(path="/zones")
-	public Iterable<Zone> getAll(){
+	@GetMapping(path="")
+	public Iterable<ZoneDTO> getAll(){
 		return zoneService.getAll();
 	}
 	
-	@GetMapping("/zones/{id}")
-	Zone getOne(@PathVariable Integer id) {
-		Zone result = zoneService.findById(id).orElse(null);
-		if(result == null)
-		{
-			throw new ItemNotFoundException(id);
-		}
-	    return result;
+	@GetMapping("/{id}")
+	ZoneDTO getOne(@PathVariable Integer id) {
+		return zoneService.findById(id);
 	}
 	
-	@PostMapping("/zones")
+	@PostMapping("")
 	Zone post(@RequestBody Zone newEntity) {
 	  return zoneService.save(newEntity);
 	}
 	
-	@DeleteMapping("/zones/{id}")
+	@DeleteMapping("/{id}")
 	void delete(@PathVariable Integer id) {
 		zoneService.deleteById(id);
 	}

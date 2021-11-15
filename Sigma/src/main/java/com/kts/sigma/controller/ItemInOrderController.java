@@ -6,38 +6,36 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.service.ItemInOrderService;
 
 @RestController
+@RequestMapping("/item-in-order")
 public class ItemInOrderController {
 	@Autowired
 	private ItemInOrderService itemInOrderService;
 	
-	@GetMapping(path="/item-in-order")
-	public Iterable<ItemInOrder> getAll(){
+	@GetMapping(path="")
+	public Iterable<ItemDTO> getAll(){
 		return itemInOrderService.getAll();
 	}
 	
-	@GetMapping("/item-in-order/{id}")
-	ItemInOrder getOne(@PathVariable Integer id) {
-		ItemInOrder result = itemInOrderService.findById(id).orElse(null);
-		if(result == null)
-		{
-			throw new ItemNotFoundException(id);
-		}
-	    return result;
+	@GetMapping("/{id}")
+	ItemDTO getOne(@PathVariable Integer id) {
+		return itemInOrderService.findById(id);
 	}
 	
-	@PostMapping("/item-in-order")
+	@PostMapping("")
 	ItemInOrder post(@RequestBody ItemInOrder newEntity) {
 	  return itemInOrderService.save(newEntity);
 	}
 	
-	@DeleteMapping("/item-in-order/{id}")
+	@DeleteMapping("/{id}")
 	void delete(@PathVariable Integer id) {
 		itemInOrderService.deleteById(id);
 	}
