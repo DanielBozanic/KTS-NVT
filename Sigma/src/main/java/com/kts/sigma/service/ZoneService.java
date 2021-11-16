@@ -1,16 +1,23 @@
 package com.kts.sigma.service;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
+import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
-import com.kts.sigma.model.Zone;
 
 public interface ZoneService {
-	public Iterable<ZoneDTO> getAll();
+	Iterable<ZoneDTO> getAll();
 	
-	public ZoneDTO findById(Integer id);
+	ZoneDTO findById(Integer id);
 	
-	public Zone save(Zone Zone);
+	ZoneDTO createNewZone(ZoneDTO newZone);
 	
-	public void deleteById(Integer id);
+	TableDTO updateNumberChairs(TableDTO tableDto);
+	
+	void deleteById(Integer id);
+	
+	ArrayList<TableDTO> removeTableFromZone(TableDTO tableDto);
+	
+	ArrayList<TableDTO> getZoneTables(Integer id);
+	
 }

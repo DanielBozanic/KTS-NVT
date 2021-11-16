@@ -1,6 +1,7 @@
 package com.kts.sigma.dto;
 
 import com.kts.sigma.model.TableState;
+import com.kts.sigma.model.Zone;
 
 public class TableDTO {
 
@@ -11,6 +12,8 @@ public class TableDTO {
     private Integer tableNumber;
     
     private TableState state;
+    
+    private Zone zone;
 
 	public Integer getId() {
 		return id;
@@ -43,6 +46,12 @@ public class TableDTO {
 	public void setState(TableState state) {
 		this.state = state;
 	}
-    
-    
+
+	public Zone getZone() {
+		return zone;
+	}
+
+	public void setZone(Zone zone) {
+		this.zone = zone;
+	}
 }
