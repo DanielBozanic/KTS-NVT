@@ -18,7 +18,5 @@ public interface ZoneService {
 	
 	ArrayList<TableDTO> removeTableFromZone(TableDTO tableDto);
 	
-	public void deleteById(Integer id);
-	
 	public Iterable<TableDTO> getTables(Integer id);
 }

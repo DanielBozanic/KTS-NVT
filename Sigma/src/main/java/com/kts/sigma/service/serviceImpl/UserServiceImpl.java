@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService{
 	public EmployeeDTO editEmployee(EmployeeDTO employeeDto) {
 		Employee employee = employeeRepository.findById(employeeDto.getId()).orElse(null);
 		if (employee == null) {
-			throw new ItemNotFoundException(employeeDto.getId());
+			throw new ItemNotFoundException(employeeDto.getId(), "employeee");
 		}
 		
 		employee.setName(employeeDto.getName());
@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService{
 	public void deleteEmployee(Integer id) {
 		Employee employee = employeeRepository.findById(id).orElse(null);
 		if (employee == null) {
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "employee");
 		}
 		
 		employee.setActive(false);

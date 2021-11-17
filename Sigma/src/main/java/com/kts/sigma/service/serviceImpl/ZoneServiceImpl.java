@@ -14,8 +14,6 @@ import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
-import com.kts.sigma.dto.MenuDTO;
-import com.kts.sigma.model.Menu;
 import com.kts.sigma.model.Zone;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.repository.ZoneRepository;

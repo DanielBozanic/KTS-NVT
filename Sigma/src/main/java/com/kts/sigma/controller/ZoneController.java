@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.service.ZoneService;
-import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 
