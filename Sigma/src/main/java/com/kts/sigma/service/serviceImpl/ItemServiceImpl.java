@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService{
 		Item item = itemRepository.findById(id).orElse(null);
 		if(item == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "item");
 		}
 		ItemDTO result = Mapper.mapper.map(item, ItemDTO.class);
 		if(item instanceof Food) {

@@ -2,6 +2,7 @@ package com.kts.sigma.service;
 
 import java.util.Optional;
 
+import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.Zone;
 
@@ -13,4 +14,6 @@ public interface ZoneService {
 	public Zone save(Zone Zone);
 	
 	public void deleteById(Integer id);
+	
+	public Iterable<TableDTO> getTables(Integer id);
 }
