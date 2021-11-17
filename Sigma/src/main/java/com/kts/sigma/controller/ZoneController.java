@@ -36,8 +36,8 @@ public class ZoneController {
 	}
 	
 	@GetMapping(value = "/getZoneTables/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ArrayList<TableDTO> getZoneTables(@PathVariable Integer id) {
-		return zoneService.getZoneTables(id);
+	public ResponseEntity<ArrayList<TableDTO>> getZoneTables(@PathVariable Integer id) {
+		return new ResponseEntity<>(zoneService.getZoneTables(id), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/createNewZone", produces = MediaType.APPLICATION_JSON_VALUE)
