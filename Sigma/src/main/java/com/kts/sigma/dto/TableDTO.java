@@ -10,7 +10,17 @@ public class TableDTO {
     
     private Integer tableNumber;
     
+    private Integer zoneId;
+    
     private TableState state;
+
+	public Integer getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(Integer zoneId) {
+		this.zoneId = zoneId;
+	}
 
 	public Integer getId() {
 		return id;

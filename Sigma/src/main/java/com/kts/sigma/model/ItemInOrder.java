@@ -15,8 +15,6 @@ public class ItemInOrder {
 
 	private ItemInOrderState state;
 
-	private Integer quantity;
-
 	@ManyToOne
 	private RestaurantOrder order;
 	
@@ -56,14 +54,6 @@ public class ItemInOrder {
 
 	public void setState(ItemInOrderState state) {
 		this.state = state;
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
 	}
 
 	public RestaurantOrder getOrder() {

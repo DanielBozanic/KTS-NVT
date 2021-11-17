@@ -7,8 +7,6 @@ public class ZoneDTO {
 	private Integer id;
 	
     private String name;
-    
-    private Set<TableDTO> tables;
 
 	public Integer getId() {
 		return id;
@@ -24,14 +22,6 @@ public class ZoneDTO {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Set<TableDTO> getTables() {
-		return tables;
-	}
-
-	public void setTables(Set<TableDTO> tables) {
-		this.tables = tables;
 	}
     
 }

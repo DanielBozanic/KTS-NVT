@@ -57,7 +57,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		ItemInMenu item = itemInMenuRepository.findById(id).orElse(null);
 		if(item == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "item in menu");
 		}
 		
 		ItemDTO result = Mapper.mapper.map(item.getItem(), ItemDTO.class);

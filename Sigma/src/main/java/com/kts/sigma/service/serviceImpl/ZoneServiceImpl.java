@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.MenuDTO;
+import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.Menu;
+import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.Zone;
 import com.kts.sigma.repository.ZoneRepository;
 import com.kts.sigma.service.ZoneService;
@@ -49,10 +51,28 @@ public class ZoneServiceImpl implements ZoneService{
 		Zone zone = zoneRepository.findById(id).orElse(null);
 		if(zone == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "zone");
 		}
 		
 		ZoneDTO result = Mapper.mapper.map(zone, ZoneDTO.class);
 	    return result;
+	}
+
+	@Override
+	public Iterable<TableDTO> getTables(Integer id) {
+		Zone zone = zoneRepository.findById(id).orElse(null);
+		if(zone == null)
+		{
+			throw new ItemNotFoundException(id, "zone");
+		}
+		
+		ArrayList<TableDTO> tables = new ArrayList<>();
+		
+		for (RestaurantTable table : zone.getTables()) {
+			TableDTO dto = Mapper.mapper.map(table, TableDTO.class);
+			tables.add(dto);
+		}
+		
+		return tables;
 	}
 }

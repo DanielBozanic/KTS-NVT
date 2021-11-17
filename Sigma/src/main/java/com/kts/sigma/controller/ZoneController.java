@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.service.ZoneService;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.Zone;
 
@@ -25,6 +26,11 @@ public class ZoneController {
 	@GetMapping(path="")
 	public Iterable<ZoneDTO> getAll(){
 		return zoneService.getAll();
+	}
+	
+	@GetMapping(path="tables/{id}")
+	public Iterable<TableDTO> getTables(@PathVariable Integer id){
+		return zoneService.getTables(id);
 	}
 	
 	@GetMapping("/{id}")
@@ -41,4 +47,6 @@ public class ZoneController {
 	void delete(@PathVariable Integer id) {
 		zoneService.deleteById(id);
 	}
+	
+	
 }
