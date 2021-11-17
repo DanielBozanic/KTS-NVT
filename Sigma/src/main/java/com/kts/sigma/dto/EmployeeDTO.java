@@ -13,7 +13,7 @@ public class EmployeeDTO {
 	
 	private boolean active;
 	
-	private BigDecimal payment;
+	private BigDecimal paymentBigDecimal;
 
 	public String getType() {
 		return type;
@@ -23,12 +23,12 @@ public class EmployeeDTO {
 		this.type = type;
 	}
 
-	public BigDecimal getPayment() {
-		return payment;
+	public BigDecimal getPaymentBigDecimal() {
+		return paymentBigDecimal;
 	}
 
-	public void setPayment(BigDecimal payment) {
-		this.payment = payment;
+	public void setPaymentBigDecimal(BigDecimal paymentBigDecimal) {
+		this.paymentBigDecimal = paymentBigDecimal;
 	}
 
 	public Integer getId() {
