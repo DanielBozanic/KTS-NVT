@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService{
 		User user = userRepository.findById(id).orElse(null);
 		if(user == null || user instanceof Manager)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "employee");
 		}
 		
 		EmployeeDTO result = Mapper.mapper.map(user, EmployeeDTO.class);

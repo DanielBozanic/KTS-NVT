@@ -16,6 +16,7 @@ import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.model.Menu;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
+import com.kts.sigma.model.TableState;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.service.TableService;
 
@@ -52,10 +53,22 @@ public class TableServiceImpl implements TableService{
 		RestaurantTable table = tableRepository.findById(id).orElse(null);
 		if(table == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "table");
 		}
 		
 		TableDTO result = Mapper.mapper.map(table, TableDTO.class);
 	    return result;
+	}
+
+	@Override
+	public void changeState(Integer id, TableState state) {
+		RestaurantTable table = tableRepository.findById(id).orElse(null);
+		if(table == null)
+		{
+			throw new ItemNotFoundException(id, "table");
+		}
+		
+		table.setState(state);
+		tableRepository.save(table);
 	}
 }

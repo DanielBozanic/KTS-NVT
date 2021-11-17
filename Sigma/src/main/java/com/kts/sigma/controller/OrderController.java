@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.service.OrderService;
@@ -31,7 +29,7 @@ public class OrderController {
 	}
 	
 	@PostMapping("")
-	RestaurantOrder post(@RequestBody RestaurantOrder newEntity) {
+	RestaurantOrder post(@RequestBody OrderDTO newEntity) {
 	  return orderService.save(newEntity);
 	}
 	

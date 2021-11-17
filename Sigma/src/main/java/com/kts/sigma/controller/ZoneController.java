@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.service.ZoneService;
+import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 
@@ -30,14 +31,14 @@ public class ZoneController {
 		return zoneService.getAll();
 	}
 	
+	@GetMapping(path="tables/{id}")
+	public Iterable<TableDTO> getTables(@PathVariable Integer id){
+		return zoneService.getTables(id);
+	}
+	
 	@GetMapping("/{id}")
 	public ZoneDTO getOne(@PathVariable Integer id) {
 		return zoneService.findById(id);
-	}
-	
-	@GetMapping(value = "/getZoneTables/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<TableDTO>> getZoneTables(@PathVariable Integer id) {
-		return new ResponseEntity<>(zoneService.getZoneTables(id), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/createNewZone", produces = MediaType.APPLICATION_JSON_VALUE)
