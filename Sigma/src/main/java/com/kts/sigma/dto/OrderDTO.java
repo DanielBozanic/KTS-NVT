@@ -1,6 +1,7 @@
 package com.kts.sigma.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.kts.sigma.model.OrderState;
@@ -20,6 +21,8 @@ public class OrderDTO {
 	public RestaurantTable table;
 	
 	public Set<ItemDTO> items;
+
+	public LocalDateTime orderDateTime;
 
 	public Integer getId() {
 		return id;
@@ -68,6 +71,12 @@ public class OrderDTO {
 	public void setItems(Set<ItemDTO> items) {
 		this.items = items;
 	}
-	
-	
+
+	public LocalDateTime getOrderDateTime() {
+		return orderDateTime;
+	}
+
+	public void setOrderDateTime(LocalDateTime orderDateTime) {
+		this.orderDateTime = orderDateTime;
+	}
 }

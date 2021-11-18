@@ -39,4 +39,6 @@ public class MenuController {
 	void delete(@PathVariable Integer id) {
 		menuService.deleteById(id);
 	}
+
+	//TODO dodaj search and stuff
 }
