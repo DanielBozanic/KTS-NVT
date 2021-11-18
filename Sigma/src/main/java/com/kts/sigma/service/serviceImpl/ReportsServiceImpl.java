@@ -39,7 +39,7 @@ public class ReportsServiceImpl implements ReportsService {
 
     @Override
     public Report getReports(ReportRequestDTO request) {
-        List<EmployeeDTO> allUsers = (List<EmployeeDTO>) userService.getAll();
+        List<EmployeeDTO> allUsers = (List<EmployeeDTO>) userService.getAllEmployees();
         List<OrderDTO> restaurantOrders = (List<OrderDTO>) orderService.getAll();
 
         LocalDateTime startDate = request.startMonth;
@@ -69,7 +69,7 @@ public class ReportsServiceImpl implements ReportsService {
         BigDecimal totalPayEmployees = BigDecimal.ZERO; //total for one month
         for (EmployeeDTO employee : allUsers){
             if(employee.isActive()){
-                totalPayEmployees.add(employee.getPayment());
+                totalPayEmployees.add(employee.getPaymentBigDecimal());
             }
         }
 
