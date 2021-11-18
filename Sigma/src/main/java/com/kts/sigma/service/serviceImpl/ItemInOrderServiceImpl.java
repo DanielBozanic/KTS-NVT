@@ -6,10 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kts.sigma.Exception.AccessForbiddenException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.ItemInOrderDTO;
+import com.kts.sigma.model.Bartender;
+import com.kts.sigma.model.Cook;
+import com.kts.sigma.model.Drink;
 import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Food;
 import com.kts.sigma.model.ItemInMenu;
@@ -18,6 +22,7 @@ import com.kts.sigma.model.ItemInOrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.User;
+import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInMenuRepository;
 import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.repository.OrderRepository;
@@ -28,6 +33,9 @@ import com.kts.sigma.service.ItemInOrderService;
 public class ItemInOrderServiceImpl implements ItemInOrderService{
 	@Autowired
 	private ItemInOrderRepository itemInOrderRepository;
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
 	
 	@Autowired
 	private OrderRepository oRepository;
@@ -114,15 +122,41 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	}
 
 	@Override
-	public void changeState(Integer id, ItemInOrderState state) {
+	public ItemInOrderDTO changeState(Integer id, ItemInOrderState state, Integer employeeCode) {
+		
+		Employee employee = employeeRepository.findByCode(employeeCode);
+		if(employee == null)
+		{
+			throw new AccessForbiddenException();
+		}
+		
 		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
 		if(item == null)
 		{
 			throw new ItemNotFoundException(id, "item in order");
 		}
+
+		if(state == ItemInOrderState.IN_PROGRESS)
+		{
+			if(employee instanceof Cook && item.getItem().item instanceof Food)
+			{
+				item.setEmployee(employee);
+			}
+			else if(employee instanceof Bartender && item.getItem().item instanceof Drink)
+			{
+				item.setEmployee(employee);
+			}
+			else
+			{
+				throw new AccessForbiddenException();
+			}
+		}
+		
 		
 		item.setState(state);
-		itemInOrderRepository.save(item);
+		ItemInOrder returnItem = itemInOrderRepository.save(item);
+		
+		return Mapper.mapper.map(returnItem, ItemInOrderDTO.class);
 	}
 
 	@Override

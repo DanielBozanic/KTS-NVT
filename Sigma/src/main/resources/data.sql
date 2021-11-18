@@ -27,7 +27,7 @@ INSERT INTO Item_In_Menu (selling_price, item_id, menu_id) VALUES (100, 3, 1);
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
-INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 3, 1);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 1);
 
 
 INSERT INTO Zone (name) VALUES ('Ground floor');

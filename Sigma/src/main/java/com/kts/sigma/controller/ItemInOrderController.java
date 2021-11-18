@@ -42,9 +42,9 @@ public class ItemInOrderController {
 		itemInOrderService.put(item);
 	}
 	
-	@PutMapping("/{id}/{state}")
-	public void changeState(@PathVariable Integer id, @PathVariable ItemInOrderState state) {
-		itemInOrderService.changeState(id, state);
+	@PutMapping("/{id}/{state}/{code}")
+	public ItemInOrderDTO changeState(@PathVariable Integer id, @PathVariable ItemInOrderState state, @PathVariable Integer code) {
+		return itemInOrderService.changeState(id, state, code);
 	}
 	
 	@DeleteMapping("/{id}")

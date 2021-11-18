@@ -16,7 +16,7 @@ public interface ItemInOrderService {
 	
 	public void deleteById(Integer id);
 	
-	public void changeState(Integer id, ItemInOrderState state);
+	public ItemInOrderDTO changeState(Integer id, ItemInOrderState state, Integer employeeCode);
 
 	public void put(ItemInOrderDTO item);
 }
