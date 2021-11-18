@@ -10,7 +10,7 @@ public interface OrderService {
 	
 	public OrderDTO findById(Integer id);
 	
-	public RestaurantOrder save(RestaurantOrder item);
+	public RestaurantOrder save(OrderDTO item);
 	
 	public void deleteById(Integer id);
 }

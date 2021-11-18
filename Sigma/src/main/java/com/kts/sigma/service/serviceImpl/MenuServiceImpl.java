@@ -47,7 +47,7 @@ public class MenuServiceImpl implements MenuService{
 		Menu menu =  menuRepository.findById(id).orElse(null);
 		if(menu == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "menu");
 		}
 		
 		MenuDTO result = Mapper.mapper.map(menu, MenuDTO.class);

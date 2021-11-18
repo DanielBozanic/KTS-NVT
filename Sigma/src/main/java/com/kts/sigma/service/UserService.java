@@ -1,17 +1,21 @@
 package com.kts.sigma.service;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
 import com.kts.sigma.dto.EmployeeDTO;
-import com.kts.sigma.model.User;
+import com.kts.sigma.dto.ManagerDTO;
 
 public interface UserService {
 
-	public Iterable<EmployeeDTO> getAll();
+	ArrayList<EmployeeDTO> getAllEmployees();
 	
-	public EmployeeDTO findById(Integer id);
+	EmployeeDTO findById(Integer id);
 	
-	public User save(User item);
+	EmployeeDTO addNewEmployee(EmployeeDTO newEmployee);
 	
-	public void deleteById(Integer id);
+	ManagerDTO addNewManager(ManagerDTO newManager);
+	
+	EmployeeDTO editEmployee(EmployeeDTO employeeDto);
+	
+	void deleteEmployee(Integer id);
 }

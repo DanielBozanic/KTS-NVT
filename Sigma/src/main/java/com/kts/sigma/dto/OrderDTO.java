@@ -2,11 +2,9 @@ package com.kts.sigma.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 import com.kts.sigma.model.OrderState;
-import com.kts.sigma.model.RestaurantTable;
-import com.kts.sigma.model.Waiter;
 
 public class OrderDTO {
 
@@ -16,11 +14,11 @@ public class OrderDTO {
 
 	private BigDecimal totalPrice;
 
-	public Waiter waiter;
+	public Integer waiterId;
 
-	public RestaurantTable table;
+	public Integer tableId;
 	
-	public Set<ItemDTO> items;
+	public List<ItemInOrderDTO> items;
 
 	public LocalDateTime orderDateTime;
 
@@ -48,27 +46,27 @@ public class OrderDTO {
 		this.totalPrice = totalPrice;
 	}
 
-	public Waiter getWaiter() {
-		return waiter;
+	public Integer getWaiterId() {
+		return waiterId;
 	}
 
-	public void setWaiter(Waiter waiter) {
-		this.waiter = waiter;
+	public void setWaiterId(Integer waiterId) {
+		this.waiterId = waiterId;
 	}
 
-	public RestaurantTable getTable() {
-		return table;
+	public Integer getTableId() {
+		return tableId;
 	}
 
-	public void setTable(RestaurantTable table) {
-		this.table = table;
+	public void setTableId(Integer tableId) {
+		this.tableId = tableId;
 	}
 
-	public Set<ItemDTO> getItems() {
+	public List<ItemInOrderDTO> getItems() {
 		return items;
 	}
 
-	public void setItems(Set<ItemDTO> items) {
+	public void setItems(List<ItemInOrderDTO> items) {
 		this.items = items;
 	}
 

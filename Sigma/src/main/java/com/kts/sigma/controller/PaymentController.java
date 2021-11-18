@@ -29,7 +29,7 @@ public class PaymentController {
 		Payment result = paymentService.findById(id).orElse(null);
 		if(result == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "payment");
 		}
 	    return result;
 	}

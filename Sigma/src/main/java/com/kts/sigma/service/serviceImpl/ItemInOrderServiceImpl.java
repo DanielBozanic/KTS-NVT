@@ -2,7 +2,6 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,16 +9,36 @@ import org.springframework.stereotype.Service;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemDTO;
+import com.kts.sigma.dto.ItemInOrderDTO;
+import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Food;
 import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.model.ItemInOrder;
+import com.kts.sigma.model.ItemInOrderState;
+import com.kts.sigma.model.RestaurantOrder;
+import com.kts.sigma.model.TableState;
+import com.kts.sigma.model.User;
+import com.kts.sigma.repository.ItemInMenuRepository;
 import com.kts.sigma.repository.ItemInOrderRepository;
+import com.kts.sigma.repository.OrderRepository;
+import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.ItemInOrderService;
 
 @Service
 public class ItemInOrderServiceImpl implements ItemInOrderService{
 	@Autowired
 	private ItemInOrderRepository itemInOrderRepository;
+	
+	@Autowired
+	private OrderRepository oRepository;
+	
+	@Autowired
+	private UserRepository uRepository;
+	
+	@Autowired
+	private ItemInMenuRepository iimRepository;
+	
+	
 	
 	@Override
 	public Iterable<ItemDTO> getAll() {
@@ -42,7 +61,32 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	}
 	
 	@Override
-	public ItemInOrder save(ItemInOrder item) {
+	public ItemInOrder save(ItemInOrderDTO i) {
+		ItemInOrder item = new ItemInOrder();
+		item.setId(i.getId());
+		
+		RestaurantOrder order = oRepository.findById(i.getOrderId()).orElse(null);
+		if(order == null) {
+			throw new ItemNotFoundException(i.getOrderId(), "order");
+		}
+		item.setOrder(order);
+		
+		ItemInMenu iim = iimRepository.findById(i.getItemId()).orElse(null);
+		if(iim == null) {
+			throw new ItemNotFoundException(i.getItemId(), "item in menu");
+		}
+		item.setItem(iim);
+		
+		if(i.getEmployeeId() != null) {
+			User employee = uRepository.findById(i.getEmployeeId()).orElse(null);
+			if(employee == null) {
+				throw new ItemNotFoundException(i.getEmployeeId(), "employee");
+			}
+			item.setEmployee((Employee) employee);
+		}
+		
+		item.setState(i.getState());
+		
 		return itemInOrderRepository.save(item);
 	}
 	
@@ -56,7 +100,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
 		if(item == null)
 		{
-			throw new ItemNotFoundException(id);
+			throw new ItemNotFoundException(id, "item in order");
 		}
 		
 		ItemDTO result = Mapper.mapper.map(item.getItem().getItem(), ItemDTO.class);
@@ -67,5 +111,55 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		}
 		
 		return result;
+	}
+
+	@Override
+	public void changeState(Integer id, ItemInOrderState state) {
+		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
+		if(item == null)
+		{
+			throw new ItemNotFoundException(id, "item in order");
+		}
+		
+		item.setState(state);
+		itemInOrderRepository.save(item);
+	}
+
+	@Override
+	public void put(ItemInOrderDTO i) {
+		ItemInOrder check = itemInOrderRepository.findById(i.getId()).orElse(null);
+		if(check == null)
+		{
+			throw new ItemNotFoundException(i.getId(), "item in order");
+		}
+		
+		
+		ItemInOrder item = new ItemInOrder();
+		item.setId(i.getId());
+		
+		RestaurantOrder order = oRepository.findById(i.getOrderId()).orElse(null);
+		if(order == null) {
+			throw new ItemNotFoundException(i.getOrderId(), "order");
+		}
+		item.setOrder(order);
+		
+		ItemInMenu iim = iimRepository.findById(i.getItemId()).orElse(null);
+		if(iim == null) {
+			throw new ItemNotFoundException(i.getItemId(), "item in menu");
+		}
+		item.setItem(iim);
+		
+		if(i.getEmployeeId() != null) {
+			User employee = uRepository.findById(i.getEmployeeId()).orElse(null);
+			if(employee == null) {
+				throw new ItemNotFoundException(i.getEmployeeId(), "employee");
+			}
+			item.setEmployee((Employee) employee);
+		}
+		
+		item.setState(i.getState());
+		
+		
+		itemInOrderRepository.save(item);
 	}
 }

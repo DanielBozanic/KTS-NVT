@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.model.RestaurantTable;
+import com.kts.sigma.model.TableState;
 
 public interface TableService {
 	public Iterable<TableDTO> getAll();
@@ -13,4 +14,6 @@ public interface TableService {
 	public RestaurantTable save(RestaurantTable item);
 	
 	public void deleteById(Integer id);
+	
+	public void changeState(Integer id, TableState state);
 }
