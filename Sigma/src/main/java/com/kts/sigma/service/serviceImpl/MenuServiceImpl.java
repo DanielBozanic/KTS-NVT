@@ -80,7 +80,7 @@ public class MenuServiceImpl implements MenuService {
 			throw new ItemNotFoundException(menuId, "menu");
 		}
 		
-		ItemInMenu itemInMenu = itemInMenuRepository.findByItemIdAndMenuId(item.getId(), menu.getId());
+		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemByItemIdAndMenuId(item.getId(), menu.getId());
 		if (itemInMenu != null) {
 			throw new ItemExistsException("Item " + item.getName() + " is already part of this menu!");
 		}
@@ -112,7 +112,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public void removeItemFromMenu(Integer itemId, Integer menuId) {
-		ItemInMenu itemInMenu = itemInMenuRepository.findByItemIdAndMenuId(itemId, menuId);
+		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemByItemIdAndMenuId(itemId, menuId);
 		if (itemInMenu == null) {
 			throw new ItemNotFoundException(itemId, "itemInMenu");
 		}
