@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService{
 				dto.setType("WAITER");
 			}
 			
-			Payment employeePayment = paymentRepository.findByEmployeeId(user.getId());
+			Payment employeePayment = paymentRepository.findActivePaymentByEmployeeId(user.getId());
 			dto.setPaymentBigDecimal(employeePayment.getPayment());
 			
 			results.add(dto);
@@ -79,10 +79,11 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public EmployeeDTO addNewEmployee(EmployeeDTO newEmployee) {
-		Employee existingCode = employeeRepository.findByCode(newEmployee.getCode());
-		if (existingCode != null) {
-			throw new ItemExistsException("An employee with this code " + 
-					"(" + newEmployee.getCode() + ") " + "already exists!");
+		Integer maxCode = employeeRepository.findMaxCode();
+		if (maxCode == null) {
+			newEmployee.setCode(1000);
+		} else {
+			newEmployee.setCode(maxCode + 1);
 		}
 		
 		Employee employee = null;
@@ -130,7 +131,7 @@ public class UserServiceImpl implements UserService{
 		
 		EmployeeDTO dto = Mapper.mapper.map(employee, EmployeeDTO.class);
 		
-		Payment employeePayment = paymentRepository.findByEmployeeId(employeeDto.getId());
+		Payment employeePayment = paymentRepository.findActivePaymentByEmployeeId(employeeDto.getId());
 		
 		if (employeeDto.getPaymentBigDecimal() != employeePayment.getPayment()) {
 			employeePayment.setDateEnd(LocalDateTime.now());

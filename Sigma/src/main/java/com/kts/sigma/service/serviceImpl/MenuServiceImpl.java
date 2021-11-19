@@ -2,22 +2,35 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
+import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
+import com.kts.sigma.model.Food;
+import com.kts.sigma.model.Item;
+import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.model.Menu;
+import com.kts.sigma.repository.ItemInMenuRepository;
+import com.kts.sigma.repository.ItemRepository;
 import com.kts.sigma.repository.MenuRepository;
 import com.kts.sigma.service.MenuService;
 
 @Service
-public class MenuServiceImpl implements MenuService{
+public class MenuServiceImpl implements MenuService {
+	
 	@Autowired
 	private MenuRepository menuRepository;
+	
+	@Autowired
+	private ItemRepository itemRepository;
+	
+	@Autowired
+	private ItemInMenuRepository itemInMenuRepository;
 	
 	@Override
 	public Iterable<MenuDTO> getAll() {
@@ -41,6 +54,7 @@ public class MenuServiceImpl implements MenuService{
 	public void deleteById(Integer id) {
 		menuRepository.deleteById(id);
 	}
+	
 	@Override
 	public MenuDTO findById(Integer id)
 	{
@@ -52,5 +66,57 @@ public class MenuServiceImpl implements MenuService{
 		
 		MenuDTO result = Mapper.mapper.map(menu, MenuDTO.class);
 	    return result;
+	}
+
+	@Override
+	public void addItemToMenu(ItemDTO itemDto, Integer menuId) {
+		Item item = itemRepository.findById(itemDto.getId()).orElse(null);
+		if (item == null) {
+			throw new ItemNotFoundException(itemDto.getId(), "item");
+		}
+		
+		Menu menu = menuRepository.getActiveMenu(menuId);
+		if (menu == null) {
+			throw new ItemNotFoundException(menuId, "menu");
+		}
+		
+		ItemInMenu itemInMenu = itemInMenuRepository.findByItemIdAndMenuId(item.getId(), menu.getId());
+		if (itemInMenu != null) {
+			throw new ItemExistsException("Item " + item.getName() + " is already part of this menu!");
+		}
+		
+		ItemInMenu newItemInMenu = new ItemInMenu();
+		newItemInMenu.setItem(item);
+		newItemInMenu.setMenu(menu);
+		newItemInMenu.setSellingPrice(itemDto.getSellingPrice());
+		newItemInMenu.setActive(true);
+		itemInMenuRepository.save(newItemInMenu);
+	}
+
+	@Override
+	public ArrayList<ItemDTO> getItemsInMenu(Integer menuId) {
+		ArrayList<Item> itemsInMenu = itemInMenuRepository.getItemsInMenu(menuId);
+		ArrayList<ItemDTO> itemsInMenuDto = new ArrayList<ItemDTO>();
+		
+		for (Item item : itemsInMenu) {
+			ItemDTO dto = Mapper.mapper.map(item, ItemDTO.class);
+			
+			if (item instanceof Food) {
+				dto.setFood(true);
+			}
+			
+			itemsInMenuDto.add(dto);
+		}
+		return itemsInMenuDto;
+	}
+
+	@Override
+	public void removeItemFromMenu(Integer itemId, Integer menuId) {
+		ItemInMenu itemInMenu = itemInMenuRepository.findByItemIdAndMenuId(itemId, menuId);
+		if (itemInMenu == null) {
+			throw new ItemNotFoundException(itemId, "itemInMenu");
+		}
+		itemInMenu.setActive(false);
+		itemInMenuRepository.save(itemInMenu);
 	}
 }

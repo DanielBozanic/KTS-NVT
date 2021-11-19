@@ -1,17 +1,21 @@
 package com.kts.sigma.service;
 
-import java.util.Optional;
+import java.util.ArrayList;
 
 import com.kts.sigma.dto.ItemDTO;
-import com.kts.sigma.model.Item;
+import com.kts.sigma.model.FoodType;
 
 public interface ItemService {
 
-	public Iterable<ItemDTO> getAll();
+	Iterable<ItemDTO> getAll();
 	
-	public ItemDTO findById(Integer id);
+	ItemDTO findById(Integer id);
 	
-	public Item save(Item item);
+	ItemDTO createNewItem(ItemDTO itemDto);
 	
-	public void deleteById(Integer id);
+	void deleteById(Integer id);
+	
+	ArrayList<ItemDTO> getItemsBySearchTerm(String searchTerm);
+	
+	ArrayList<ItemDTO> getItemsByFoodType(FoodType foodType);
 }
