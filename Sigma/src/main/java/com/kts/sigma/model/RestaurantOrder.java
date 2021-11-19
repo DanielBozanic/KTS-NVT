@@ -1,6 +1,7 @@
 package com.kts.sigma.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -24,6 +25,8 @@ public class RestaurantOrder {
 	private OrderState state;
 
 	private BigDecimal totalPrice;
+
+	private LocalDateTime orderDateTime;
 
 	@ManyToOne
 	public Waiter waiter;
@@ -82,7 +85,12 @@ public class RestaurantOrder {
 	public void setItems(Set<ItemInOrder> items) {
 		this.items = items;
 	}
-	
-	
 
+	public LocalDateTime getOrderDateTime() {
+		return orderDateTime;
+	}
+
+	public void setOrderDateTime(LocalDateTime orderDateTime) {
+		this.orderDateTime = orderDateTime;
+	}
 }

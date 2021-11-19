@@ -1,22 +1,21 @@
 package com.kts.sigma.service;
 
-import java.util.Optional;
-
-import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
 
 public interface ItemInOrderService {
-	public Iterable<ItemDTO> getAll();
+	public Iterable<ItemInOrderDTO> getAll();
 	
-	public ItemDTO findById(Integer id);
+	public ItemInOrderDTO findById(Integer id);
 	
-	public ItemInOrder save(ItemInOrderDTO item);
+	public ItemInOrder save(ItemInOrderDTO item, Integer code);
 	
 	public void deleteById(Integer id);
 	
-	public void changeState(Integer id, ItemInOrderState state);
+	public ItemInOrderDTO changeState(Integer id, ItemInOrderState state, Integer employeeCode);
 
-	public void put(ItemInOrderDTO item);
+	public void put(ItemInOrderDTO item, Integer code);
+
+	public ItemInOrder saveWithoutCode(ItemInOrderDTO i);
 }

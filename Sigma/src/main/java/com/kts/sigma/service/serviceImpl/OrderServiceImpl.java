@@ -1,23 +1,27 @@
 package com.kts.sigma.service.serviceImpl;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kts.sigma.Exception.AccessForbiddenException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemInOrderDTO;
-import com.kts.sigma.dto.MenuDTO;
 import com.kts.sigma.dto.OrderDTO;
+import com.kts.sigma.model.Drink;
+import com.kts.sigma.model.Employee;
+import com.kts.sigma.model.Food;
+import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
-import com.kts.sigma.model.Menu;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.Waiter;
+import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.repository.UserRepository;
@@ -38,6 +42,9 @@ public class OrderServiceImpl implements OrderService{
 	@Autowired
 	private ItemInOrderService iioService;
 	
+	@Autowired
+	private EmployeeRepository empRep;
+	
 	@Override
 	public Iterable<OrderDTO> getAll() {
 		List<RestaurantOrder> orders = orderRepository.findAll();
@@ -52,8 +59,15 @@ public class OrderServiceImpl implements OrderService{
 	}
 	
 	@Override
-	public RestaurantOrder save(OrderDTO item) {
+	public RestaurantOrder save(OrderDTO item, Integer code) {
+		Employee worker = empRep.findByCode(code);
+		if(worker == null || !(worker instanceof Waiter) || worker.getId() != item.getWaiterId())
+		{
+			throw new AccessForbiddenException();
+		}
+		
 		RestaurantOrder order = new RestaurantOrder();
+		order.setOrderDateTime(LocalDateTime.now());
 		
 		RestaurantTable table = tableRepo.findById(item.getTableId()).orElse(null);
 		if(table == null) {
@@ -88,7 +102,7 @@ public class OrderServiceImpl implements OrderService{
 			for(int i = 0; i < dto.getQuantity(); i++) {
 				dto.setOrderId(o.getId());
 				dto.setState(ItemInOrderState.NEW);
-				iioService.save(dto);
+				iioService.saveWithoutCode(dto);
 			}
 			
 		}
@@ -112,5 +126,72 @@ public class OrderServiceImpl implements OrderService{
 		
 		OrderDTO result = Mapper.mapper.map(order, OrderDTO.class);
 	    return result;
+	}
+
+	@Override
+	public Iterable<ItemInOrderDTO> getAllItems(Integer id) {
+		RestaurantOrder order = orderRepository.findById(id).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(id, "order");
+		}
+		
+		ArrayList<ItemInOrderDTO> dtos = new ArrayList<>();
+		
+		for (ItemInOrder item : order.getItems()) {
+			ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+			dto.setDescription(item.getItem().getItem().getDescription());
+			dto.setName(item.getItem().getItem().getName());
+			dto.setSellingPrice(item.getItem().getSellingPrice());
+			dtos.add(dto);
+		}
+		
+		return dtos;
+	}
+
+	@Override
+	public Iterable<ItemInOrderDTO> getAllDrinks(Integer id) {
+		RestaurantOrder order = orderRepository.findById(id).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(id, "order");
+		}
+		
+		ArrayList<ItemInOrderDTO> dtos = new ArrayList<>();
+		
+		for (ItemInOrder item : order.getItems()) {
+			if(item.getItem().getItem() instanceof Drink) {
+				ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+				dto.setDescription(item.getItem().getItem().getDescription());
+				dto.setName(item.getItem().getItem().getName());
+				dto.setSellingPrice(item.getItem().getSellingPrice());
+				dtos.add(dto);
+			}
+		}
+		
+		return dtos;
+	}
+
+	@Override
+	public Iterable<ItemInOrderDTO> getAllFoods(Integer id) {
+		RestaurantOrder order = orderRepository.findById(id).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(id, "order");
+		}
+		
+		ArrayList<ItemInOrderDTO> dtos = new ArrayList<>();
+		
+		for (ItemInOrder item : order.getItems()) {
+			if(item.getItem().getItem() instanceof Food) {
+				ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+				dto.setDescription(item.getItem().getItem().getDescription());
+				dto.setName(item.getItem().getItem().getName());
+				dto.setSellingPrice(item.getItem().getSellingPrice());
+				dtos.add(dto);
+			}
+		}
+		
+		return dtos;
 	}
 }

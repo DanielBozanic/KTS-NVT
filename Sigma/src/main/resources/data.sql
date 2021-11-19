@@ -1,5 +1,5 @@
 INSERT INTO Users (USER_TYPE, name,username,password) VALUES ('MANAGER','Petar','Markuza', '12345');
-INSERT INTO Users (USER_TYPE, name, code, active) VALUES ('WAITER','Marko Petruza', '0001', true);
+INSERT INTO Users (USER_TYPE, name, code, active) VALUES ('WAITER','Marko Petruza', 1000, true);
 INSERT INTO Users (USER_TYPE, name, code, date_of_employment, active) VALUES ('WAITER', 'Pera Peric', 1234, '2021-03-10', true);
 INSERT INTO Users (USER_TYPE, name, code, date_of_employment, active) VALUES ('BARTENDER', 'Mika Mikic', 2345, '2021-04-10', true);
 INSERT INTO Users (USER_TYPE, name, code, date_of_employment, active) VALUES ('COOK', 'Sara Saric', 3456, '2021-05-10', true);
@@ -27,7 +27,7 @@ INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
-INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 3, 1);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 1);
 
 
 INSERT INTO Zone (name) VALUES ('Ground floor');

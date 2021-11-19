@@ -2,7 +2,6 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.model.Food;
-import com.kts.sigma.model.Item;
 import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.repository.ItemInMenuRepository;
 import com.kts.sigma.service.ItemInMenuService;

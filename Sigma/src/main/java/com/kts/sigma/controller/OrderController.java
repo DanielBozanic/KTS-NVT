@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.service.OrderService;
@@ -28,9 +30,24 @@ public class OrderController {
 		return orderService.findById(id);
 	}
 	
-	@PostMapping("")
-	RestaurantOrder post(@RequestBody OrderDTO newEntity) {
-	  return orderService.save(newEntity);
+	@GetMapping("/items/{id}")
+	Iterable<ItemInOrderDTO> getAllItems(@PathVariable Integer id) {
+		return orderService.getAllItems(id);
+	}
+	
+	@GetMapping("/drinks/{id}")
+	Iterable<ItemInOrderDTO> getAllDrinks(@PathVariable Integer id) {
+		return orderService.getAllDrinks(id);
+	}
+	
+	@GetMapping("/foods/{id}")
+	Iterable<ItemInOrderDTO> getAllFoods(@PathVariable Integer id) {
+		return orderService.getAllFoods(id);
+	}
+	
+	@PostMapping("/{code}")
+	RestaurantOrder post(@RequestBody OrderDTO newEntity, @PathVariable Integer code) {
+	  return orderService.save(newEntity, code);
 	}
 	
 	@DeleteMapping("/{id}")

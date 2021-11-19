@@ -1,7 +1,5 @@
 package com.kts.sigma.dto;
 
-import java.util.Set;
-
 public class ZoneDTO {
 
 	private Integer id;
