@@ -8,7 +8,7 @@ public interface TableService {
 	
 	public TableDTO findById(Integer id);
 	
-	public TableDTO save(TableDTO tableDto);
+	public TableDTO addTable(TableDTO tableDto);
 	
 	public void deleteById(Integer id);
 	

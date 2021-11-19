@@ -18,4 +18,7 @@ public interface TableRepository extends JpaRepository<RestaurantTable, Integer>
 	
 	@Query("select rt from RestaurantTable rt where rt.tableNumber = ?1")
 	RestaurantTable findByTableNumber(Integer tableNumber);
+	
+	@Query("select max(rt.tableNumber) from RestaurantTable rt")
+	Integer findMaxTableNumber();
 }

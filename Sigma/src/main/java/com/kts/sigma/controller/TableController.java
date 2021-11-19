@@ -34,7 +34,7 @@ public class TableController {
 	
 	@PostMapping(value = "/addTable", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<TableDTO> addTable(@RequestBody TableDTO newEntity) {
-		return new ResponseEntity<>(tableService.save(newEntity), HttpStatus.CREATED);
+		return new ResponseEntity<>(tableService.addTable(newEntity), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}/{state}/{code}")
