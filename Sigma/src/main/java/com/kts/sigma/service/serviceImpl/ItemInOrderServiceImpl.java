@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.kts.sigma.Exception.AccessForbiddenException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
-import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.model.Bartender;
 import com.kts.sigma.model.Cook;
@@ -20,7 +19,6 @@ import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
 import com.kts.sigma.model.RestaurantOrder;
-import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.User;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInMenuRepository;
@@ -49,18 +47,16 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	
 	
 	@Override
-	public Iterable<ItemDTO> getAll() {
+	public Iterable<ItemInOrderDTO> getAll() {
 		List<ItemInOrder> items = itemInOrderRepository.findAll();
-		ArrayList<ItemDTO> results = new ArrayList<ItemDTO>();
+		ArrayList<ItemInOrderDTO> results = new ArrayList<ItemInOrderDTO>();
 		
 		for (ItemInOrder item : items) {
-			ItemDTO dto = Mapper.mapper.map(item.getItem().getItem(), ItemDTO.class);
+			ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
 			
+			dto.setDescription(item.getItem().getItem().getDescription());
+			dto.setName(item.getItem().getItem().getName());
 			dto.setSellingPrice(item.getItem().getSellingPrice());
-			
-			if(item.getItem().getItem() instanceof Food) {
-				dto.setFood(true);
-			}
 			
 			results.add(dto);
 		}
@@ -69,7 +65,43 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	}
 	
 	@Override
-	public ItemInOrder save(ItemInOrderDTO i) {
+	public ItemInOrder save(ItemInOrderDTO i, Integer code) {
+		Employee worker = employeeRepository.findByCode(code);
+		if(worker == null)
+		{
+			throw new AccessForbiddenException();
+		}
+		
+		ItemInOrder item = new ItemInOrder();
+		item.setId(i.getId());
+		
+		RestaurantOrder order = oRepository.findById(i.getOrderId()).orElse(null);
+		if(order == null) {
+			throw new ItemNotFoundException(i.getOrderId(), "order");
+		}
+		item.setOrder(order);
+		
+		ItemInMenu iim = iimRepository.findById(i.getItemId()).orElse(null);
+		if(iim == null) {
+			throw new ItemNotFoundException(i.getItemId(), "item in menu");
+		}
+		item.setItem(iim);
+		
+		if(i.getEmployeeId() != null) {
+			User employee = uRepository.findById(i.getEmployeeId()).orElse(null);
+			if(employee == null) {
+				throw new ItemNotFoundException(i.getEmployeeId(), "employee");
+			}
+			item.setEmployee((Employee) employee);
+		}
+		
+		item.setState(i.getState());
+		
+		return itemInOrderRepository.save(item);
+	}
+	
+	@Override
+	public ItemInOrder saveWithoutCode(ItemInOrderDTO i) {
 		ItemInOrder item = new ItemInOrder();
 		item.setId(i.getId());
 		
@@ -103,7 +135,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		itemInOrderRepository.deleteById(id);
 	}
 	@Override
-	public ItemDTO findById(Integer id)
+	public ItemInOrderDTO findById(Integer id)
 	{
 		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
 		if(item == null)
@@ -111,12 +143,10 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			throw new ItemNotFoundException(id, "item in order");
 		}
 		
-		ItemDTO result = Mapper.mapper.map(item.getItem().getItem(), ItemDTO.class);
+		ItemInOrderDTO result = Mapper.mapper.map(item, ItemInOrderDTO.class);
+		result.setDescription(item.getItem().getItem().getDescription());
+		result.setName(item.getItem().getItem().getName());
 		result.setSellingPrice(item.getItem().getSellingPrice());
-		
-		if(item.getItem().getItem() instanceof Food) {
-			result.setFood(true);
-		}
 		
 		return result;
 	}
@@ -160,7 +190,13 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	}
 
 	@Override
-	public void put(ItemInOrderDTO i) {
+	public void put(ItemInOrderDTO i, Integer code) {
+		Employee worker = employeeRepository.findByCode(code);
+		if(worker == null)
+		{
+			throw new AccessForbiddenException();
+		}
+		
 		ItemInOrder check = itemInOrderRepository.findById(i.getId()).orElse(null);
 		if(check == null)
 		{
@@ -184,7 +220,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		item.setItem(iim);
 		
 		if(i.getEmployeeId() != null) {
-			User employee = uRepository.findById(i.getEmployeeId()).orElse(null);
+			Employee employee = employeeRepository.findById(i.getEmployeeId()).orElse(null);
 			if(employee == null) {
 				throw new ItemNotFoundException(i.getEmployeeId(), "employee");
 			}

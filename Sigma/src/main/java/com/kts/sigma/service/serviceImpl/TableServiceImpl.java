@@ -2,21 +2,18 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kts.sigma.Exception.AccessForbiddenException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
-import com.kts.sigma.dto.MenuDTO;
 import com.kts.sigma.dto.TableDTO;
-import com.kts.sigma.model.Menu;
-import com.kts.sigma.model.RestaurantOrder;
+import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
+import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.service.TableService;
 
@@ -24,6 +21,9 @@ import com.kts.sigma.service.TableService;
 public class TableServiceImpl implements TableService{
 	@Autowired
 	private TableRepository tableRepository;
+	
+	@Autowired
+	private EmployeeRepository emRepo;
 	
 	@Override
 	public Iterable<TableDTO> getAll() {
@@ -61,7 +61,13 @@ public class TableServiceImpl implements TableService{
 	}
 
 	@Override
-	public void changeState(Integer id, TableState state) {
+	public void changeState(Integer id, TableState state, Integer code) {
+		Employee worker = emRepo.findByCode(code);
+		if(worker == null)
+		{
+			throw new AccessForbiddenException();
+		}
+		
 		RestaurantTable table = tableRepository.findById(id).orElse(null);
 		if(table == null)
 		{

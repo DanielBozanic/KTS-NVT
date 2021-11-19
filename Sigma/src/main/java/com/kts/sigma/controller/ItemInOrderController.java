@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
@@ -23,23 +22,23 @@ public class ItemInOrderController {
 	private ItemInOrderService itemInOrderService;
 	
 	@GetMapping(path="")
-	public Iterable<ItemDTO> getAll(){
+	public Iterable<ItemInOrderDTO> getAll(){
 		return itemInOrderService.getAll();
 	}
 	
 	@GetMapping("/{id}")
-	ItemDTO getOne(@PathVariable Integer id) {
+	ItemInOrderDTO getOne(@PathVariable Integer id) {
 		return itemInOrderService.findById(id);
 	}
 	
-	@PostMapping("")
-	ItemInOrder post(@RequestBody ItemInOrderDTO newEntity) {
-	  return itemInOrderService.save(newEntity);
+	@PostMapping("/{code}")
+	ItemInOrder post(@RequestBody ItemInOrderDTO newEntity, @PathVariable Integer code) {
+	  return itemInOrderService.save(newEntity, code);
 	}
 	
-	@PutMapping("")
-	public void put(@RequestBody ItemInOrderDTO item) {
-		itemInOrderService.put(item);
+	@PutMapping("/code")
+	public void put(@RequestBody ItemInOrderDTO item, @PathVariable Integer code) {
+		itemInOrderService.put(item, code);
 	}
 	
 	@PutMapping("/{id}/{state}/{code}")

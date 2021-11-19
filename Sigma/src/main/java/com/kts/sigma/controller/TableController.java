@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
@@ -37,9 +35,9 @@ public class TableController {
 	  return tableService.save(newEntity);
 	}
 	
-	@PutMapping("/{id}/{state}")
-	public void changeState(@PathVariable Integer id, @PathVariable TableState state) {
-		tableService.changeState(id, state);
+	@PutMapping("/{id}/{state}/{code}")
+	public void changeState(@PathVariable Integer id, @PathVariable TableState state, @PathVariable Integer code) {
+		tableService.changeState(id, state, code);
 	}
 	
 	@DeleteMapping("/{id}")

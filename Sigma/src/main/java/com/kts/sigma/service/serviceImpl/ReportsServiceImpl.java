@@ -1,16 +1,10 @@
 package com.kts.sigma.service.serviceImpl;
 
 import com.kts.sigma.Exception.DateNotValidException;
-import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.dto.EmployeeDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.dto.ReportRequestDTO;
-import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.model.Report;
-import com.kts.sigma.model.RestaurantOrder;
-import com.kts.sigma.model.User;
-import com.kts.sigma.repository.OrderRepository;
-import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.OrderService;
 import com.kts.sigma.service.ReportsService;
 import com.kts.sigma.service.UserService;
@@ -18,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 
