@@ -1,6 +1,9 @@
 package com.kts.sigma.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.kts.sigma.dto.TableDTO;
-import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.service.TableService;
 
@@ -26,13 +28,13 @@ public class TableController {
 	}
 	
 	@GetMapping("/{id}")
-	TableDTO getOne(@PathVariable Integer id) {
+	public TableDTO getOne(@PathVariable Integer id) {
 		return tableService.findById(id);
 	}
 	
-	@PostMapping("")
-	RestaurantTable post(@RequestBody RestaurantTable newEntity) {
-	  return tableService.save(newEntity);
+	@PostMapping(value = "/addTable", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TableDTO> addTable(@RequestBody TableDTO newEntity) {
+		return new ResponseEntity<>(tableService.save(newEntity), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/{id}/{state}/{code}")
@@ -41,7 +43,7 @@ public class TableController {
 	}
 	
 	@DeleteMapping("/{id}")
-	void delete(@PathVariable Integer id) {
+	public void delete(@PathVariable Integer id) {
 		tableService.deleteById(id);
 	}
 }

@@ -1,7 +1,6 @@
 package com.kts.sigma.service;
 
 import com.kts.sigma.dto.TableDTO;
-import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
 
 public interface TableService {
@@ -9,7 +8,7 @@ public interface TableService {
 	
 	public TableDTO findById(Integer id);
 	
-	public RestaurantTable save(RestaurantTable item);
+	public TableDTO save(TableDTO tableDto);
 	
 	public void deleteById(Integer id);
 	

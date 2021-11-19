@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kts.sigma.Exception.AccessForbiddenException;
+import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.TableDTO;
@@ -18,7 +19,8 @@ import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.service.TableService;
 
 @Service
-public class TableServiceImpl implements TableService{
+public class TableServiceImpl implements TableService {
+	
 	@Autowired
 	private TableRepository tableRepository;
 	
@@ -39,8 +41,15 @@ public class TableServiceImpl implements TableService{
 	}
 	
 	@Override
-	public RestaurantTable save(RestaurantTable item) {
-		return tableRepository.save(item);
+	public TableDTO save(TableDTO tableDto) {
+		RestaurantTable table = tableRepository.findByTableNumber(tableDto.getTableNumber());
+		if (table != null) {
+			throw new ItemExistsException("Table with this number (" 
+					+ tableDto.getTableNumber() + ")" + " already exists!");
+		}
+		tableDto.setState(TableState.FREE);
+		RestaurantTable savedtable = tableRepository.save(Mapper.mapper.map(tableDto, RestaurantTable.class));
+		return Mapper.mapper.map(savedtable, TableDTO.class);
 	}
 	
 	@Override

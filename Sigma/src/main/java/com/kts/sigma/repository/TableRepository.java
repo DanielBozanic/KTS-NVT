@@ -15,4 +15,7 @@ public interface TableRepository extends JpaRepository<RestaurantTable, Integer>
 	
 	@Query("select rt from RestaurantTable rt where rt.id = ?1 and rt.state = ?2")
 	RestaurantTable getTableByIdAndState(Integer tableId, TableState state);
+	
+	@Query("select rt from RestaurantTable rt where rt.tableNumber = ?1")
+	RestaurantTable findByTableNumber(Integer tableNumber);
 }
