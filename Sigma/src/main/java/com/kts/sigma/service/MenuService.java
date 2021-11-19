@@ -1,14 +1,22 @@
 package com.kts.sigma.service;
 
+import java.util.ArrayList;
+import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
 import com.kts.sigma.model.Menu;
 
 public interface MenuService {
-	public Iterable<MenuDTO> getAll();
+	Iterable<MenuDTO> getAll();
 	
-	public MenuDTO findById(Integer id);
+	MenuDTO findById(Integer id);
 	
-	public Menu save(Menu item);
+	Menu save(Menu item);
 	
-	public void deleteById(Integer id);
+	void deleteById(Integer id);
+	
+	void addItemToMenu(ItemDTO itemDto, Integer menuId);
+	
+	ArrayList<ItemDTO> getItemsInMenu(Integer menuId);
+	
+	void removeItemFromMenu(Integer itemId, Integer menuId);
 }

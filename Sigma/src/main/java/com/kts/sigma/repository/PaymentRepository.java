@@ -7,6 +7,6 @@ import com.kts.sigma.model.Payment;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer>{
 
-	@Query("select p from Payment p where p.employee.id = ?1")
-	Payment findByEmployeeId(Integer id);
+	@Query("select p from Payment p where p.employee.id = ?1 and p.dateEnd = null")
+	Payment findActivePaymentByEmployeeId(Integer id);
 }

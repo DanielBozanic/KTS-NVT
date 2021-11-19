@@ -21,8 +21,8 @@ INSERT INTO Menu (active) VALUES (true);
 INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 2);
 
 
-INSERT INTO Item_In_Menu (selling_price, item_id, menu_id) VALUES (350, 1, 1);
-INSERT INTO Item_In_Menu (selling_price, item_id, menu_id) VALUES (100, 3, 1);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (350, 1, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 3, 1, true);
 
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);

@@ -28,6 +28,8 @@ public class ItemInMenu {
     
     @ManyToOne
     public Menu menu;
+    
+    private Boolean active;
   
     @JsonIgnore
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
@@ -72,6 +74,12 @@ public class ItemInMenu {
 	public void setItems(Set<ItemInOrder> itemInOrder) {
 		this.items = itemInOrder;
 	}
-	
-	
+
+	public Boolean isActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 }
