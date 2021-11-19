@@ -80,30 +80,35 @@ public class MenuServiceImpl implements MenuService {
 			throw new ItemNotFoundException(menuId, "menu");
 		}
 		
-		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemByItemIdAndMenuId(item.getId(), menu.getId());
-		if (itemInMenu != null) {
+		ItemInMenu itemInMenu = itemInMenuRepository.findItemInMenuByItemIdAndMenuId(item.getId(), menu.getId());
+		if (itemInMenu != null && itemInMenu.isActive()) {
 			throw new ItemExistsException("Item " + item.getName() + " is already part of this menu!");
+		} else if (itemInMenu != null && !itemInMenu.isActive()) {
+			itemInMenu.setActive(true);
+			itemInMenu.setSellingPrice(itemDto.getSellingPrice());
+			itemInMenuRepository.save(itemInMenu);
+		} else {
+			ItemInMenu newItemInMenu = new ItemInMenu();
+			newItemInMenu.setItem(item);
+			newItemInMenu.setMenu(menu);
+			newItemInMenu.setSellingPrice(itemDto.getSellingPrice());
+			newItemInMenu.setActive(true);
+			itemInMenuRepository.save(newItemInMenu);
 		}
-		
-		ItemInMenu newItemInMenu = new ItemInMenu();
-		newItemInMenu.setItem(item);
-		newItemInMenu.setMenu(menu);
-		newItemInMenu.setSellingPrice(itemDto.getSellingPrice());
-		newItemInMenu.setActive(true);
-		itemInMenuRepository.save(newItemInMenu);
 	}
 
 	@Override
 	public ArrayList<ItemDTO> getItemsInMenu(Integer menuId) {
-		ArrayList<Item> itemsInMenu = itemInMenuRepository.getItemsInMenu(menuId);
+		ArrayList<ItemInMenu> itemsInMenu = itemInMenuRepository.getActiveItemsInMenu(menuId);
 		ArrayList<ItemDTO> itemsInMenuDto = new ArrayList<ItemDTO>();
 		
-		for (Item item : itemsInMenu) {
-			ItemDTO dto = Mapper.mapper.map(item, ItemDTO.class);
+		for (ItemInMenu inm : itemsInMenu) {
+			ItemDTO dto = Mapper.mapper.map(inm.getItem(), ItemDTO.class);
 			
-			if (item instanceof Food) {
+			if (inm.getItem() instanceof Food) {
 				dto.setFood(true);
 			}
+			dto.setSellingPrice(inm.getSellingPrice());
 			
 			itemsInMenuDto.add(dto);
 		}
@@ -112,7 +117,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public void removeItemFromMenu(Integer itemId, Integer menuId) {
-		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemByItemIdAndMenuId(itemId, menuId);
+		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemInMenuByItemIdAndMenuId(itemId, menuId);
 		if (itemInMenu == null) {
 			throw new ItemNotFoundException(itemId, "itemInMenu");
 		}
