@@ -1,6 +1,8 @@
 package com.kts.sigma.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
+import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.service.OrderService;
 
@@ -46,6 +49,8 @@ public class OrderController {
 	}
 	
 	@PostMapping("/{code}")
+	@MessageMapping("/notification")
+	@SendTo("/restaurant/order")
 	RestaurantOrder post(@RequestBody OrderDTO newEntity, @PathVariable Integer code) {
 	  return orderService.save(newEntity, code);
 	}
