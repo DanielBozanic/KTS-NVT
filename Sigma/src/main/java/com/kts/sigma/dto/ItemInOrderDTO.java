@@ -14,6 +14,8 @@ public class ItemInOrderDTO {
     private BigDecimal sellingPrice;
     
     private ItemInOrderState state;
+    
+    private boolean food;
 
 	public Integer getId() {
 		return id;
@@ -85,6 +87,14 @@ public class ItemInOrderDTO {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+
+	public boolean isFood() {
+		return food;
+	}
+
+	public void setFood(boolean food) {
+		this.food = food;
 	}
 	
 	

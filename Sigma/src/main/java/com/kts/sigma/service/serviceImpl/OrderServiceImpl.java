@@ -143,6 +143,13 @@ public class OrderServiceImpl implements OrderService{
 			dto.setDescription(item.getItem().getItem().getDescription());
 			dto.setName(item.getItem().getItem().getName());
 			dto.setSellingPrice(item.getItem().getSellingPrice());
+			
+			if(item.getItem().getItem() instanceof Food) {
+				dto.setFood(true);
+			}else {
+				dto.setFood(false);
+			}
+			
 			dtos.add(dto);
 		}
 		
@@ -165,6 +172,7 @@ public class OrderServiceImpl implements OrderService{
 				dto.setDescription(item.getItem().getItem().getDescription());
 				dto.setName(item.getItem().getItem().getName());
 				dto.setSellingPrice(item.getItem().getSellingPrice());
+				dto.setFood(false);
 				dtos.add(dto);
 			}
 		}
@@ -188,6 +196,7 @@ public class OrderServiceImpl implements OrderService{
 				dto.setDescription(item.getItem().getItem().getDescription());
 				dto.setName(item.getItem().getItem().getName());
 				dto.setSellingPrice(item.getItem().getSellingPrice());
+				dto.setFood(true);
 				dtos.add(dto);
 			}
 		}
