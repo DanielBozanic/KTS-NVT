@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
-import com.kts.sigma.model.Menu;
 import com.kts.sigma.service.MenuService;
 
 @RestController
@@ -36,9 +35,9 @@ public class MenuController {
 		return new ResponseEntity<>(menuService.findById(id), HttpStatus.OK);
 	}
 	
-	@PostMapping("")
-	public Menu post(@RequestBody Menu newEntity) {
-	  return menuService.save(newEntity);
+	@PostMapping(value = "/addMenu", produces = MediaType.APPLICATION_JSON_VALUE)
+	public MenuDTO post(@RequestBody MenuDTO newEntity) {
+		return menuService.addMenu(newEntity);
 	}
 	
 	@PostMapping(value = "/addItemToMenu")
