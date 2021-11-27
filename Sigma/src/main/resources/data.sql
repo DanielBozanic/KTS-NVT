@@ -4,10 +4,10 @@ INSERT INTO Users (USER_TYPE, name, code, date_of_employment, active) VALUES ('W
 INSERT INTO Users (USER_TYPE, name, code, date_of_employment, active) VALUES ('BARTENDER', 'Mika Mikic', 2345, '2021-04-10', true);
 INSERT INTO Users (USER_TYPE, name, code, date_of_employment, active) VALUES ('COOK', 'Sara Saric', 3456, '2021-05-10', true);
 
-INSERT INTO Payment (payment, date_created, employee_id) VALUES (40000,'2021/10/10', 2);
 INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (20000, '2021-03-10', null, 2);
 INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (30000, '2021-04-10', null, 3);
 INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (40000, '2021-05-10', null, 4);
+INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (40000, '2021-06-10', null, 5);
 
 
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 200, 'tasty', 'Spaghetti', 2);

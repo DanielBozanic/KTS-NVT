@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PeopleManagerComponent } from './components/people-manager/people-manager.component';
 
-const routes: Routes = [];
+const routes: Routes = [{ path: 'people', component: PeopleManagerComponent }];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
