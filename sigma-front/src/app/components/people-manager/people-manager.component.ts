@@ -35,17 +35,21 @@ export class PeopleManagerComponent implements OnInit {
   employeeDataSource = new MatTableDataSource<Employee>(this.employeeData);
   addEmployeeForm!: FormGroup;
   editEmployeeForm!: FormGroup;
+  oldEmployeeData: Employee = new Employee();
   isLoading = false;
 
   constructor(
     private peopleManagerService: PeopleManagerService,
-    private dialog: MatDialog
+    private addDialog: MatDialog,
+    private editDialog: MatDialog
   ) {}
 
   @ViewChild(MatPaginator)
   paginatorEmployee!: MatPaginator;
 
   @ViewChild('addEmployeeDialog') addEmployeeDialog!: TemplateRef<any>;
+
+  @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
 
   ngOnInit(): void {
     this.addEmployeeForm = new FormGroup(
@@ -71,28 +75,6 @@ export class PeopleManagerComponent implements OnInit {
 
   get paymentBigDecimal(): AbstractControl | null {
     return this.editEmployeeForm.get('paymentBigDecimal');
-  }
-
-  setNewName(e: Event): void {
-    this.editEmployeeForm.patchValue({
-      name: (e.target as HTMLTextAreaElement).value,
-    });
-  }
-
-  setNewPayment(e: Event): void {
-    this.editEmployeeForm.patchValue({
-      paymentBigDecimal: (e.target as HTMLTextAreaElement).value,
-    });
-  }
-
-  openDialog(): void {
-    let dialogRef = this.dialog.open(this.addEmployeeDialog);
-    dialogRef.afterClosed().subscribe(() => {
-      this.addEmployeeForm.reset();
-      this.addEmployeeForm.patchValue({
-        type: 'BARTENDER',
-      });
-    });
   }
 
   getEmployeesByCurrentPage(): void {
@@ -126,13 +108,23 @@ export class PeopleManagerComponent implements OnInit {
       });
   }
 
+  openAddDialog(): void {
+    let dialogRef = this.addDialog.open(this.addEmployeeDialog);
+    dialogRef.afterClosed().subscribe(() => {
+      this.addEmployeeForm.reset();
+      this.addEmployeeForm.patchValue({
+        type: 'BARTENDER',
+      });
+    });
+  }
+
   addEmployee(): void {
     this.peopleManagerService.addEmployee(this.addEmployeeForm.value).subscribe(
       (response) => {
         console.log(response);
         this.getNumberOfActiveEmployeeRecords();
         this.getEmployeesByCurrentPage();
-        this.dialog.closeAll();
+        this.addDialog.closeAll();
       },
       (error) => {
         console.log(error);
@@ -140,24 +132,26 @@ export class PeopleManagerComponent implements OnInit {
     );
   }
 
-  editEmployee(employee: Employee): void {
+  openEditDialog(employee: Employee): void {
     this.editEmployeeForm.patchValue({
       id: employee.id,
     });
-    if (
-      this.editEmployeeForm.get('name')?.value === null ||
-      this.editEmployeeForm.get('name')?.value === ''
-    ) {
+    this.oldEmployeeData = employee;
+    let dialogRef = this.editDialog.open(this.editEmployeeDialog);
+    dialogRef.afterClosed().subscribe(() => {
+      this.editEmployeeForm.reset();
+    });
+  }
+
+  editEmployee(): void {
+    if (this.editEmployeeForm.get('name')?.value === null) {
       this.editEmployeeForm.patchValue({
-        name: employee.name,
+        name: this.oldEmployeeData.name,
       });
     }
-    if (
-      this.editEmployeeForm.get('paymentBigDecimal')?.value === null ||
-      this.editEmployeeForm.get('paymentBigDecimal')?.value === ''
-    ) {
+    if (this.editEmployeeForm.get('paymentBigDecimal')?.value === null) {
       this.editEmployeeForm.patchValue({
-        paymentBigDecimal: employee.paymentBigDecimal,
+        paymentBigDecimal: this.oldEmployeeData.paymentBigDecimal,
       });
     }
     this.peopleManagerService
@@ -165,6 +159,8 @@ export class PeopleManagerComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log(response);
+          this.getEmployeesByCurrentPage();
+          this.editDialog.closeAll();
         },
         (error) => {
           console.log(error);
@@ -195,11 +191,6 @@ export class PeopleManagerComponent implements OnInit {
         .get('paymentBigDecimal')
         ?.setErrors([{ paymentBigDecimalInvalid: true }]);
     }
-  }
-
-  validateNewPayment(event: Event): boolean | null {
-    const key = (event as KeyboardEvent).key.charCodeAt(0);
-    return key === 8 || key === 0 ? null : key >= 48 && key <= 57;
   }
 
   pageChanged(event: PageEvent): void {
