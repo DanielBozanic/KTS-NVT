@@ -1,5 +1,6 @@
 package com.kts.sigma.dto;
 
+
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.Zone;
 
@@ -13,9 +14,9 @@ public class TableDTO {
     
     private Integer zoneId;
     
-    private TableState state;
+    private Integer orderId;
     
-    private Zone zone;
+    private TableState state;
 
 	public Integer getZoneId() {
 		return zoneId;
@@ -57,11 +58,12 @@ public class TableDTO {
 		this.state = state;
 	}
 
-	public Zone getZone() {
-		return zone;
+	public Integer getOrderId() {
+		return orderId;
 	}
 
-	public void setZone(Zone zone) {
-		this.zone = zone;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
+	
 }

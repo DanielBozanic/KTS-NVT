@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<div>
+  <div class="dropdown-zones">
+    <h4>Zone:</h4>
+    <mat-form-field appearance="fill">
+      <mat-label>Choose zone</mat-label>
+      <mat-select #z (selectionChange)="getTables(z.value)">
+        <mat-option *ngFor="let zone of zones" [value]="zone.id">
+          {{zone.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="tableClick(tables[0])">Table</button>
+  </div>
+</div>
