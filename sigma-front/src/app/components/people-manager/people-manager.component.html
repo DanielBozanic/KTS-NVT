@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <div>
   <div class="add-button">
-    <button (click)="openDialog()" mat-raised-button color="primary">
+    <button (click)="openAddDialog()" mat-raised-button color="primary">
       Add
     </button>
   </div>
@@ -19,14 +19,7 @@
                 Name
               </th>
               <td mat-cell *matCellDef="let element" class="column-name">
-                <mat-form-field>
-                  <input
-                    type="text"
-                    [value]="element.name"
-                    matInput
-                    (input)="setNewName($event)"
-                  />
-                </mat-form-field>
+                {{ element.name }}
               </td>
             </ng-container>
             <ng-container matColumnDef="paymentBigDecimal">
@@ -34,14 +27,7 @@
                 Payment
               </th>
               <td mat-cell *matCellDef="let element" class="column-payment">
-                <input
-                  type="number"
-                  min="0"
-                  [value]="element.paymentBigDecimal"
-                  matInput
-                  (input)="setNewPayment($event)"
-                  (keypress)="validateNewPayment($event)"
-                />
+                {{ element.paymentBigDecimal }}
               </td>
             </ng-container>
             <ng-container matColumnDef="type">
@@ -66,7 +52,7 @@
               ></th>
               <td mat-cell *matCellDef="let element" class="column-edit-button">
                 <button
-                  (click)="editEmployee(element)"
+                  (click)="openEditDialog(element)"
                   mat-raised-button
                   color="primary"
                 >
@@ -159,6 +145,36 @@
       color="primary"
     >
       Add new worker
+    </button>
+  </ng-template>
+  <ng-template #editEmployeeDialog>
+    <form [formGroup]="editEmployeeForm" class="add-employee-form">
+      <mat-form-field class="field-width">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput placeholder="Name" formControlName="name" />
+      </mat-form-field>
+      <mat-form-field class="field-width">
+        <mat-label>Payment</mat-label>
+        <input
+          type="number"
+          min="0"
+          matInput
+          placeholder="Payment"
+          formControlName="paymentBigDecimal"
+          (input)="checkPayment()"
+        />
+        <mat-error *ngIf="paymentBigDecimal?.invalid"
+          >Payment must be a postive number!</mat-error
+        >
+      </mat-form-field>
+    </form>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="editEmployee()"
+      [disabled]="editEmployeeForm.invalid"
+    >
+      Save
     </button>
   </ng-template>
 </div>
