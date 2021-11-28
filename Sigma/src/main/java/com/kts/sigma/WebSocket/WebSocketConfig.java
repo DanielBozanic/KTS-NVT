@@ -1,4 +1,4 @@
-package WebSocket;
+package com.kts.sigma.WebSocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
