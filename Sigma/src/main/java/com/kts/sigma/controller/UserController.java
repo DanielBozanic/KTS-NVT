@@ -1,6 +1,7 @@
 package com.kts.sigma.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.dto.EmployeeDTO;
@@ -29,6 +31,17 @@ public class UserController {
 	@GetMapping(value="/getAllEmployees", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<EmployeeDTO>> getAllEmployees(){
 		return new ResponseEntity<>(userService.getAllEmployees(), HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/getEmployeesByCurrentPage", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<EmployeeDTO>> getEmployeesByCurrentPage(@RequestParam("currentPage") Integer currentPage, 
+			@RequestParam("pageSize") Integer pageSize){
+		return new ResponseEntity<>(userService.getEmployeesByCurrentPage(currentPage, pageSize), HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/getNumberOfActiveEmployeeRecords")
+	public ResponseEntity<Integer> getNumberOfEmployeeRecords() {
+		return new ResponseEntity<>(userService.getNumberOfActiveEmployeeRecords(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

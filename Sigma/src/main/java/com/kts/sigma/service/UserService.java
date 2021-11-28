@@ -1,6 +1,7 @@
 package com.kts.sigma.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.kts.sigma.dto.EmployeeDTO;
 import com.kts.sigma.dto.ManagerDTO;
@@ -8,6 +9,10 @@ import com.kts.sigma.dto.ManagerDTO;
 public interface UserService {
 
 	ArrayList<EmployeeDTO> getAllEmployees();
+	
+	List<EmployeeDTO> getEmployeesByCurrentPage(Integer currentPage, Integer pageSize);
+	
+	Integer getNumberOfActiveEmployeeRecords();
 	
 	EmployeeDTO findById(Integer id);
 	
