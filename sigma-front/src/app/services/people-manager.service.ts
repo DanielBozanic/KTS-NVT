@@ -3,9 +3,11 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Employee } from '../models/Employee';
+import { Employee } from '../models/employee';
 import {
   API_GET_ALL_EMPLOYEES,
+  API_GET_EMPLOYEES_BY_CURRENT_PAGE,
+  API_GET_NUMBER_OF_ACTIVE_EMPLOYEE_RECORDS,
   API_ADD_EMPLOYEE,
   API_EDIT_EMPLOYEE,
   API_DELETE_EMPLOYEE,
@@ -17,8 +19,21 @@ import {
 export class PeopleManagerService {
   constructor(private http: HttpClient) {}
 
-  getAllEmployees(): Observable<Array<Employee>> {
-    return this.http.get<Array<Employee>>(API_GET_ALL_EMPLOYEES);
+  getAllEmployees(): Observable<Employee[]> {
+    return this.http.get<Employee[]>(API_GET_ALL_EMPLOYEES);
+  }
+
+  getEmployeesByCurrentPage(
+    currentPage: number,
+    pageSize: number
+  ): Observable<Array<Employee>> {
+    return this.http.get<Array<Employee>>(
+      `${API_GET_EMPLOYEES_BY_CURRENT_PAGE}?currentPage=${currentPage}&pageSize=${pageSize}`
+    );
+  }
+
+  getNumberOfActiveEmployeeRecords(): Observable<number> {
+    return this.http.get<number>(API_GET_NUMBER_OF_ACTIVE_EMPLOYEE_RECORDS);
   }
 
   addEmployee(employee: Employee): Observable<Employee> {

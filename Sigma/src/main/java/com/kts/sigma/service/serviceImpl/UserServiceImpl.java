@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kts.sigma.Exception.ItemExistsException;
@@ -62,6 +64,35 @@ public class UserServiceImpl implements UserService{
 			results.add(dto);
 		}
 		return results;
+	}
+	
+	@Override
+	public List<EmployeeDTO> getEmployeesByCurrentPage(Integer currentPage, Integer pageSize) {
+		Pageable page = PageRequest.of(currentPage, pageSize);
+		List<Employee> employees = employeeRepository.findAll(page).toList();
+		ArrayList<EmployeeDTO> results = new ArrayList<EmployeeDTO>();
+		for (Employee e : employees) {
+			EmployeeDTO dto = Mapper.mapper.map(e, EmployeeDTO.class);
+			
+			if(e instanceof Cook) {
+				dto.setType("COOK");
+			} else if(e instanceof Bartender) {
+				dto.setType("BARTENDER");
+			} else {
+				dto.setType("WAITER");
+			}
+			
+			Payment employeePayment = paymentRepository.findActivePaymentByEmployeeId(e.getId());
+			dto.setPaymentBigDecimal(employeePayment.getPayment());
+			
+			results.add(dto);
+		}
+		return results;
+	}
+	
+	@Override
+	public Integer getNumberOfActiveEmployeeRecords() {
+		return employeeRepository.getNumberOfActiveEmployeeRecords();
 	}
 	
 	@Override

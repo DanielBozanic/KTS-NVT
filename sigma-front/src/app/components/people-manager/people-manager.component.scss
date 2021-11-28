@@ -1,3 +1,5 @@
+$background-color-light-blue: #deede6;
+
 .add-button {
   margin-left: 10px;
   margin-top: 10px;
@@ -17,7 +19,7 @@
   max-width: 1000px;
   margin-top: 10px;
   margin-left: 10px;
-  background-color: #deede6;
+  background-color: $background-color-light-blue;
 }
 
 .data-table {
@@ -37,7 +39,8 @@ table {
 }
 
 .column-job {
-  width: 5%;
+  width: 15%;
+  padding-left: 15px;
 }
 
 .column-code {

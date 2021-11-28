@@ -17,6 +17,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatDialogModule,
     MatPaginatorModule,
     MatGridListModule,
+    MatProgressBarModule,
   ],
   exports: [
     MatButtonModule,
@@ -56,6 +58,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatDialogModule,
     MatPaginatorModule,
     MatGridListModule,
+    MatProgressBarModule,
   ],
 })
 export class AngularMaterialModule {}
