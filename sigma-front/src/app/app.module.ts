@@ -8,9 +8,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularMaterialModule } from './angular-material.module';
+import { WaiterTablesComponent } from './components/waiter-tables/waiter-tables.component';
 
 @NgModule({
-  declarations: [AppComponent, PeopleManagerComponent],
+  declarations: [AppComponent, PeopleManagerComponent, WaiterTablesComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -2,6 +2,7 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,12 @@ import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
+import com.kts.sigma.model.OrderState;
+import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.Zone;
+import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.repository.ZoneRepository;
 import com.kts.sigma.service.ZoneService;
@@ -27,6 +31,9 @@ public class ZoneServiceImpl implements ZoneService{
 	
 	@Autowired
 	private TableRepository tableRepository;
+	
+	@Autowired
+	private OrderRepository ordRepo;
 	
 	@Override
 	public Iterable<ZoneDTO> getAll() {
@@ -119,6 +126,19 @@ public class ZoneServiceImpl implements ZoneService{
 		
 		for (RestaurantTable table : zone.getTables()) {
 			TableDTO dto = Mapper.mapper.map(table, TableDTO.class);
+			
+			if(table.getState().equals(TableState.IN_PROGRESS) || table.getState().equals(TableState.TO_DELIVER)
+					|| table.getState().equals(TableState.DONE)) {
+				Set<RestaurantOrder> orders = table.getOrders();
+				
+				for (RestaurantOrder order : orders) {
+					if(!order.getState().equals(OrderState.CHARGED)) {
+						dto.setOrderId(order.getId());
+						break;
+					}
+				}
+			}
+			
 			tables.add(dto);
 		}
 		
