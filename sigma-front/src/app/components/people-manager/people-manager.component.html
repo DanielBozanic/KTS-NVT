@@ -123,7 +123,7 @@
         >
         <mat-error
           *ngIf="
-            paymentBigDecimal?.invalid &&
+            paymentBigDecimalAddForm?.invalid &&
             !hasError('paymentBigDecimal', 'required')
           "
           >Payment must be a postive number!</mat-error
@@ -163,7 +163,7 @@
           formControlName="paymentBigDecimal"
           (input)="checkPayment()"
         />
-        <mat-error *ngIf="paymentBigDecimal?.invalid"
+        <mat-error *ngIf="paymentBigDecimalEditForm?.invalid"
           >Payment must be a postive number!</mat-error
         >
       </mat-form-field>

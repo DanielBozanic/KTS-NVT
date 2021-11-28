@@ -60,11 +60,14 @@ export class PeopleManagerComponent implements OnInit {
       },
       PaymentValidator
     );
-    this.editEmployeeForm = new FormGroup({
-      id: new FormControl(),
-      name: new FormControl(),
-      paymentBigDecimal: new FormControl(),
-    });
+    this.editEmployeeForm = new FormGroup(
+      {
+        id: new FormControl(),
+        name: new FormControl(),
+        paymentBigDecimal: new FormControl(),
+      },
+      PaymentValidator
+    );
     this.getNumberOfActiveEmployeeRecords();
     this.getEmployeesByCurrentPage();
   }
@@ -73,7 +76,11 @@ export class PeopleManagerComponent implements OnInit {
     this.employeeDataSource.paginator = this.paginatorEmployee;
   }
 
-  get paymentBigDecimal(): AbstractControl | null {
+  get paymentBigDecimalAddForm(): AbstractControl | null {
+    return this.addEmployeeForm.get('paymentBigDecimal');
+  }
+
+  get paymentBigDecimalEditForm(): AbstractControl | null {
     return this.editEmployeeForm.get('paymentBigDecimal');
   }
 
@@ -144,12 +151,18 @@ export class PeopleManagerComponent implements OnInit {
   }
 
   editEmployee(): void {
-    if (this.editEmployeeForm.get('name')?.value === null) {
+    if (
+      this.editEmployeeForm.get('name')?.value === null ||
+      this.editEmployeeForm.get('name')?.value === ''
+    ) {
       this.editEmployeeForm.patchValue({
         name: this.oldEmployeeData.name,
       });
     }
-    if (this.editEmployeeForm.get('paymentBigDecimal')?.value === null) {
+    if (
+      this.editEmployeeForm.get('paymentBigDecimal')?.value === null ||
+      this.editEmployeeForm.get('paymentBigDecimal')?.value === ''
+    ) {
       this.editEmployeeForm.patchValue({
         paymentBigDecimal: this.oldEmployeeData.paymentBigDecimal,
       });
@@ -188,6 +201,10 @@ export class PeopleManagerComponent implements OnInit {
   checkPayment(): void {
     if (this.addEmployeeForm.hasError('paymentBigDecimalInvalid')) {
       this.addEmployeeForm
+        .get('paymentBigDecimal')
+        ?.setErrors([{ paymentBigDecimalInvalid: true }]);
+    } else if (this.editEmployeeForm.hasError('paymentBigDecimalInvalid')) {
+      this.editEmployeeForm
         .get('paymentBigDecimal')
         ?.setErrors([{ paymentBigDecimalInvalid: true }]);
     }
