@@ -15,3 +15,7 @@ export const API_GET_TABLES_FOR_ZONE = API_BASE + '/zones/tables/';
 export const API_GET_ITEMS_FOR_ORDER = API_BASE + '/orders/items/'
 export const API_GET_DRINKS_FOR_ORDER = API_BASE + '/orders/drinks/'
 export const API_GET_FOODS_FOR_ORDER = API_BASE + '/orders/foods/'
+export const API_CHANGE_TABLE_STATE = API_BASE + '/tables/'
+export const API_CHANGE_ITEM_STATE = API_BASE + '/item-in-order/'
+export const API_GET_ORDER = API_BASE + '/orders/'
+

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <div>
+
   <div class="dropdown-zones">
     <h4>Zone:</h4>
     <mat-form-field appearance="fill">
@@ -10,6 +11,41 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+  </div>
+
+  <div clas="tables">
     <button mat-raised-button color="primary" (click)="tableClick(tables[0])">Table</button>
   </div>
+
+  <ng-template #freeTableDialog>
+    <button mat-raised-button color="primary" (click)="reserveTable(1)">Reserve table</button>
+    <button mat-raised-button color="primary" (click)="order(tables[0])">Order</button>
+  </ng-template>
+
+  <ng-template #tableOrderDialog>
+    
+        <div class="table-items">
+          <h2>Table 1</h2>
+
+          <div *ngFor="let item of currentItems">
+            <mat-card class="table-item" [ngStyle]="{'backgroundColor' : itemColor(item.state)}">
+              <span>{{item.name}}</span>
+              <button class="item-button" mat-raised-button color="primary">Change</button>
+            </mat-card>
+          </div>
+
+        </div>
+
+  </ng-template>
+
+  <ng-template #paymentTableDialog>
+    <h3 class="inline">Amount that needs to be payed: </h3>
+    <span class="inline">{{currentOrder.totalPrice}}</span>
+
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" (click)="pay(1)">Pay</button>
+      <button mat-raised-button color="primary" (click)="closePaymentView()">Cancel</button>
+    </div>
+  </ng-template>
+
 </div>

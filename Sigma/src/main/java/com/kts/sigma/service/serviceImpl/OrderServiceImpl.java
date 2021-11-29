@@ -20,6 +20,7 @@ import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
+import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.Waiter;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.OrderRepository;
@@ -106,6 +107,9 @@ public class OrderServiceImpl implements OrderService{
 			}
 			
 		}
+		
+		table.setState(TableState.IN_PROGRESS);
+		tableRepo.save(table);
 				
 		
 		return orderRepository.save(order);

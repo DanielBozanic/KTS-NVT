@@ -5,3 +5,33 @@
 button{
   margin: 1em;
 }
+
+.table-items{
+  height: 75%;
+  width: 85%;
+  margin: 5px;
+}
+
+.table-item{
+  display: block;
+  height: 3em;
+  width: 100%;
+  margin: 4px;
+}
+
+.item-button{
+  float: right;
+}
+
+.inline{
+  display: inline;
+}
+
+.block{
+  display: block;
+}
+
+.action-buttons{
+  margin-left: 20px;
+  margin-right: 20px;
+}
