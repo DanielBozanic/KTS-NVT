@@ -50,7 +50,7 @@ export class PeopleManagerService {
 
   deleteEmployee(employeeId: number): Observable<any> {
     return this.http
-      .delete<Employee>(`${API_DELETE_EMPLOYEE}/${employeeId}`)
+      .delete(`${API_DELETE_EMPLOYEE}/${employeeId}`)
       .pipe(catchError(this.errorHander));
   }
 

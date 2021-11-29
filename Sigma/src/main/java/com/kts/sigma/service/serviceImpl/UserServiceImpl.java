@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public List<EmployeeDTO> getEmployeesByCurrentPage(Integer currentPage, Integer pageSize) {
 		Pageable page = PageRequest.of(currentPage, pageSize);
-		List<Employee> employees = employeeRepository.findAll(page).toList();
+		List<Employee> employees = employeeRepository.findAllActiveEmployeesByCurrentPage(page).toList();
 		ArrayList<EmployeeDTO> results = new ArrayList<EmployeeDTO>();
 		for (Employee e : employees) {
 			EmployeeDTO dto = Mapper.mapper.map(e, EmployeeDTO.class);
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public EmployeeDTO editEmployee(EmployeeDTO employeeDto) {
-		Employee employee = employeeRepository.findById(employeeDto.getId()).orElse(null);
+		Employee employee = employeeRepository.getActiveEmployeeById(employeeDto.getId());
 		if (employee == null) {
 			throw new ItemNotFoundException(employeeDto.getId(), "employeee");
 		}
@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public void deleteEmployee(Integer id) {
-		Employee employee = employeeRepository.findById(id).orElse(null);
+		Employee employee = employeeRepository.getActiveEmployeeById(id);
 		if (employee == null) {
 			throw new ItemNotFoundException(id, "employee");
 		}

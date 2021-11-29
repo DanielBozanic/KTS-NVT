@@ -15,7 +15,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>, Pa
 	@Query("select max(e.code) from Employee e")
 	Integer findMaxCode();
 	
-	Page<Employee> findAll(Pageable pageable);
+	@Query("select e from Employee e where e.id = ?1 and e.active = true")
+	Employee getActiveEmployeeById(Integer id);
+	
+	@Query("select e from Employee e where e.active = true")
+	Page<Employee> findAllActiveEmployeesByCurrentPage(Pageable pageable);
 	
 	@Query("select count(e) from Employee e where e.active = true")
 	Integer getNumberOfActiveEmployeeRecords();

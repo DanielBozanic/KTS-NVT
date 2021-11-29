@@ -18,38 +18,44 @@ import { PaymentValidator } from './payment-validator';
   styleUrls: ['./people-manager.component.scss'],
 })
 export class PeopleManagerComponent implements OnInit {
-  displayedColumnsPeople: string[] = [
-    'name',
-    'paymentBigDecimal',
-    'type',
-    'code',
-    'edit',
-    'delete',
-  ];
-  jobs = ['BARTENDER', 'COOK', 'WAITER'];
-  totalRows = 0;
-  pageSize = 5;
-  currentPage = 0;
-  pageSizeOptions: number[] = [5, 10, 25];
-  employeeData: Array<Employee> = [];
-  employeeDataSource = new MatTableDataSource<Employee>(this.employeeData);
+  displayedColumnsPeople: string[];
+  jobs: string[];
+  totalRows: number;
+  pageSize: number;
+  currentPage: number;
+  pageSizeOptions: number[];
+  employeeData: Array<Employee>;
+  employeeDataSource: MatTableDataSource<Employee>;
   addEmployeeForm!: FormGroup;
   editEmployeeForm!: FormGroup;
-  oldEmployeeData: Employee = new Employee();
-  isLoading = false;
+  oldEmployeeData: Employee;
+  isLoading: boolean;
 
   constructor(
     private peopleManagerService: PeopleManagerService,
     private addDialog: MatDialog,
     private editDialog: MatDialog
-  ) {}
-
-  @ViewChild(MatPaginator)
-  paginatorEmployee!: MatPaginator;
-
-  @ViewChild('addEmployeeDialog') addEmployeeDialog!: TemplateRef<any>;
-
-  @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
+  ) {
+    this.displayedColumnsPeople = [
+      'name',
+      'paymentBigDecimal',
+      'type',
+      'code',
+      'edit',
+      'delete',
+    ];
+    this.jobs = ['BARTENDER', 'COOK', 'WAITER'];
+    this.totalRows = 0;
+    this.pageSize = 5;
+    this.currentPage = 0;
+    this.pageSizeOptions = [5, 10, 25];
+    this.employeeData = [];
+    this.employeeDataSource = new MatTableDataSource<Employee>(
+      this.employeeData
+    );
+    this.oldEmployeeData = new Employee();
+    this.isLoading = false;
+  }
 
   ngOnInit(): void {
     this.addEmployeeForm = new FormGroup(
@@ -76,6 +82,13 @@ export class PeopleManagerComponent implements OnInit {
     this.employeeDataSource.paginator = this.paginatorEmployee;
   }
 
+  @ViewChild(MatPaginator)
+  paginatorEmployee!: MatPaginator;
+
+  @ViewChild('addEmployeeDialog') addEmployeeDialog!: TemplateRef<any>;
+
+  @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
+
   get paymentBigDecimalAddForm(): AbstractControl | null {
     return this.addEmployeeForm.get('paymentBigDecimal');
   }
@@ -89,11 +102,11 @@ export class PeopleManagerComponent implements OnInit {
     this.peopleManagerService
       .getEmployeesByCurrentPage(this.currentPage, this.pageSize)
       .subscribe((data) => {
-        const activeEmployees = data.filter((e) => e.active === true);
-        this.employeeData = activeEmployees;
-        this.employeeDataSource.data = activeEmployees;
+        const employees = data;
+        this.employeeData = employees;
+        this.employeeDataSource.data = employees;
         setTimeout(() => {
-          if (activeEmployees.length === 0) {
+          if (employees.length === 0) {
             const setPrev = this.currentPage - 1;
             this.currentPage = setPrev;
             this.paginatorEmployee.pageIndex = setPrev;
@@ -151,18 +164,15 @@ export class PeopleManagerComponent implements OnInit {
   }
 
   editEmployee(): void {
-    if (
-      this.editEmployeeForm.get('name')?.value === null ||
-      this.editEmployeeForm.get('name')?.value === ''
-    ) {
+    const editFormName = this.editEmployeeForm.get('name')?.value;
+    const editFormPayment =
+      this.editEmployeeForm.get('paymentBigDecimal')?.value;
+    if (editFormName === null || editFormName === '') {
       this.editEmployeeForm.patchValue({
         name: this.oldEmployeeData.name,
       });
     }
-    if (
-      this.editEmployeeForm.get('paymentBigDecimal')?.value === null ||
-      this.editEmployeeForm.get('paymentBigDecimal')?.value === ''
-    ) {
+    if (editFormPayment === null || editFormPayment === '') {
       this.editEmployeeForm.patchValue({
         paymentBigDecimal: this.oldEmployeeData.paymentBigDecimal,
       });
