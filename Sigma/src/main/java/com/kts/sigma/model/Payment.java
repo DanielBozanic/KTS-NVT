@@ -25,6 +25,18 @@ public class Payment {
     @ManyToOne
     private Employee employee;
     
+    public Payment() {
+    	
+    }
+    
+    public Payment(Integer id, BigDecimal payment, Employee employee, 
+    		LocalDateTime dateCreated) {
+    	this.id = id;
+    	this.payment = payment;
+    	this.employee = employee;
+    	this.dateCreated = dateCreated;
+    }
+    
 	public Integer getId() {
 		return id;
 	}

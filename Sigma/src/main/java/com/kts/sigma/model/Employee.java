@@ -23,6 +23,24 @@ public class Employee extends User {
 	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE, CascadeType.DETACH,
 			CascadeType.MERGE, CascadeType.REFRESH })
 	public Set<Payment> payment;
+	
+	public Employee() {
+		
+	}
+	
+	public Employee(Integer id, String name, Integer code, LocalDateTime dateOfEmployment) {
+		super(id, name);
+		this.code = code;
+		this.dateOfEmployment = dateOfEmployment;
+		this.active = true;
+	}
+	
+	public Employee(String name, Integer code, LocalDateTime dateOfEmployment) {
+		super(name);
+		this.code = code;
+		this.dateOfEmployment = dateOfEmployment;
+		this.active = true;
+	}
 
 	public Integer getCode() {
 		return code;
