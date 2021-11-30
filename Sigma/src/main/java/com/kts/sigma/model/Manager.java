@@ -11,6 +11,22 @@ public class Manager extends User {
     
     private String password;
     
+    public Manager() {
+    	
+    }
+    
+    public Manager(Integer id, String name, String username, String password) {
+    	super(id, name);
+    	this.username = username;
+    	this.password = password;
+    }
+    
+    public Manager(String name, String username, String password) {
+    	super(name);
+    	this.username = username;
+    	this.password = password;
+    }
+    
 	public String getUsername() {
 		return username;
 	}

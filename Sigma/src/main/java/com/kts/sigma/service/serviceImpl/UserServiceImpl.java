@@ -19,19 +19,14 @@ import com.kts.sigma.model.Cook;
 import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Manager;
 import com.kts.sigma.model.Payment;
-import com.kts.sigma.model.User;
 import com.kts.sigma.model.Waiter;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ManagerRepository;
 import com.kts.sigma.repository.PaymentRepository;
-import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService{
-	
-	@Autowired
-	private UserRepository userRepository;
 	
 	@Autowired
 	private EmployeeRepository employeeRepository;
@@ -205,19 +200,18 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public EmployeeDTO findById(Integer id)
 	{
-		User user = userRepository.findById(id).orElse(null);
-		if(user == null || user instanceof Manager)
-		{
+		Employee employee = employeeRepository.getActiveEmployeeById(id);
+		if(employee == null) {
 			throw new ItemNotFoundException(id, "employee");
 		}
 		
-		EmployeeDTO result = Mapper.mapper.map(user, EmployeeDTO.class);
+		EmployeeDTO result = Mapper.mapper.map(employee, EmployeeDTO.class);
 		
-		if(user instanceof Cook) {
+		if(employee instanceof Cook) {
 			result.setType("COOK");
-		}else if(user instanceof Bartender) {
+		} else if(employee instanceof Bartender) {
 			result.setType("BARTENDER");
-		}else {
+		} else {
 			result.setType("WAITER");
 		}
 		
