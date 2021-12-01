@@ -1,5 +1,7 @@
 package com.kts.sigma.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +19,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>, Pa
 	
 	@Query("select e from Employee e where e.id = ?1 and e.active = true")
 	Employee getActiveEmployeeById(Integer id);
+	
+	@Query("select e from Employee e where e.active = true")
+	List<Employee> findAllActiveEmployees();
 	
 	@Query("select e from Employee e where e.active = true")
 	Page<Employee> findAllActiveEmployeesByCurrentPage(Pageable pageable);

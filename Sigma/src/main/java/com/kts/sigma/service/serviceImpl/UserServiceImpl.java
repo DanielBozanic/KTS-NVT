@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public ArrayList<EmployeeDTO> getAllEmployees() {
-		List<Employee> users = employeeRepository.findAll();
+		List<Employee> users = employeeRepository.findAllActiveEmployees();
 		ArrayList<EmployeeDTO> results = new ArrayList<EmployeeDTO>();
 		
 		for (Employee user : users) {
@@ -192,6 +192,10 @@ public class UserServiceImpl implements UserService{
 		if (employee == null) {
 			throw new ItemNotFoundException(id, "employee");
 		}
+		
+		Payment employeePayment = paymentRepository.findActivePaymentByEmployeeId(id);
+		employeePayment.setDateEnd(LocalDateTime.now());
+		paymentRepository.save(employeePayment);
 		
 		employee.setActive(false);
 		employeeRepository.save(employee);

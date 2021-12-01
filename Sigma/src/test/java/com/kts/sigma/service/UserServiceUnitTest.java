@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -24,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.constants.UserContants;
+import com.kts.sigma.constants.PaymentConstants;
 import com.kts.sigma.dto.EmployeeDTO;
 import com.kts.sigma.dto.ManagerDTO;
 import com.kts.sigma.model.Employee;
@@ -35,8 +35,7 @@ import com.kts.sigma.repository.PaymentRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource("classpath:application-test.properties")
-public class UserServiceUnitTests {
+public class UserServiceUnitTest {
 
 	@Autowired
 	private UserService userService;
@@ -57,25 +56,32 @@ public class UserServiceUnitTests {
 				1000, LocalDateTime.of(2021, 9, 1, 0, 0));
 		Employee e2 = new Employee(UserContants.DB_EMPLOYEE_ID_2, "Marko Markovic", 
 				1001, LocalDateTime.of(2021, 10, 1, 0, 0));
+		Employee e3 = new Employee(UserContants.DB_EMPLOYEE_ID_3, "Sara Markovic", 
+				1001, LocalDateTime.of(2021, 11, 1, 0, 0));
 		employees.add(e1);
 		employees.add(e2);
+		employees.add(e3);
 		
-		Payment payment1 = new Payment(1, new BigDecimal(30000), e1, 
+		Payment payment1 = new Payment(PaymentConstants.DB_PAYMENT_ID_1, new BigDecimal(30000), e1, 
 				LocalDateTime.of(2021, 9, 1, 0, 0));
-		Payment payment2 = new Payment(2, new BigDecimal(40000), e2, 
+		Payment payment2 = new Payment(PaymentConstants.DB_PAYMENT_ID_2, new BigDecimal(40000), e2, 
 				LocalDateTime.of(2021, 10, 1, 0, 0));
+		Payment payment3 = new Payment(PaymentConstants.DB_PAYMENT_ID_3, new BigDecimal(40000), e3, 
+				LocalDateTime.of(2021, 11, 1, 0, 0));
 		
-		given(employeeRepositoryMock.findAll()).willReturn(employees);
+		given(employeeRepositoryMock.findAllActiveEmployees()).willReturn(employees);
 		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_1)).willReturn(payment1);
 		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_2)).willReturn(payment2);
+		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_3)).willReturn(payment3);
 		
 		ArrayList<EmployeeDTO> found = userService.getAllEmployees();
 		
-		verify(employeeRepositoryMock, times(1)).findAll();
+		verify(employeeRepositoryMock, times(1)).findAllActiveEmployees();
 		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_1);
 		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_2);
+		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_3);
 		
-		assertEquals(2, found.size());
+		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), found.size());
 	}
 	
 	@Test
@@ -85,13 +91,18 @@ public class UserServiceUnitTests {
 				1000, LocalDateTime.of(2021, 9, 1, 0, 0));
 		Employee e2 = new Employee(UserContants.DB_EMPLOYEE_ID_2, "Marko Markovic", 
 				1001, LocalDateTime.of(2021, 10, 1, 0, 0));
+		Employee e3 = new Employee(UserContants.DB_EMPLOYEE_ID_3, "Sara Markovic", 
+				1001, LocalDateTime.of(2021, 11, 1, 0, 0));
 		employees.add(e1);
 		employees.add(e2);
+		employees.add(e3);
 		
-		Payment payment1 = new Payment(1, new BigDecimal(30000), e1, 
+		Payment payment1 = new Payment(PaymentConstants.DB_PAYMENT_ID_1, new BigDecimal(30000), e1, 
 				LocalDateTime.of(2021, 9, 1, 0, 0));
-		Payment payment2 = new Payment(2, new BigDecimal(40000), e2, 
+		Payment payment2 = new Payment(PaymentConstants.DB_PAYMENT_ID_2, new BigDecimal(40000), e2, 
 				LocalDateTime.of(2021, 10, 1, 0, 0));
+		Payment payment3 = new Payment(PaymentConstants.DB_PAYMENT_ID_3, new BigDecimal(40000), e3, 
+				LocalDateTime.of(2021, 11, 1, 0, 0));
 		
 		Pageable pageable = PageRequest.of(UserContants.CURRENT_PAGE, UserContants.PAGE_SIZE);
 		Page<Employee> employeePage = new PageImpl<>(employees, pageable, UserContants.TOTAL_ELEMENTS);
@@ -99,11 +110,12 @@ public class UserServiceUnitTests {
 		given(employeeRepositoryMock.findAllActiveEmployeesByCurrentPage(pageable)).willReturn(employeePage);
 		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_1)).willReturn(payment1);
 		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_2)).willReturn(payment2);
+		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_3)).willReturn(payment3);
 		
 		List<EmployeeDTO> found = userService.getEmployeesByCurrentPage(UserContants.CURRENT_PAGE, UserContants.PAGE_SIZE);
 		
 		verify(employeeRepositoryMock, times(1)).findAllActiveEmployeesByCurrentPage(pageable);
-		assertEquals(2, found.size());
+		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), found.size());
 	}
 	
 	@Test(expected = ItemExistsException.class)
@@ -150,7 +162,7 @@ public class UserServiceUnitTests {
 		Employee savedEmployee = new Employee(UserContants.NEW_EMPLOYEE_ID, "Pera", 
 				UserContants.DB_MAX_CODE + 1, LocalDateTime.now());
 		
-		Payment savedPayment = new Payment(UserContants.NEW_EMPLOYEE_PAYMENT_ID, 
+		Payment savedPayment = new Payment(PaymentConstants.NEW_PAYMENT_ID, 
 				new BigDecimal(30000), savedEmployee, 
 				LocalDateTime.now());
 		
@@ -195,14 +207,17 @@ public class UserServiceUnitTests {
 				LocalDateTime.of(2021, 4, 10, 0, 0));
 		employee.setActive(true);
 		
-		Payment payment = new Payment(1, new BigDecimal(30000), savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
-		Payment oldPayment = new Payment(1, new BigDecimal(30000), savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
+		Payment payment = new Payment(PaymentConstants.DB_PAYMENT_ID_2, new BigDecimal(30000), 
+				savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
+		Payment oldPayment = new Payment(PaymentConstants.DB_PAYMENT_ID_2, new BigDecimal(30000), 
+				savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
 		oldPayment.setDateEnd(LocalDateTime.now());
-		Payment newPayment = new Payment(2, UserContants.EDIT_EMPLOYEE_PAYMENT, savedEmployee, LocalDateTime.now());
+		Payment newPayment = new Payment(PaymentConstants.NEW_PAYMENT_ID, UserContants.EDIT_EMPLOYEE_PAYMENT, 
+				savedEmployee, LocalDateTime.now());
 		
 		given(employeeRepositoryMock.getActiveEmployeeById(UserContants.DB_EDIT_EMPLOYEE_ID)).willReturn(employee);
 		given(employeeRepositoryMock.save(any(Employee.class))).willReturn(savedEmployee);
-		given(paymentRepositoryMock.findActivePaymentByEmployeeId(1)).willReturn(payment);
+		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EDIT_EMPLOYEE_ID)).willReturn(payment);
 		given(paymentRepositoryMock.save(any(Payment.class))).willReturn(oldPayment);
 		given(paymentRepositoryMock.save(any(Payment.class))).willReturn(newPayment);
 		
@@ -216,7 +231,7 @@ public class UserServiceUnitTests {
 		
 		verify(employeeRepositoryMock, times(1)).getActiveEmployeeById(UserContants.DB_EDIT_EMPLOYEE_ID);
 		verify(employeeRepositoryMock, times(1)).save(any(Employee.class));
-		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(1);
+		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EDIT_EMPLOYEE_ID);
 		verify(paymentRepositoryMock, times(2)).save(any(Payment.class));
 		
 		assertEquals(UserContants.EDIT_EMPLOYEE_PAYMENT, updatedEmployee.getPaymentBigDecimal());
@@ -233,14 +248,15 @@ public class UserServiceUnitTests {
 				2345, LocalDateTime.of(2021, 4, 10, 0, 0));
 		employee.setActive(true);
 		
-		Payment payment = new Payment(1, new BigDecimal(30000), savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
+		Payment payment = new Payment(PaymentConstants.DB_PAYMENT_ID_2, new BigDecimal(30000), 
+				savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
 
 		given(employeeRepositoryMock.getActiveEmployeeById(UserContants.DB_EDIT_EMPLOYEE_ID)).willReturn(employee);
 		given(employeeRepositoryMock.save(any(Employee.class))).willReturn(savedEmployee);
-		given(paymentRepositoryMock.findActivePaymentByEmployeeId(1)).willReturn(payment);
+		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_EDIT_EMPLOYEE_ID)).willReturn(payment);
 		
 		EmployeeDTO employeeDto = new EmployeeDTO();
-		employeeDto.setId(1);
+		employeeDto.setId(UserContants.DB_EDIT_EMPLOYEE_ID);
 		employeeDto.setName(UserContants.EDIT_EMPLOYEE_NAME);
 		employeeDto.setPaymentBigDecimal(new BigDecimal(30000));
 		employeeDto.setActive(true);
@@ -249,7 +265,7 @@ public class UserServiceUnitTests {
 		
 		verify(employeeRepositoryMock, times(1)).getActiveEmployeeById(UserContants.DB_EDIT_EMPLOYEE_ID);
 		verify(employeeRepositoryMock, times(1)).save(any(Employee.class));
-		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(1);
+		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EDIT_EMPLOYEE_ID);
 		
 		assertEquals(UserContants.EDIT_EMPLOYEE_NAME, updatedEmployee.getName());
 	}
@@ -268,17 +284,26 @@ public class UserServiceUnitTests {
 		Employee savedEmployee = new Employee(UserContants.DB_DELETE_EMPLOYEE_ID, 
 				"Mika Mikic", 2345, LocalDateTime.of(2021, 4, 10, 0, 0));
 		savedEmployee.setActive(false);
+		Payment payment = new Payment(PaymentConstants.DB_PAYMENT_ID_1, new BigDecimal(30000), 
+				savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
+		Payment savedPayment = new Payment(PaymentConstants.NEW_PAYMENT_ID, new BigDecimal(30000), 
+				savedEmployee, LocalDateTime.of(2021, 4, 10, 0, 0));
+		savedPayment.setDateEnd(LocalDateTime.now());
 		
 		Employee employee = new Employee(UserContants.DB_DELETE_EMPLOYEE_ID, "Mika Mikic", 
 				2345, LocalDateTime.of(2021, 4, 10, 0, 0));
 		employee.setActive(true);
 		
 		given(employeeRepositoryMock.getActiveEmployeeById(UserContants.DB_DELETE_EMPLOYEE_ID)).willReturn(employee);
+		given(paymentRepositoryMock.findActivePaymentByEmployeeId(UserContants.DB_DELETE_EMPLOYEE_ID)).willReturn(payment);
+		given(paymentRepositoryMock.save(any(Payment.class))).willReturn(savedPayment);
 		given(employeeRepositoryMock.save(any(Employee.class))).willReturn(savedEmployee);
 			
 		userService.deleteEmployee(UserContants.DB_DELETE_EMPLOYEE_ID);
 		
 		verify(employeeRepositoryMock, times(1)).getActiveEmployeeById(UserContants.DB_DELETE_EMPLOYEE_ID);
+		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_DELETE_EMPLOYEE_ID);
+		verify(paymentRepositoryMock, times(1)).save(any(Payment.class));
 		verify(employeeRepositoryMock, times(1)).save(any(Employee.class));
 	}
 	
@@ -293,17 +318,17 @@ public class UserServiceUnitTests {
 	
 	@Test
 	public void findById_ValidId_ReturnUser() {	
-		Employee employee = new Employee(UserContants.DB_USER_ID, "Mika Mikic", 
+		Employee employee = new Employee(UserContants.DB_EMPLOYEE_ID_1, "Mika Mikic", 
 				2345, LocalDateTime.of(2021, 4, 10, 0, 0));
 		employee.setActive(true);
 		
-		given(employeeRepositoryMock.getActiveEmployeeById(UserContants.DB_USER_ID)).willReturn(employee);
+		given(employeeRepositoryMock.getActiveEmployeeById(UserContants.DB_EMPLOYEE_ID_1)).willReturn(employee);
 		
-		EmployeeDTO found = userService.findById(UserContants.DB_USER_ID);
+		EmployeeDTO found = userService.findById(UserContants.DB_EMPLOYEE_ID_1);
 		
-		verify(employeeRepositoryMock, times(1)).getActiveEmployeeById(UserContants.DB_USER_ID);
+		verify(employeeRepositoryMock, times(1)).getActiveEmployeeById(UserContants.DB_EMPLOYEE_ID_1);
 		
-		assertEquals(UserContants.DB_USER_ID, found.getId());
+		assertEquals(UserContants.DB_EMPLOYEE_ID_1, found.getId());
 	}
 	
 }
