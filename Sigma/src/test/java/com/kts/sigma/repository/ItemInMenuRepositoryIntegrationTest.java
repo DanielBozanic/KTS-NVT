@@ -33,20 +33,6 @@ public class ItemInMenuRepositoryIntegrationTest {
 	}
 	
 	@Test
-	public void findActiveItemInMenuByItemIdAndMenuId_InvalidMenuIdAndValidItemId_ReturnsNull() {
-		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_1, 
-				MenuConstants.INVALID_MENU_ID);
-		assertNull(itemInMenu);
-	}
-	
-	@Test
-	public void findActiveItemInMenuByItemIdAndMenuId_ValidMenuIdAndInvalidItemId_ReturnsNull() {
-		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, 
-				MenuConstants.DB_MENU_ID_1);
-		assertNull(itemInMenu);
-	}
-	
-	@Test
 	public void findActiveItemInMenuByItemIdAndMenuId_ValidMenuIdAndValidItemId_ReturnsItemInMenu() {
 		ItemInMenu itemInMenu = itemInMenuRepository.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_1, 
 				MenuConstants.DB_MENU_ID_1);
@@ -59,20 +45,6 @@ public class ItemInMenuRepositoryIntegrationTest {
 	public void findItemInMenuByItemIdAndMenuId_InvalidMenuIdAndInvalidItemId_ReturnsNull() {
 		ItemInMenu itemInMenu = itemInMenuRepository.findItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, 
 				MenuConstants.INVALID_MENU_ID);
-		assertNull(itemInMenu);
-	}
-	
-	@Test
-	public void findItemInMenuByItemIdAndMenuId_InvalidMenuIdAndValidItemId_ReturnsNull() {
-		ItemInMenu itemInMenu = itemInMenuRepository.findItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_1, 
-				MenuConstants.INVALID_MENU_ID);
-		assertNull(itemInMenu);
-	}
-	
-	@Test
-	public void findItemInMenuByItemIdAndMenuId_ValidMenuIdAndInvalidItemId_ReturnsNull() {
-		ItemInMenu itemInMenu = itemInMenuRepository.findItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, 
-				MenuConstants.DB_MENU_ID_1);
 		assertNull(itemInMenu);
 	}
 	

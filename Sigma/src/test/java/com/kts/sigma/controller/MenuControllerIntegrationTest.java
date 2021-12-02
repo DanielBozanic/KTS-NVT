@@ -146,7 +146,23 @@ public class MenuControllerIntegrationTest {
 	}
 	
 	@Test
-	public void addItemToMenu_ValidState_ReturnsNothing() {
+	public void addItemToMenu_ReaddItemToMenu_ReturnsNothing() {
+		Integer beforeAdd = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
+		
+		ItemDTO itemDto = new ItemDTO();
+		itemDto.setId(ItemConstants.DB_ITEM_ID_2);
+		
+		ResponseEntity<Void> responseEntity = restTemplate.postForEntity(
+				"/menu/addItemToMenu?menuId=" + MenuConstants.DB_MENU_ID_1, itemDto, Void.class);
+
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(beforeAdd + 1, menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
+		
+		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_2, MenuConstants.DB_MENU_ID_1);
+	}
+	
+	@Test
+	public void addItemToMenu_FirstTimeInMenu_ReturnsNothing() {
 		Integer beforeAdd = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
 		
 		ItemDTO itemDto = new ItemDTO();
@@ -159,17 +175,6 @@ public class MenuControllerIntegrationTest {
 		assertEquals(beforeAdd + 1, menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
 		
 		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_4, MenuConstants.DB_MENU_ID_1);
-	}
-	
-	@Test
-	public void getItemsInMenu_InvalidMenuId_ReturnsEmptyList() {
-		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
-				.getForEntity("/menu/getItemsInMenu/" + MenuConstants.INVALID_MENU_ID, ItemDTO[].class);
-
-		ItemDTO[] itemsInMenu = responseEntity.getBody();
-		
-		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(0, itemsInMenu.length);
 	}
 	
 	@Test
@@ -191,28 +196,6 @@ public class MenuControllerIntegrationTest {
 					HttpMethod.DELETE, 
 					new HttpEntity<Object>(null), String.class);
 		
-		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-	}
-	
-	@Test
-	public void removeItemFromMenu_InvalidMenuIdAndValidItemId_ReturnsNotFound() {
-		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/menu/removeItemFromMenu?itemId=" + ItemConstants.DB_ITEM_ID_1 + 
-				"&menuId=" + MenuConstants.INVALID_MENU_ID, 
-				HttpMethod.DELETE, 
-				new HttpEntity<Object>(null), String.class);
-	
-		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-	}
-	
-	@Test
-	public void removeItemFromMenu_ValidMenuIdAndInvalidItemId_ReturnsNotFound() {
-		ResponseEntity<String> responseEntity = restTemplate.exchange(
-				"/menu/removeItemFromMenu?itemId=" + ItemConstants.INVALID_ITEM_ID + 
-				"&menuId=" + MenuConstants.DB_MENU_ID_1, 
-				HttpMethod.DELETE, 
-				new HttpEntity<Object>(null), String.class);
-	
 		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 	}
 	

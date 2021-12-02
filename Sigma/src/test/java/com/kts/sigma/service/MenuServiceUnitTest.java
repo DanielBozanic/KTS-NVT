@@ -211,7 +211,41 @@ public class MenuServiceUnitTest {
 	}
 	
 	@Test
-	public void addItemToMenu_ValidState_ReturnsNothing() {
+	public void addItemToMenu_ReaddItemToMenu_ReturnsNothing() {
+		Item item = new Item();
+		item.setId(ItemConstants.DB_ITEM_ID_4);
+		
+		Menu menu = new Menu();
+		menu.setId(MenuConstants.DB_MENU_ID_1);
+		
+		ItemInMenu itemInMenu = new ItemInMenu();
+		itemInMenu.setActive(false);
+		itemInMenu.setSellingPrice(new BigDecimal(500));
+		itemInMenu.setItem(item);
+		itemInMenu.setMenu(menu);
+			
+		ItemInMenu updateItemInMenu = new ItemInMenu();
+		updateItemInMenu.setActive(true);
+		updateItemInMenu.setSellingPrice(new BigDecimal(600));
+		
+		given(itemRepositoryMock.findById(ItemConstants.DB_ITEM_ID_4)).willReturn(Optional.of(item));
+		given(menuRepositoryMock.getActiveMenu(MenuConstants.DB_MENU_ID_1)).willReturn(menu);
+		given(itemInMenuRepositoryMock.findItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_4, MenuConstants.DB_MENU_ID_1)).willReturn(itemInMenu);
+		given(itemInMenuRepositoryMock.save(any(ItemInMenu.class))).willReturn(updateItemInMenu);
+		
+		ItemDTO itemDto = new ItemDTO();
+		itemDto.setId(ItemConstants.DB_ITEM_ID_4);
+		
+		menuService.addItemToMenu(itemDto, MenuConstants.DB_MENU_ID_1);
+		
+		verify(itemRepositoryMock, times(1)).findById(ItemConstants.DB_ITEM_ID_4);
+		verify(menuRepositoryMock, times(1)).getActiveMenu(MenuConstants.DB_MENU_ID_1);
+		verify(itemInMenuRepositoryMock, times(1)).findItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_4, MenuConstants.DB_MENU_ID_1);
+		verify(itemInMenuRepositoryMock, times(1)).save(any(ItemInMenu.class));
+	}
+	
+	@Test
+	public void addItemToMenu_FirstTimeInMenu_ReturnsNothing() {
 		Item item = new Item();
 		item.setId(ItemConstants.DB_ITEM_ID_4);
 		
@@ -238,17 +272,6 @@ public class MenuServiceUnitTest {
 		verify(menuRepositoryMock, times(1)).getActiveMenu(MenuConstants.DB_MENU_ID_1);
 		verify(itemInMenuRepositoryMock, times(1)).findItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_4, MenuConstants.DB_MENU_ID_1);
 		verify(itemInMenuRepositoryMock, times(1)).save(any(ItemInMenu.class));
-	}
-	
-	@Test
-	public void getItemsInMenu_InvalidMenuId_ReturnsEmptyList() {
-		given(itemInMenuRepositoryMock.getActiveItemsInMenu(MenuConstants.INVALID_MENU_ID)).willReturn(new ArrayList<ItemInMenu>());
-		
-		ArrayList<ItemDTO> found = menuService.getItemsInMenu(MenuConstants.INVALID_MENU_ID);
-		
-		verify(itemInMenuRepositoryMock, times(1)).getActiveItemsInMenu(MenuConstants.INVALID_MENU_ID);
-		
-		assertEquals(0, found.size());
 	}
 	
 	@Test
@@ -295,20 +318,6 @@ public class MenuServiceUnitTest {
 		given(itemInMenuRepositoryMock.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, MenuConstants.INVALID_MENU_ID)).willReturn(null);
 		menuService.removeItemFromMenu(ItemConstants.INVALID_ITEM_ID, MenuConstants.INVALID_MENU_ID);
 		verify(itemInMenuRepositoryMock, times(1)).findActiveItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, MenuConstants.INVALID_MENU_ID);
-	}
-	
-	@Test(expected = ItemNotFoundException.class)
-	public void removeItemFromMenu_InvalidMenuIdAndValidItemId_ThrowsException() {
-		given(itemInMenuRepositoryMock.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_1, MenuConstants.INVALID_MENU_ID)).willReturn(null);
-		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_1, MenuConstants.INVALID_MENU_ID);
-		verify(itemInMenuRepositoryMock, times(1)).findActiveItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_1, MenuConstants.INVALID_MENU_ID);
-	}
-	
-	@Test(expected = ItemNotFoundException.class)
-	public void removeItemFromMenu_ValidMenuIdAndInvalidItemId_ThrowsException() {
-		given(itemInMenuRepositoryMock.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, MenuConstants.DB_MENU_ID_1)).willReturn(null);
-		menuService.removeItemFromMenu(ItemConstants.INVALID_ITEM_ID, MenuConstants.DB_MENU_ID_1);
-		verify(itemInMenuRepositoryMock, times(1)).findActiveItemInMenuByItemIdAndMenuId(ItemConstants.INVALID_ITEM_ID, MenuConstants.DB_MENU_ID_1);
 	}
 	
 	@Test

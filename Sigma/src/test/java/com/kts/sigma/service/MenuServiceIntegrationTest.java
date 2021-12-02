@@ -109,7 +109,21 @@ public class MenuServiceIntegrationTest {
 	}
 	
 	@Test
-	public void addItemToMenu_ValidState_ReturnsNothing() {
+	public void addItemToMenu_ReaddItemToMenu_ReturnsNothing() {
+		Integer beforeAdd = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
+		
+		ItemDTO itemDto = new ItemDTO();
+		itemDto.setId(ItemConstants.DB_ITEM_ID_2);
+		
+		menuService.addItemToMenu(itemDto, MenuConstants.DB_MENU_ID_1);
+		
+		assertEquals(beforeAdd + 1, menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
+		
+		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_2, MenuConstants.DB_MENU_ID_1);
+	}
+	
+	@Test
+	public void addItemToMenu_FirstTimeInMenu_ReturnsNothing() {
 		Integer beforeAdd = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
 		
 		ItemDTO itemDto = new ItemDTO();
@@ -123,12 +137,6 @@ public class MenuServiceIntegrationTest {
 	}
 	
 	@Test
-	public void getItemsInMenu_InvalidMenuId_ReturnsEmptyList() {
-		ArrayList<ItemDTO> found = menuService.getItemsInMenu(MenuConstants.INVALID_MENU_ID);
-		assertEquals(0, found.size());
-	}
-	
-	@Test
 	public void getItemsInMenu_ValidMenuId_ReturnsItemsInMenu() {
 		ArrayList<ItemDTO> found = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1);
 		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU.intValue(), found.size());
@@ -139,16 +147,6 @@ public class MenuServiceIntegrationTest {
 		menuService.removeItemFromMenu(ItemConstants.INVALID_ITEM_ID, MenuConstants.INVALID_MENU_ID);
 	}
 
-	@Test(expected = ItemNotFoundException.class)
-	public void removeItemFromMenu_InvalidMenuIdAndValidItemId_ThrowsException() {
-		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_1, MenuConstants.INVALID_MENU_ID);
-	}
-	
-	@Test(expected = ItemNotFoundException.class)
-	public void removeItemFromMenu_ValidMenuIdAndInvalidItemId_ThrowsException() {
-		menuService.removeItemFromMenu(ItemConstants.INVALID_ITEM_ID, MenuConstants.DB_MENU_ID_1);
-	}
-	
 	@Test
 	public void removeItemFromMenu_ValidMenuIdAndValidItemId_ReturnsNothing() {
 		ItemDTO itemDto = new ItemDTO();

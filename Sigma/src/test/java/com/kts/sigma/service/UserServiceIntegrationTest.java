@@ -96,7 +96,6 @@ public class UserServiceIntegrationTest {
 		assertEquals(UserContants.EDIT_EMPLOYEE_NAME, updatedEmployee.getName());
 	}
 	
-	
 	@Test
 	public void editEmployee_EditOnlyName_ReturnsUpdatedEmployee() {
 		EmployeeDTO employeeDto = new EmployeeDTO();
