@@ -12,10 +12,12 @@ public class UserContants {
 	public static final Integer DB_MANAGER_ID = 4;
 	public static final String DB_MANAGER_USERNAME = "Markuza";
 	
-	public static final String NEW_MANAGER_USERNAME = "Petruza";
-	public static final Integer NEW_MANAGER_ID = 5;
+	public static final Integer DB_INACTIVE_EMPLOYEE_ID = 5;
 	
-	public static final Integer NEW_EMPLOYEE_ID = 6;
+	public static final String NEW_MANAGER_USERNAME = "Petruza";
+	public static final Integer NEW_MANAGER_ID = 6;
+	
+	public static final Integer NEW_EMPLOYEE_ID = 7;
 	public static final Integer DB_MAX_CODE = 3456;
 	
 	public static final Integer DB_EDIT_EMPLOYEE_ID = 2;
@@ -30,5 +32,6 @@ public class UserContants {
 	public static final Integer PAGE_SIZE = 5;
 	public static final Integer TOTAL_ELEMENTS = 2;
 	
-	public static final Integer DB_TOTAL_EMPLOYEES = 3;
+	public static final Integer DB_TOTAL_ACTIVE_EMPLOYEES = 3;
+	public static final Integer DB_TOTAL_ACTIVE_EMPLOYEES_CURRENT_PAGE = 3;
 }

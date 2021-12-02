@@ -31,13 +31,13 @@ public class UserServiceIntegrationTest {
 	@Test
 	public void getAllEmployees_ValidState_ReturnsAll() {
 		ArrayList<EmployeeDTO> found = userService.getAllEmployees();
-		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), found.size());
+		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES.intValue(), found.size());
 	}
 	
 	@Test
 	public void getEmployeesByCurrentPage_ValidState_ReturnsAll() {
 		List<EmployeeDTO> found = userService.getEmployeesByCurrentPage(UserContants.CURRENT_PAGE, UserContants.PAGE_SIZE);
-		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), found.size());
+		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES_CURRENT_PAGE.intValue(), found.size());
 	}
 	
 	@Test(expected = ItemExistsException.class)
@@ -68,7 +68,7 @@ public class UserServiceIntegrationTest {
 		employeeDto.setType("COOK");
 		
 		EmployeeDTO created = userService.addNewEmployee(employeeDto);
-		assertEquals(UserContants.DB_MAX_CODE + 2, created.getCode().intValue());
+		assertEquals(UserContants.DB_MAX_CODE.intValue(), created.getCode() - 2);
 		
 		userService.deleteEmployee(created.getId());
 	}

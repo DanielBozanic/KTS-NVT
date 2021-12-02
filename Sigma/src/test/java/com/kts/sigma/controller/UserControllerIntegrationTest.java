@@ -42,7 +42,7 @@ public class UserControllerIntegrationTest {
 		EmployeeDTO[] employees = responseEntity.getBody();
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), employees.length);
+		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES.intValue(), employees.length);
 		assertEquals(UserContants.DB_EMPLOYEE_ID_1_CODE.intValue(), employees[0].getCode().intValue());
 	}
 	
@@ -55,7 +55,7 @@ public class UserControllerIntegrationTest {
 		EmployeeDTO[] employees = responseEntity.getBody();
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), employees.length);
+		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES_CURRENT_PAGE.intValue(), employees.length);
 		assertEquals(UserContants.DB_EMPLOYEE_ID_1_CODE.intValue(), employees[0].getCode().intValue());
 	}
 	
@@ -104,11 +104,11 @@ public class UserControllerIntegrationTest {
 		EmployeeDTO employee = responseEntity.getBody();
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertNotNull(employee);
-		assertEquals(UserContants.NEW_EMPLOYEE_ID, employee.getId());
+		assertEquals(UserContants.DB_MAX_CODE.intValue(), employee.getCode() - 2);
 
 		List<EmployeeDTO> employees = userService.getAllEmployees();
 		assertEquals(size + 1, employees.size());
-		assertEquals(UserContants.NEW_EMPLOYEE_ID, employees.get(employees.size() - 1).getId());
+		assertEquals(UserContants.DB_MAX_CODE.intValue(), employees.get(employees.size() - 1).getCode() - 2);
 
 		userService.deleteEmployee(employee.getId());
 	}
