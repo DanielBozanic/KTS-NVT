@@ -1,6 +1,7 @@
 package com.kts.sigma.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class MenuController {
 	private MenuService menuService;
 	
 	@GetMapping(path="")
-	public ResponseEntity<Iterable<MenuDTO>> getAll(){
+	public ResponseEntity<List<MenuDTO>> getAll(){
 		return new ResponseEntity<>(menuService.getAll(), HttpStatus.OK);
 	}
 	
@@ -36,8 +37,8 @@ public class MenuController {
 	}
 	
 	@PostMapping(value = "/addMenu", produces = MediaType.APPLICATION_JSON_VALUE)
-	public MenuDTO post(@RequestBody MenuDTO newEntity) {
-		return menuService.addMenu(newEntity);
+	public ResponseEntity<MenuDTO> post(@RequestBody MenuDTO newEntity) {
+		return new ResponseEntity<>(menuService.addMenu(newEntity), HttpStatus.CREATED);
 	}
 	
 	@PostMapping(value = "/addItemToMenu")
@@ -57,7 +58,7 @@ public class MenuController {
 	
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Integer id) {
-		menuService.deleteById(id);
+		menuService.deleteMenuById(id);
 	}
 
 	//TODO dodaj search and stuff

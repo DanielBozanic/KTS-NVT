@@ -81,7 +81,7 @@ public class UserServiceUnitTest {
 		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_2);
 		verify(paymentRepositoryMock, times(1)).findActivePaymentByEmployeeId(UserContants.DB_EMPLOYEE_ID_3);
 		
-		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), found.size());
+		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES.intValue(), found.size());
 	}
 	
 	@Test
@@ -115,7 +115,7 @@ public class UserServiceUnitTest {
 		List<EmployeeDTO> found = userService.getEmployeesByCurrentPage(UserContants.CURRENT_PAGE, UserContants.PAGE_SIZE);
 		
 		verify(employeeRepositoryMock, times(1)).findAllActiveEmployeesByCurrentPage(pageable);
-		assertEquals(UserContants.DB_TOTAL_EMPLOYEES.intValue(), found.size());
+		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES_CURRENT_PAGE.intValue(), found.size());
 	}
 	
 	@Test(expected = ItemExistsException.class)

@@ -33,7 +33,7 @@ public class MenuServiceImpl implements MenuService {
 	private ItemInMenuRepository itemInMenuRepository;
 	
 	@Override
-	public Iterable<MenuDTO> getAll() {
+	public List<MenuDTO> getAll() {
 		List<Menu> menus = menuRepository.findAll();
 		ArrayList<MenuDTO> results = new ArrayList<MenuDTO>();
 		
@@ -52,16 +52,19 @@ public class MenuServiceImpl implements MenuService {
 	}
 	
 	@Override
-	public void deleteById(Integer id) {
-		menuRepository.deleteById(id);
+	public void deleteMenuById(Integer id) {
+		Menu menu =  menuRepository.getActiveMenu(id);
+		if (menu == null) {
+			throw new ItemNotFoundException(id, "menu");
+		}
+		menu.setActive(false);
+		menuRepository.save(menu);
 	}
 	
 	@Override
-	public MenuDTO findById(Integer id)
-	{
+	public MenuDTO findById(Integer id) {
 		Menu menu =  menuRepository.findById(id).orElse(null);
-		if(menu == null)
-		{
+		if(menu == null) {
 			throw new ItemNotFoundException(id, "menu");
 		}
 		
