@@ -1,12 +1,13 @@
 package com.kts.sigma.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
 
 public interface ZoneService {
-	Iterable<ZoneDTO> getAll();
+	List<ZoneDTO> getAll();
 	
 	ZoneDTO findById(Integer id);
 	
@@ -18,5 +19,5 @@ public interface ZoneService {
 	
 	ArrayList<TableDTO> removeTableFromZone(TableDTO tableDto);
 	
-	public Iterable<TableDTO> getTables(Integer id);
+	List<TableDTO> getTables(Integer id);
 }

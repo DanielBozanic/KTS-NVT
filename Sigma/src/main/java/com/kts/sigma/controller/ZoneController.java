@@ -1,5 +1,6 @@
 package com.kts.sigma.controller;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,12 +27,12 @@ public class ZoneController {
 	private ZoneService zoneService;
 	
 	@GetMapping(value = "/getAll")
-	public Iterable<ZoneDTO> getAll(){
+	public List<ZoneDTO> getAll(){
 		return zoneService.getAll();
 	}
 	
 	@GetMapping(path="tables/{id}")
-	public Iterable<TableDTO> getTables(@PathVariable Integer id){
+	public List<TableDTO> getTables(@PathVariable Integer id){
 		return zoneService.getTables(id);
 	}
 	

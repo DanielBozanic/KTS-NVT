@@ -25,3 +25,13 @@ INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (150, 3, 1, true);
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (400, 2, 1, false);
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (300, 2, 2, true);
+
+INSERT INTO Zone (name) VALUES ('Ground floor');
+INSERT INTO Zone (name) VALUES ('Garden');
+
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 1, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 2, 2, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 3, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 4, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 5, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (2, 0, 6, 2);

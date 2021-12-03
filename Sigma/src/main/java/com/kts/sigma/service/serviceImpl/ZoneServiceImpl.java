@@ -2,7 +2,6 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +32,12 @@ public class ZoneServiceImpl implements ZoneService{
 	private TableRepository tableRepository;
 	
 	@Autowired
-	private OrderRepository ordRepo;
+	private OrderRepository orderRepository;
 	
 	@Override
-	public Iterable<ZoneDTO> getAll() {
+	public List<ZoneDTO> getAll() {
 		List<Zone> zones = zoneRepository.findAll();
-		ArrayList<ZoneDTO> results = new ArrayList<ZoneDTO>();
+		List<ZoneDTO> results = new ArrayList<ZoneDTO>();
 		
 		for (Zone zone : zones) {
 			ZoneDTO dto = Mapper.mapper.map(zone, ZoneDTO.class);
@@ -111,25 +110,21 @@ public class ZoneServiceImpl implements ZoneService{
 		}
 		
 		table.setNumberOfChairs(tableDto.getNumberOfChairs());
-		tableRepository.save(table);
-		return Mapper.mapper.map(tableRepository.save(table), TableDTO.class);
+		RestaurantTable updatedTable = tableRepository.save(table);
+		return Mapper.mapper.map(updatedTable, TableDTO.class);
   }
   
-	public Iterable<TableDTO> getTables(Integer id) {
-		Zone zone = zoneRepository.findById(id).orElse(null);
-		if(zone == null)
-		{
-			throw new ItemNotFoundException(id, "zone");
-		}
+	public List<TableDTO> getTables(Integer id) {
+		ArrayList<RestaurantTable> zoneTables = tableRepository.findByZoneId(id);
 		
-		ArrayList<TableDTO> tables = new ArrayList<>();
+		List<TableDTO> tables = new ArrayList<>();
 		
-		for (RestaurantTable table : zone.getTables()) {
+		for (RestaurantTable table : zoneTables) {
 			TableDTO dto = Mapper.mapper.map(table, TableDTO.class);
 			
 			if(table.getState().equals(TableState.IN_PROGRESS) || table.getState().equals(TableState.TO_DELIVER)
 					|| table.getState().equals(TableState.DONE)) {
-				Set<RestaurantOrder> orders = table.getOrders();
+				List<RestaurantOrder> orders = orderRepository.findByTableId(table.getId());
 				
 				for (RestaurantOrder order : orders) {
 					if(!order.getState().equals(OrderState.CHARGED)) {
