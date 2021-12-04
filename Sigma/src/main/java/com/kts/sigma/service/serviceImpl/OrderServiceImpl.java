@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.kts.sigma.Exception.AccessForbiddenException;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.Exception.ItemNotValidException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
@@ -19,6 +20,7 @@ import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Food;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
+import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
@@ -35,9 +37,6 @@ import com.kts.sigma.service.OrderService;
 public class OrderServiceImpl implements OrderService{
 	@Autowired
 	private OrderRepository orderRepository;
-	
-	@Autowired
-	private UserRepository userRepo;
 	
 	@Autowired
 	private TableRepository tableRepo;
@@ -66,8 +65,13 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Override
 	public RestaurantOrder save(OrderDTO item, Integer code) {
+		
+		if(item.getTableId() == null) {
+			throw new ItemNotValidException(item.getId(), "order DTO", "table id");
+		}
+		
 		Employee worker = empRep.findByCode(code);
-		if(worker == null || !(worker instanceof Waiter) || worker.getId() != item.getWaiterId())
+		if(worker == null || !(worker instanceof Waiter))
 		{
 			throw new AccessForbiddenException();
 		}
@@ -81,19 +85,27 @@ public class OrderServiceImpl implements OrderService{
 		}
 		order.setTable(table);
 		
-		Waiter waiter = (Waiter) userRepo.findById(item.getWaiterId()).orElse(null);
-		if(waiter == null) {
-			throw new ItemNotFoundException(item.getWaiterId(), "table");
-		}
-		order.setWaiter(waiter);
+		order.setWaiter((Waiter) worker);
 		
-		order.setState(item.getState());
+		order.setState(OrderState.NEW);
 		
 		double total = 0;
 		
+		if( (item.getItems() == null) || (item.getItems().size() == 0) ) {
+			throw new ItemNotValidException(item.getId(), "order DTO", "items");
+		}
+		
 		for (ItemInOrderDTO dto : item.getItems()) {
 			
+			if(dto.getQuantity() == null) {
+				throw new ItemNotValidException(item.getId(), "order DTO", "quantity of item");
+			}
+			
 			for(int i = 0; i < dto.getQuantity(); i++) {
+				
+				if(dto.getSellingPrice() == null) {
+					throw new ItemNotValidException(item.getId(), "order DTO", "selling price of item");
+				}
 				
 				total += dto.getSellingPrice().doubleValue();
 			}
@@ -285,5 +297,24 @@ public class OrderServiceImpl implements OrderService{
 		}
 		
 		throw new ItemNotFoundException(itemId, "item in order");
+	}
+
+	@Override
+	public void changeState(OrderState state, Integer code, Integer orderId) {
+		RestaurantOrder order = orderRepository.findById(orderId).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(orderId, "order");
+		}
+		
+		Employee worker = empRep.findByCode(code);
+		if(worker == null || !(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId())
+		{
+			throw new AccessForbiddenException();
+		}
+		
+		order.setState(state);
+		orderRepository.save(order);
+		
 	}
 }

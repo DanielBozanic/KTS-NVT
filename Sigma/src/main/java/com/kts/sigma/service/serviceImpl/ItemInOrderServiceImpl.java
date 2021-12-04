@@ -105,12 +105,6 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		ItemInOrder item = new ItemInOrder();
 		item.setId(i.getId());
 		
-		RestaurantOrder order = oRepository.findById(i.getOrderId()).orElse(null);
-		if(order == null) {
-			throw new ItemNotFoundException(i.getOrderId(), "order");
-		}
-		item.setOrder(order);
-		
 		ItemInMenu iim = iimRepository.findById(i.getItemId()).orElse(null);
 		if(iim == null) {
 			throw new ItemNotFoundException(i.getItemId(), "item in menu");

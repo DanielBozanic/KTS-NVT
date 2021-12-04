@@ -17,6 +17,7 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,11 +25,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kts.sigma.Exception.AccessForbiddenException;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.Exception.ItemNotValidException;
 import com.kts.sigma.constants.ItemConstants;
 import com.kts.sigma.constants.ItemInMenuConstants;
 import com.kts.sigma.constants.ItemInOrderConstants;
 import com.kts.sigma.constants.MenuConstants;
 import com.kts.sigma.constants.OrderConstants;
+import com.kts.sigma.constants.TableConstants;
 import com.kts.sigma.constants.UserContants;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.MenuDTO;
@@ -44,6 +47,7 @@ import com.kts.sigma.model.ItemInOrderState;
 import com.kts.sigma.model.Menu;
 import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
+import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.Waiter;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInMenuRepository;
@@ -86,14 +90,10 @@ public class OrderServiceUnitTest {
 
 		RestaurantOrder restaurantOrder1 = new RestaurantOrder();
 		restaurantOrder1.setId(OrderConstants.DB_ORDER_ID_1);
-		restaurantOrder1.setOrderDateTime(LocalDateTime.now());
-		restaurantOrder1.setState(OrderState.NEW);
 		orders.add(restaurantOrder1);
 		
 		RestaurantOrder restaurantOrder2 = new RestaurantOrder();
 		restaurantOrder2.setId(OrderConstants.DB_ORDER_ID_2);
-		restaurantOrder2.setOrderDateTime(LocalDateTime.now());
-		restaurantOrder2.setState(OrderState.NEW);
 		orders.add(restaurantOrder2);
 		
 		given(orderRepositoryMock.findAll()).willReturn(orders);
@@ -107,7 +107,7 @@ public class OrderServiceUnitTest {
 	
 	@Test(expected = ItemNotFoundException.class)
 	public void findById_InvalidId_ThrowsException() {
-		given(orderRepositoryMock.findById(OrderConstants.INVALID_ORDER_ID)).willReturn(Optional.ofNullable(null));
+		given(orderRepositoryMock.findById(OrderConstants.INVALID_ORDER_ID)).willReturn(Optional.empty());
 		
 		orderService.findById(OrderConstants.INVALID_ORDER_ID);
 		
@@ -115,7 +115,7 @@ public class OrderServiceUnitTest {
 	}
 	
 	@Test
-	public void findById_ValidId_ReturnsMenu() {
+	public void findById_ValidId_ReturnsOrder() {
 		RestaurantOrder order = new RestaurantOrder();
 		order.setId(OrderConstants.DB_ORDER_ID_1);
 		
@@ -196,16 +196,15 @@ public class OrderServiceUnitTest {
 	
 	@Test
 	public void deleteById_ValidOrderIdValidCode_ReturnsNothing() {
-		List<RestaurantOrder> orders = initializeOrders();
-		
 		Waiter waiter = new Waiter();
 		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
 		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+
+		RestaurantOrder order = new RestaurantOrder();
+		order.setId(OrderConstants.DB_ORDER_ID_1);
+		order.setWaiter(waiter);
 		
-		orders.get(0).setWaiter(waiter);
-		orders.get(1).setWaiter(waiter);
-		
-		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(orders.get(0)));
+		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		
 		orderService.deleteById(OrderConstants.DB_ORDER_ID_1, UserContants.DB_EMPLOYEE_ID_1_CODE);
@@ -225,27 +224,66 @@ public class OrderServiceUnitTest {
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		
 		orderService.deleteById(OrderConstants.DB_ORDER_ID_1, UserContants.DB_EMPLOYEE_ID_1_CODE);
-		
-		verify(orderRepositoryMock, times(1)).deleteById(OrderConstants.DB_ORDER_ID_1);
 	}
 	
 	@Test(expected = AccessForbiddenException.class)
 	public void deleteById_InvalidCode_ThrowsException() {
-		List<RestaurantOrder> orders = initializeOrders();
+		RestaurantOrder order = new RestaurantOrder();
+		order.setId(OrderConstants.DB_ORDER_ID_1);
 		
-		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(orders.get(0)));
+		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(null);
 		
 		orderService.deleteById(OrderConstants.DB_ORDER_ID_1, UserContants.DB_EMPLOYEE_ID_1_CODE);
+	}
+	
+	@Test
+	public void changeState_ValidOrderIdValidCode_ReturnsNothing() {
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+
+		RestaurantOrder order = new RestaurantOrder();
+		order.setId(OrderConstants.DB_ORDER_ID_1);
+		order.setWaiter(waiter);
 		
-		verify(orderRepositoryMock, times(1)).deleteById(OrderConstants.DB_ORDER_ID_1);
+		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		
+		orderService.changeState(OrderState.IN_PROGRESS, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
+		
+		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
+		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+	}
+	
+	@Test(expected = ItemNotFoundException.class)
+	public void changeState_InValidOrderId_ThrowsException() {
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.empty());
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		
+		orderService.changeState(OrderState.IN_PROGRESS, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
+	}
+	
+	@Test(expected = AccessForbiddenException.class)
+	public void changeState_InValidCode_ThrowsException() {
+		RestaurantOrder order = new RestaurantOrder();
+		order.setId(OrderConstants.DB_ORDER_ID_1);
+		
+		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(null);
+		
+		orderService.changeState(OrderState.IN_PROGRESS, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
+		
+		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
 	}
 	
 	@Test
  	public void addItemToOrder_ValidOrderIdValidItemValidCode_ReturnsItem() {
-		List<RestaurantOrder> orders = initializeOrders();
-		
 		Food food2 = new Food();
 		food2.setId(ItemConstants.DB_FOOD_ID_2);
 		food2.setName("Cesar Salad");
@@ -272,16 +310,19 @@ public class OrderServiceUnitTest {
 		Waiter waiter = new Waiter();
 		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
 		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+
+		RestaurantOrder order = new RestaurantOrder();
+		order.setId(OrderConstants.DB_ORDER_ID_1);
+		order.setTotalPrice(BigDecimal.valueOf(1000));
+		order.setWaiter(waiter);
 		
-		orders.get(0).setWaiter(waiter);
-		
-		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(orders.get(0)));
+		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2)).willReturn(Optional.of(iim2));
 		
 		ItemInOrderDTO newItem = orderService.addItemToOrder(item, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
 		
-		verify(orderRepositoryMock, times(3)).findById(OrderConstants.DB_ORDER_ID_1);
+		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
 		verify(itemInMenuRepositoryMock, times(2)).findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2);
 	}
@@ -368,8 +409,6 @@ public class OrderServiceUnitTest {
 		given(itemInOrderRepositoryMock.findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3)).willReturn(Optional.of(iio3));
 		
 		orderService.removeItemFromOrder(OrderConstants.DB_ITEM_IN_ORDER1_ID_3, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
-		
-		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -410,10 +449,6 @@ public class OrderServiceUnitTest {
 		given(itemInOrderRepositoryMock.findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3)).willReturn(Optional.empty());
 		
 		orderService.removeItemFromOrder(OrderConstants.DB_ITEM_IN_ORDER1_ID_3, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
-		
-		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
-		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
-		verify(itemInOrderRepositoryMock, times(1)).findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3);
 	}
 	
 	@Test(expected = AccessForbiddenException.class)
@@ -454,8 +489,6 @@ public class OrderServiceUnitTest {
 		given(itemInOrderRepositoryMock.findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3)).willReturn(Optional.of(iio3));
 		
 		orderService.removeItemFromOrder(OrderConstants.DB_ITEM_IN_ORDER1_ID_3, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
-		
-		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -496,8 +529,6 @@ public class OrderServiceUnitTest {
 		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2)).willReturn(Optional.empty());
 		
 		ItemInOrderDTO newItem = orderService.addItemToOrder(item, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
-		
-		verify(itemInMenuRepositoryMock, times(1)).findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2);
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -538,8 +569,6 @@ public class OrderServiceUnitTest {
 		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2)).willReturn(Optional.of(iim2));
 		
 		ItemInOrderDTO newItem = orderService.addItemToOrder(item, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
-		
-		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 	}
 	
 	@Test(expected = AccessForbiddenException.class)
@@ -577,6 +606,165 @@ public class OrderServiceUnitTest {
 		
 		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+	}
+	
+	@Test
+	public void save_ValidOrderValidcode_ReturnsOrder() {
+		List<ItemInOrderDTO> items = new ArrayList<ItemInOrderDTO>();
+		OrderDTO order = new OrderDTO();
+		order.setWaiterId(UserContants.DB_EMPLOYEE_ID_1);
+		order.setTableId(TableConstants.DB_TABLE_ID_1);
+		
+		RestaurantTable table = new RestaurantTable();
+		table.setId(TableConstants.DB_TABLE_ID_1);
+		
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		ItemInMenu item = new ItemInMenu();
+		item.setId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		
+		ItemInOrderDTO dto = new ItemInOrderDTO();
+		dto.setItemId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		dto.setQuantity(2);
+		dto.setSellingPrice(BigDecimal.valueOf(300));
+		items.add(dto);
+		order.setItems(items);
+		
+		RestaurantOrder o = new RestaurantOrder();
+		o.setId(OrderConstants.NEW_ORDER_ID);
+		
+		given(tableRepositoryMock.findById(TableConstants.DB_TABLE_ID_1)).willReturn(Optional.of(table));
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.of(item));
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		given(orderRepositoryMock.save(Mockito.any())).willReturn(o);
+		
+		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		verify(tableRepositoryMock, times(1)).findById(TableConstants.DB_TABLE_ID_1);
+		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		verify(itemInMenuRepositoryMock, times(2)).findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		verify(orderRepositoryMock, times(2)).save(Mockito.any());
+	}
+	
+	@Test(expected = AccessForbiddenException.class)
+	public void save_InValidcode_ThrowsException() {
+		List<ItemInOrderDTO> items = new ArrayList<ItemInOrderDTO>();
+		OrderDTO order = new OrderDTO();
+		order.setWaiterId(UserContants.DB_EMPLOYEE_ID_1);
+		order.setTableId(TableConstants.DB_TABLE_ID_1);
+		
+		RestaurantTable table = new RestaurantTable();
+		table.setId(TableConstants.DB_TABLE_ID_1);
+		
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		ItemInMenu item = new ItemInMenu();
+		item.setId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		
+		ItemInOrderDTO dto = new ItemInOrderDTO();
+		dto.setItemId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		dto.setQuantity(2);
+		dto.setSellingPrice(BigDecimal.valueOf(300));
+		items.add(dto);
+		order.setItems(items);
+		
+		RestaurantOrder o = new RestaurantOrder();
+		o.setId(OrderConstants.NEW_ORDER_ID);
+		
+		given(tableRepositoryMock.findById(TableConstants.DB_TABLE_ID_1)).willReturn(Optional.of(table));
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.of(item));
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(null);
+		given(orderRepositoryMock.save(Mockito.any())).willReturn(o);
+		
+		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
+	}
+	
+	@Test(expected = ItemNotValidException.class)
+	public void save_InValidOrderNoTableID_ThrowsException() {
+		List<ItemInOrderDTO> items = new ArrayList<ItemInOrderDTO>();
+		OrderDTO order = new OrderDTO();
+		order.setWaiterId(UserContants.DB_EMPLOYEE_ID_1);
+		
+		RestaurantTable table = new RestaurantTable();
+		table.setId(TableConstants.DB_TABLE_ID_1);
+		
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		
+		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
+	}
+	
+	@Test(expected = ItemNotValidException.class)
+	public void save_InValidOrderItemHasNoQuantity_ThrowsException() {
+		List<ItemInOrderDTO> items = new ArrayList<ItemInOrderDTO>();
+		OrderDTO order = new OrderDTO();
+		order.setWaiterId(UserContants.DB_EMPLOYEE_ID_1);
+		order.setTableId(TableConstants.DB_TABLE_ID_1);
+		
+		RestaurantTable table = new RestaurantTable();
+		table.setId(TableConstants.DB_TABLE_ID_1);
+		
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		ItemInMenu item = new ItemInMenu();
+		item.setId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		
+		ItemInOrderDTO dto = new ItemInOrderDTO();
+		dto.setItemId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		dto.setSellingPrice(BigDecimal.valueOf(300));
+		items.add(dto);
+		order.setItems(items);
+		
+		RestaurantOrder o = new RestaurantOrder();
+		o.setId(OrderConstants.NEW_ORDER_ID);
+		
+		given(tableRepositoryMock.findById(TableConstants.DB_TABLE_ID_1)).willReturn(Optional.of(table));
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.of(item));
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		given(orderRepositoryMock.save(Mockito.any())).willReturn(o);
+		
+		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
+	}
+
+	@Test(expected = ItemNotFoundException.class)
+	public void save_InValidOrderItemHasInvalidId_ThrowsException() {
+		List<ItemInOrderDTO> items = new ArrayList<ItemInOrderDTO>();
+		OrderDTO order = new OrderDTO();
+		order.setWaiterId(UserContants.DB_EMPLOYEE_ID_1);
+		order.setTableId(TableConstants.DB_TABLE_ID_1);
+		
+		RestaurantTable table = new RestaurantTable();
+		table.setId(TableConstants.DB_TABLE_ID_1);
+		
+		Waiter waiter = new Waiter();
+		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
+		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
+		
+		ItemInOrderDTO dto = new ItemInOrderDTO();
+		dto.setItemId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		dto.setQuantity(2);
+		dto.setSellingPrice(BigDecimal.valueOf(600.00));
+		items.add(dto);
+		order.setItems(items);
+		
+		RestaurantOrder o = new RestaurantOrder();
+		o.setId(OrderConstants.NEW_ORDER_ID);
+		
+		given(tableRepositoryMock.findById(TableConstants.DB_TABLE_ID_1)).willReturn(Optional.of(table));
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.empty());
+		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		given(orderRepositoryMock.save(Mockito.any())).willReturn(o);
+		
+		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
 	}
 	
 	public ArrayList<RestaurantOrder> initializeOrders(){
