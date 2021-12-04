@@ -7,6 +7,9 @@ public class ItemInMenuConstants {
 	public final static Integer DB_ITEM_IN_MENU_ID_3 = 3;
 	public final static Integer DB_ITEM_IN_MENU_ID_4 = 4;
 
+	public static final Integer INVALID_ITEM_ID = 100;
+	public static final Integer DB_DELETE_ITEM_ID = 1;
+	
 	public final static Integer NEW_ITEM_IN_MENU_ID = 5;
 	
 	public final static Integer TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU = 2;

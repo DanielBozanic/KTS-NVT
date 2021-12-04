@@ -35,6 +35,20 @@ public class ItemInMenu {
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     private Set<ItemInOrder> items;
     
+	public ItemInMenu() {
+		super();
+	}
+    
+	public ItemInMenu(Integer id, BigDecimal sellingPrice, Item item, Menu menu, Boolean active) {
+		super();
+		this.id = id;
+		this.sellingPrice = sellingPrice;
+		this.item = item;
+		this.menu = menu;
+		this.active = active;
+		this.items = items;
+	}
+
 	public Integer getId() {
 		return id;
 	}

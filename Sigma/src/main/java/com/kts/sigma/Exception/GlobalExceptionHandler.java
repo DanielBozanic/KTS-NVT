@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class GlobalExceptionHandler {
 	
-	private static final Logger LOGGER=LoggerFactory.getLogger(RuntimeException.class);
+	private static final Logger LOGGER=LoggerFactory.getLogger(Exception.class);
 	
-	@ExceptionHandler(RuntimeException.class)
+	@ExceptionHandler(Exception.class)
     public void getExceptionPage(Exception e) {
             LOGGER.error(e.toString());
     }

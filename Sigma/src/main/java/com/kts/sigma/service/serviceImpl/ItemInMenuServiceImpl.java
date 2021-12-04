@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemDTO;
+import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Food;
 import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.repository.ItemInMenuRepository;
@@ -46,13 +47,17 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 	
 	@Override
 	public void deleteById(Integer id) {
+		ItemInMenu item = itemInMenuRepository.getOne(id);
+		if (item == null) {
+			throw new ItemNotFoundException(id, "item in menu");
+		}
 		itemInMenuRepository.deleteById(id);
 	}
 	
 	@Override
 	public ItemDTO findById(Integer id)
 	{
-		ItemInMenu item = itemInMenuRepository.findById(id).orElse(null);
+		ItemInMenu item = itemInMenuRepository.getOne(id);
 		if(item == null)
 		{
 			throw new ItemNotFoundException(id, "item in menu");
