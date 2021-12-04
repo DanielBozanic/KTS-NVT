@@ -34,7 +34,7 @@ public class MenuServiceIntegrationTest {
 	@Test
 	public void findAll_ValidState_ReturnsAllMenus() {
 		List<MenuDTO> found = menuService.getAll();
-		assertEquals(MenuConstants.DB_TOTAL_MENUS.intValue(), found.size() - 2);
+		assertEquals(MenuConstants.DB_TOTAL_MENUS + 2, found.size());
 	}
 	
 	@Test

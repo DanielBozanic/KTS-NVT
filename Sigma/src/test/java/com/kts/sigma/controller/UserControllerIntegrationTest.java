@@ -104,11 +104,11 @@ public class UserControllerIntegrationTest {
 		EmployeeDTO employee = responseEntity.getBody();
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertNotNull(employee);
-		assertEquals(UserContants.DB_MAX_CODE.intValue(), employee.getCode() - 2);
+		assertEquals(UserContants.DB_MAX_CODE + 2, employee.getCode().intValue());
 
 		List<EmployeeDTO> employees = userService.getAllEmployees();
 		assertEquals(size + 1, employees.size());
-		assertEquals(UserContants.DB_MAX_CODE.intValue(), employees.get(employees.size() - 1).getCode() - 2);
+		assertEquals(UserContants.DB_MAX_CODE + 2, employees.get(employees.size() - 1).getCode().intValue());
 
 		userService.deleteEmployee(employee.getId());
 	}
