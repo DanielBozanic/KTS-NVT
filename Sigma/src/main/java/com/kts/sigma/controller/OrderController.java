@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.model.ItemInOrder;
+import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.service.OrderService;
 
@@ -59,6 +60,11 @@ public class OrderController {
 	@PutMapping("/{orderId}/{code}")
 	ItemInOrderDTO addItemToOrder(@RequestBody ItemInOrderDTO item, @PathVariable Integer code, @PathVariable Integer orderId) {
 	  return orderService.addItemToOrder(item, code, orderId);
+	}
+	
+	@PutMapping("/{orderId}/{state}/{code}")
+	void changeState(@PathVariable OrderState state, @PathVariable Integer code, @PathVariable Integer orderId) {
+	  orderService.changeState(state, code, orderId);
 	}
 	
 	@DeleteMapping("/{orderId}/{itemId}/{code}")
