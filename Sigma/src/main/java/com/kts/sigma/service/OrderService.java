@@ -12,11 +12,15 @@ public interface OrderService {
 	
 	public RestaurantOrder save(OrderDTO item, Integer code);
 	
-	public void deleteById(Integer id);
+	public void deleteById(Integer id, Integer code);
 
 	public Iterable<ItemInOrderDTO> getAllItems(Integer id);
 	
 	public Iterable<ItemInOrderDTO> getAllDrinks(Integer id);
 	
 	public Iterable<ItemInOrderDTO> getAllFoods(Integer id);
+
+	public ItemInOrderDTO addItemToOrder(ItemInOrderDTO item, Integer code, Integer orderId);
+
+	public void removeItemFromOrder(Integer itemId, Integer code, Integer orderId);
 }

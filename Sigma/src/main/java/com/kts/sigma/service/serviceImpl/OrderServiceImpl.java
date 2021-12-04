@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.Waiter;
 import com.kts.sigma.repository.EmployeeRepository;
+import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.repository.UserRepository;
@@ -42,6 +44,9 @@ public class OrderServiceImpl implements OrderService{
 	
 	@Autowired
 	private ItemInOrderService iioService;
+	
+	@Autowired
+	private ItemInOrderRepository iioRepo;
 	
 	@Autowired
 	private EmployeeRepository empRep;
@@ -89,6 +94,7 @@ public class OrderServiceImpl implements OrderService{
 		for (ItemInOrderDTO dto : item.getItems()) {
 			
 			for(int i = 0; i < dto.getQuantity(); i++) {
+				
 				total += dto.getSellingPrice().doubleValue();
 			}
 			
@@ -116,9 +122,22 @@ public class OrderServiceImpl implements OrderService{
 	}
 	
 	@Override
-	public void deleteById(Integer id) {
+	public void deleteById(Integer id, Integer code) {
+		RestaurantOrder order = orderRepository.findById(id).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(id, "order");
+		}
+		
+		Employee worker = empRep.findByCode(code);
+		if(worker == null || !(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId())
+		{
+			throw new AccessForbiddenException();
+		}
+		
 		orderRepository.deleteById(id);
 	}
+	
 	@Override
 	public OrderDTO findById(Integer id)
 	{
@@ -206,5 +225,65 @@ public class OrderServiceImpl implements OrderService{
 		}
 		
 		return dtos;
+	}
+
+	@Override
+	public ItemInOrderDTO addItemToOrder(ItemInOrderDTO item, Integer code, Integer orderId) {
+		RestaurantOrder order = orderRepository.findById(orderId).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(orderId, "order");
+		}
+		
+		Employee worker = empRep.findByCode(code);
+		if(worker == null || !(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId())
+		{
+			throw new AccessForbiddenException();
+		}
+		
+		BigDecimal price = BigDecimal.ZERO;
+		
+		for(int i = 0; i < item.getQuantity(); i++) {
+			price = price.add(item.getSellingPrice());
+			item.setOrderId(order.getId());
+			item.setState(ItemInOrderState.NEW);
+			iioService.saveWithoutCode(item);
+		}
+		
+		order.setTotalPrice(order.getTotalPrice().add(price));
+		orderRepository.save(order);
+		
+		return item;
+	}
+
+	@Override
+	public void removeItemFromOrder(Integer itemId, Integer code, Integer orderId) {
+		RestaurantOrder order = orderRepository.findById(orderId).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(orderId, "order");
+		}
+		
+		Employee worker = empRep.findByCode(code);
+		if(worker == null || !(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId())
+		{
+			throw new AccessForbiddenException();
+		}
+		
+		Set<ItemInOrder> items = order.getItems();
+		
+		for (ItemInOrder item : items) {
+			if(item.getId() == itemId) {
+				iioService.deleteById(itemId);
+				
+				items.remove(item);
+				order.setItems(items);
+				order.setTotalPrice(order.getTotalPrice().subtract(item.getItem().getSellingPrice()));
+				orderRepository.save(order);
+				return;
+			}
+		}
+		
+		throw new ItemNotFoundException(itemId, "item in order");
 	}
 }

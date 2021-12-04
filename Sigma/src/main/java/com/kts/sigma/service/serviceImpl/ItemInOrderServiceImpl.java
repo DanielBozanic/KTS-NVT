@@ -132,6 +132,11 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	
 	@Override
 	public void deleteById(Integer id) {
+		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
+		if(item == null)
+		{
+			throw new ItemNotFoundException(id, "item in order");
+		}
 		itemInOrderRepository.deleteById(id);
 	}
 	@Override
