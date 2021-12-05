@@ -43,7 +43,7 @@ public class MenuControllerIntegrationTest {
 		MenuDTO[] menus = responseEntity.getBody();
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(MenuConstants.DB_TOTAL_MENUS.intValue(), menus.length - 2);
+		assertEquals(MenuConstants.DB_TOTAL_MENUS + 2, menus.length);
 		assertEquals(MenuConstants.DB_MENU_ID_1.intValue(), menus[0].getId().intValue());
 	}
 	

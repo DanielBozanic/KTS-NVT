@@ -68,7 +68,7 @@ public class UserServiceIntegrationTest {
 		employeeDto.setType("COOK");
 		
 		EmployeeDTO created = userService.addNewEmployee(employeeDto);
-		assertEquals(UserContants.DB_MAX_CODE.intValue(), created.getCode() - 2);
+		assertEquals(UserContants.DB_MAX_CODE + 2, created.getCode().intValue());
 		
 		userService.deleteEmployee(created.getId());
 	}
@@ -92,6 +92,7 @@ public class UserServiceIntegrationTest {
 		
 		EmployeeDTO updatedEmployee = userService.editEmployee(employeeDto);
 		
+		assertEquals(UserContants.DB_EDIT_EMPLOYEE_ID, updatedEmployee.getId());
 		assertEquals(UserContants.EDIT_EMPLOYEE_PAYMENT, updatedEmployee.getPaymentBigDecimal());
 		assertEquals(UserContants.EDIT_EMPLOYEE_NAME, updatedEmployee.getName());
 	}
@@ -106,6 +107,7 @@ public class UserServiceIntegrationTest {
 		
 		EmployeeDTO updatedEmployee = userService.editEmployee(employeeDto);
 		
+		assertEquals(UserContants.DB_EDIT_EMPLOYEE_ID, updatedEmployee.getId());
 		assertEquals(UserContants.EDIT_EMPLOYEE_NAME, updatedEmployee.getName());
 	}
 	
