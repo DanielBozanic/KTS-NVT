@@ -6,7 +6,7 @@ public class OrderConstants {
 	
 	public static final Integer NEW_ORDER_ID = 3;
 	
-	public final static Integer INVALID_ORDER_ID = -100;
+	public final static Integer INVALID_ORDER_ID = 100;
 	
 	public final static Integer DB_TOTAL_ORDERS = 2;
 	

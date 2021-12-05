@@ -12,5 +12,8 @@ public class ItemInOrderConstants {
 	
 	public static final Integer NEW_ITEM_IN_ORDER_ID = 8;
 	
+	public final static Integer INVALID_ITEM_IN_ORDER_ID = 100;
+	public final static Integer DB_DELETE_ITEM_IN_ORDER_ID = 8;
+	
 	public final static Integer TOTAL_ITEMS_IN_ORDER = 7;
 }

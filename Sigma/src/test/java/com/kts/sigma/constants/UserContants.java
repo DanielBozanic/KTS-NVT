@@ -8,6 +8,7 @@ public class UserContants {
 	public static final Integer DB_EMPLOYEE_ID_3 = 3;
 	
 	public static final Integer DB_EMPLOYEE_ID_1_CODE = 2345;
+	public static final Integer INVALID_EMPLOYEE_CODE = 3457;
 	
 	public static final Integer DB_MANAGER_ID = 4;
 	public static final String DB_MANAGER_USERNAME = "Markuza";
