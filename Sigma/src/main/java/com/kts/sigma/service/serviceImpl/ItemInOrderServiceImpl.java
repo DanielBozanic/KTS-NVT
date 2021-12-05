@@ -105,14 +105,14 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		ItemInOrder item = new ItemInOrder();
 		item.setId(i.getId());
 		
-		ItemInMenu iim = iimRepository.findById(i.getItemId()).orElse(null);
+		ItemInMenu iim = iimRepository.getOne(i.getItemId());
 		if(iim == null) {
 			throw new ItemNotFoundException(i.getItemId(), "item in menu");
 		}
 		item.setItem(iim);
 		
 		if(i.getEmployeeId() != null) {
-			User employee = uRepository.findById(i.getEmployeeId()).orElse(null);
+			User employee = uRepository.getOne(i.getEmployeeId());
 			if(employee == null) {
 				throw new ItemNotFoundException(i.getEmployeeId(), "employee");
 			}
@@ -126,7 +126,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	
 	@Override
 	public void deleteById(Integer id) {
-		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
+		ItemInOrder item = itemInOrderRepository.getOne(id);
 		if(item == null)
 		{
 			throw new ItemNotFoundException(id, "item in order");
@@ -136,7 +136,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	@Override
 	public ItemInOrderDTO findById(Integer id)
 	{
-		ItemInOrder item = itemInOrderRepository.findById(id).orElse(null);
+		ItemInOrder item = itemInOrderRepository.getOne(id);
 		if(item == null)
 		{
 			throw new ItemNotFoundException(id, "item in order");

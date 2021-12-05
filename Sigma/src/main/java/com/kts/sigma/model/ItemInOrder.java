@@ -24,6 +24,16 @@ public class ItemInOrder {
 	@ManyToOne
 	private Employee employee;
 
+	public ItemInOrder() {
+		super();
+	}
+	
+	public ItemInOrder(Integer id, ItemInMenu item) {
+		super();
+		this.id = id;
+		this.item = item;
+	}
+
 	public ItemInMenu getItem() {
 		return item;
 	}

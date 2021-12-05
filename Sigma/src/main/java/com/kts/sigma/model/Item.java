@@ -37,9 +37,18 @@ public class Item {
 		this.description = description;
 		this.buyingPrice = buyingPrice;
 	}
-
+    
 	public Item() {
-
+		super();
+	}
+    
+	public Item(Integer id, String name, String description, BigDecimal buyingPrice, String image) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.buyingPrice = buyingPrice;
+		this.image = image;
 	}
 
 	public Integer getId() {
