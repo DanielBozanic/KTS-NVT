@@ -30,6 +30,13 @@ public class Item {
     private BigDecimal buyingPrice;
     
     private String image;
+
+	public Item(Integer id, String name, String description, BigDecimal buyingPrice) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.buyingPrice = buyingPrice;
+	}
     
 	public Item() {
 		super();

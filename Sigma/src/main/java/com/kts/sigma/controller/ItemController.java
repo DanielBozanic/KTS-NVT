@@ -1,5 +1,7 @@
 package com.kts.sigma.controller;
 import java.util.ArrayList;
+
+import com.kts.sigma.model.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +34,7 @@ public class ItemController {
 	}
 	
 	@PostMapping(value = "/createNewItem", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ItemDTO> createNewItem(@RequestBody ItemDTO itemDto) {
+	public ResponseEntity<Item> createNewItem(@RequestBody ItemDTO itemDto) {
 		return new ResponseEntity<>(itemService.createNewItem(itemDto), HttpStatus.CREATED);
 	}
 	

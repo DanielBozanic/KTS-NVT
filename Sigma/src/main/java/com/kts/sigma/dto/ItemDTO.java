@@ -3,6 +3,7 @@ package com.kts.sigma.dto;
 import java.math.BigDecimal;
 
 import com.kts.sigma.model.FoodType;
+import com.kts.sigma.model.Item;
 
 public class ItemDTO {
 
@@ -21,6 +22,17 @@ public class ItemDTO {
     private boolean food;
     
     private FoodType type;
+
+	public ItemDTO(Integer id, String name, String description, BigDecimal buyingPrice, BigDecimal sellingPrice, boolean food) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.buyingPrice = buyingPrice;
+		this.sellingPrice = sellingPrice;
+		this.food = food;
+	}
+
+	public ItemDTO(){}
 
 	public BigDecimal getSellingPrice() {
 		return sellingPrice;
