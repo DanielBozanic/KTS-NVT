@@ -54,8 +54,15 @@ public class TableServiceImpl implements TableService {
 	
 	@Override
 	public void deleteById(Integer id) {
+		RestaurantTable table = tableRepository.findById(id).orElse(null);
+		if(table == null)
+		{
+			throw new ItemNotFoundException(id, "table");
+		}
+		
 		tableRepository.deleteById(id);
 	}
+	
 	@Override
 	public TableDTO findById(Integer id)
 	{
