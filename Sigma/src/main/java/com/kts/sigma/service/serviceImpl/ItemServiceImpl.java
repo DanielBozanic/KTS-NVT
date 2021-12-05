@@ -44,7 +44,7 @@ public class ItemServiceImpl implements ItemService{
 	}
 	
 	@Override
-	public ItemDTO createNewItem(ItemDTO itemDto) {
+	public Item createNewItem(ItemDTO itemDto) {
 		Item item = null;
 		if (itemDto.isFood()) {
 			item = Mapper.mapper.map(itemDto, Food.class);
@@ -52,11 +52,7 @@ public class ItemServiceImpl implements ItemService{
 			item = Mapper.mapper.map(itemDto, Drink.class);
 		}
 		item = itemRepository.save(item);
-		ItemDTO dto = Mapper.mapper.map(item, ItemDTO.class);
-		dto.setSellingPrice(itemDto.getSellingPrice());
-		dto.setFood(itemDto.isFood());
-		dto.setType(itemDto.getType());
-		return dto;
+		return item;
 	}
 	
 	@Override

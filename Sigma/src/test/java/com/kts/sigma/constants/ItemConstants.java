@@ -13,6 +13,7 @@ public class ItemConstants {
 	public final static Integer DB_DRINK_ID_1 = 3;
 	
 	public final static Integer INVALID_ITEM_ID = -100;
+	public static final Integer DB_DELETE_ITEM_ID = 1;
 	
 	public final static Integer DB_TOTAL_ITEMS = 4;
 	

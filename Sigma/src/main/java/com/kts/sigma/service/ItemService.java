@@ -3,6 +3,7 @@ package com.kts.sigma.service;
 import java.util.ArrayList;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.model.FoodType;
+import com.kts.sigma.model.Item;
 
 public interface ItemService {
 
@@ -10,7 +11,7 @@ public interface ItemService {
 	
 	ItemDTO findById(Integer id);
 	
-	ItemDTO createNewItem(ItemDTO itemDto);
+	Item createNewItem(ItemDTO itemDto);
 	
 	void deleteById(Integer id);
 	
