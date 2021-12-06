@@ -18,8 +18,10 @@ import com.kts.sigma.constants.TableConstants;
 import com.kts.sigma.constants.ZoneConstants;
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.dto.ZoneDTO;
+import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
-import com.kts.sigma.service.ZoneService;
+import com.kts.sigma.repository.TableRepository;
+import com.kts.sigma.repository.ZoneRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,7 +32,10 @@ public class ZoneControllerIntegrationTest {
 	private TestRestTemplate restTemplate;
 	
 	@Autowired
-	private ZoneService zoneService;
+	private ZoneRepository zoneRepository;
+	
+	@Autowired
+	private TableRepository tableRepository;
 	
 	@Test
 	public void getAll_ValidState_ReturnsAllZones() {
@@ -56,7 +61,7 @@ public class ZoneControllerIntegrationTest {
 	
 	@Test
 	public void createNewZone_ValidName_ReturnsCreatedZone() {
-		Integer beforeAdd = zoneService.getAll().size();
+		Integer beforeAdd = zoneRepository.findAll().size();
 		
 		ZoneDTO zoneDto = new ZoneDTO();
 		zoneDto.setName(ZoneConstants.NEW_ZONE_NAME);
@@ -68,9 +73,9 @@ public class ZoneControllerIntegrationTest {
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertEquals(ZoneConstants.NEW_ZONE_NAME, created.getName());
-		assertEquals(beforeAdd + 1, zoneService.getAll().size());
+		assertEquals(beforeAdd + 1, zoneRepository.findAll().size());
 		
-		zoneService.deleteById(created.getId());
+		zoneRepository.deleteById(created.getId());
 	}
 	
 	@Test
@@ -121,7 +126,7 @@ public class ZoneControllerIntegrationTest {
 	
 	@Test
 	public void removeTableFromZone_ValidState_ReturnsListOfTablesForZone() {
-		Integer beforeRemove = zoneService.getTables(ZoneConstants.DB_ZONE_ID_2).size();
+		Integer beforeRemove = tableRepository.findByZoneId(ZoneConstants.DB_ZONE_ID_2).size();
 		
 		TableDTO tableForRemoval = new TableDTO();
 		tableForRemoval.setId(TableConstants.DB_TABLE_ID_6);
@@ -135,6 +140,10 @@ public class ZoneControllerIntegrationTest {
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(beforeRemove - 1, tables.length);
+		
+		RestaurantTable table = tableRepository.findById(TableConstants.DB_TABLE_ID_6).get();
+		table.setZone(zoneRepository.findById(ZoneConstants.DB_ZONE_ID_2).get());
+		tableRepository.save(table);
 	}
 	
 	@Test
@@ -152,6 +161,8 @@ public class ZoneControllerIntegrationTest {
 	
 	@Test
 	public void updateNumberChairs_ValidTableId_ReturnsUpdatedTable() {
+		RestaurantTable oldTable = tableRepository.findById(TableConstants.DB_TABLE_ID_1).get();
+		
 		TableDTO tableForUpdate = new TableDTO();
 		tableForUpdate.setId(TableConstants.DB_TABLE_ID_1);
 		tableForUpdate.setNumberOfChairs(5);
@@ -165,6 +176,8 @@ public class ZoneControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(TableConstants.DB_TABLE_ID_1, updatedTable.getId());
 		assertEquals(5, updatedTable.getNumberOfChairs().intValue());
+		
+		tableRepository.save(oldTable);
 	}
 	
 	@Test

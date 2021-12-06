@@ -4,8 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemInUseException;
@@ -45,6 +47,8 @@ public class ZoneServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void createNewZone_ValidName_ReturnsCreatedZone() {
 		ZoneDTO zoneDto = new ZoneDTO();
 		zoneDto.setName(ZoneConstants.NEW_ZONE_NAME);
@@ -55,8 +59,6 @@ public class ZoneServiceIntegrationTest {
 		
 		assertEquals(ZoneConstants.NEW_ZONE_NAME, created.getName());
 		assertEquals(beforeAdd + 1, zoneService.getAll().size());
-		
-		zoneService.deleteById(created.getId());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -91,6 +93,8 @@ public class ZoneServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void removeTableFromZone_ValidState_ReturnsListOfTablesForZone() {
 		Integer beforeRemove = zoneService.getTables(ZoneConstants.DB_ZONE_ID_2).size();
 		
@@ -113,6 +117,8 @@ public class ZoneServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void updateNumberChairs_ValidTableId_ReturnsUpdatedTable() {
 		TableDTO tableForUpdate = new TableDTO();
 		tableForUpdate.setId(TableConstants.DB_TABLE_ID_1);

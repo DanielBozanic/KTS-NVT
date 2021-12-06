@@ -15,12 +15,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.kts.sigma.constants.UserContants;
 import com.kts.sigma.dto.EmployeeDTO;
 import com.kts.sigma.dto.ManagerDTO;
-import com.kts.sigma.service.UserService;
+import com.kts.sigma.model.Employee;
+import com.kts.sigma.model.Payment;
+import com.kts.sigma.repository.EmployeeRepository;
+import com.kts.sigma.repository.ManagerRepository;
+import com.kts.sigma.repository.PaymentRepository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +37,13 @@ public class UserControllerIntegrationTest {
 	private TestRestTemplate restTemplate;
 
 	@Autowired
-	private UserService userService;
+	private ManagerRepository managerRepository;
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	private PaymentRepository paymentRepository;
 	
 	@Test
 	public void getAllEmployees_ValidState_ReturnsAll() {
@@ -70,6 +81,8 @@ public class UserControllerIntegrationTest {
 				HttpMethod.POST, new HttpEntity<ManagerDTO>(managerDto), String.class);
 
 		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+		
+		
 	}
 	
 	@Test
@@ -86,11 +99,13 @@ public class UserControllerIntegrationTest {
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertEquals(UserContants.NEW_MANAGER_USERNAME, manager.getUsername());
+		
+		managerRepository.deleteById(manager.getId());
 	}
 	
 	@Test
 	public void addNewEmployee_ValidState_ReturnsCreatedEmployee() {
-		Integer size = userService.getAllEmployees().size(); 
+		Integer size = employeeRepository.findAll().size(); 
 		
 		EmployeeDTO employeeDto = new EmployeeDTO();
 		employeeDto.setName("Uros");
@@ -104,13 +119,13 @@ public class UserControllerIntegrationTest {
 		EmployeeDTO employee = responseEntity.getBody();
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertNotNull(employee);
-		assertEquals(UserContants.DB_MAX_CODE + 2, employee.getCode().intValue());
+		assertEquals(UserContants.DB_MAX_CODE + 1, employee.getCode().intValue());
 
-		List<EmployeeDTO> employees = userService.getAllEmployees();
+		List<Employee> employees = employeeRepository.findAll();
 		assertEquals(size + 1, employees.size());
-		assertEquals(UserContants.DB_MAX_CODE + 2, employees.get(employees.size() - 1).getCode().intValue());
+		assertEquals(UserContants.DB_MAX_CODE + 1, employees.get(employees.size() - 1).getCode().intValue());
 
-		userService.deleteEmployee(employee.getId());
+		employeeRepository.deleteById(employee.getId());
 	}
 	
 	@Test
@@ -127,6 +142,8 @@ public class UserControllerIntegrationTest {
 	
 	@Test
 	public void editEmployee_EditNameAndPayment_ReturnsUpdatedEmployee() {
+		Employee oldEmployee = employeeRepository.findById(UserContants.DB_EDIT_EMPLOYEE_ID).get();
+		
 		EmployeeDTO employeeDto = new EmployeeDTO();
 		employeeDto.setId(UserContants.DB_EDIT_EMPLOYEE_ID);
 		employeeDto.setName(UserContants.EDIT_EMPLOYEE_NAME);
@@ -143,10 +160,14 @@ public class UserControllerIntegrationTest {
 		assertEquals(UserContants.DB_EDIT_EMPLOYEE_ID, employee.getId());
 		assertEquals(UserContants.EDIT_EMPLOYEE_NAME, employee.getName());
 		assertEquals(UserContants.EDIT_EMPLOYEE_PAYMENT, employee.getPaymentBigDecimal());
+		
+		employeeRepository.save(oldEmployee);
 	}
 	
 	@Test
 	public void editEmployee_EditOnlyName_ReturnsUpdatedEmployee() {
+		Employee oldEmployee = employeeRepository.findById(UserContants.DB_EDIT_EMPLOYEE_ID).get();
+		
 		EmployeeDTO employeeDto = new EmployeeDTO();
 		employeeDto.setId(UserContants.DB_EDIT_EMPLOYEE_ID);
 		employeeDto.setName(UserContants.EDIT_EMPLOYEE_NAME);
@@ -163,6 +184,7 @@ public class UserControllerIntegrationTest {
 		assertEquals(UserContants.DB_EDIT_EMPLOYEE_ID, employee.getId());
 		assertEquals(UserContants.EDIT_EMPLOYEE_NAME, employee.getName());
 		
+		employeeRepository.save(oldEmployee);
 	}
 	
 	@Test
@@ -176,21 +198,28 @@ public class UserControllerIntegrationTest {
 	
 	@Test
 	public void deleteEmployee_ValidId_ReturnsNothing() {
-		EmployeeDTO employeeDto = new EmployeeDTO();
-		employeeDto.setName("Uros");
-		employeeDto.setPaymentBigDecimal(new BigDecimal(29000));
-		employeeDto.setType("COOK");
+		Employee employee = new Employee();
+		employee.setName("Uros");
+		employee.setActive(true);
+		employee = employeeRepository.save(employee);
 		
-		EmployeeDTO created = userService.addNewEmployee(employeeDto);
-		Integer size = userService.getAllEmployees().size();
+		Payment payment = new Payment();
+		payment.setDateCreated(LocalDateTime.now());
+		payment.setPayment(new BigDecimal(29000));
+		payment.setEmployee(employee);
+		paymentRepository.save(payment);
+		
+		Integer size = employeeRepository.getNumberOfActiveEmployeeRecords();
 
 		ResponseEntity<Void> responseEntity = restTemplate.exchange(
-				"/users/deleteEmployee/" + created.getId(), HttpMethod.DELETE, 
+				"/users/deleteEmployee/" + employee.getId(), HttpMethod.DELETE, 
 				new HttpEntity<Object>(null), Void.class);
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
-		assertEquals(size - 1, userService.getAllEmployees().size());
+		assertEquals(size - 1, employeeRepository.getNumberOfActiveEmployeeRecords().intValue());
+		
+		employeeRepository.deleteById(employee.getId());
 	}
 	
 	@Test

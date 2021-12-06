@@ -4,8 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
@@ -50,6 +52,8 @@ public class UserServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void addNewManager_ValidUsername_ReturnsCreatedManager() {
 		ManagerDTO managerDto = new ManagerDTO();
 		managerDto.setName("Petar");
@@ -61,6 +65,8 @@ public class UserServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void addNewEmployee_ValidState_ReturnsCreatedEmployee() {
 		EmployeeDTO employeeDto = new EmployeeDTO();
 		employeeDto.setName("Uros");
@@ -68,9 +74,7 @@ public class UserServiceIntegrationTest {
 		employeeDto.setType("COOK");
 		
 		EmployeeDTO created = userService.addNewEmployee(employeeDto);
-		assertEquals(UserContants.DB_MAX_CODE + 2, created.getCode().intValue());
-		
-		userService.deleteEmployee(created.getId());
+		assertEquals(UserContants.DB_MAX_CODE + 1, created.getCode().intValue());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -83,6 +87,8 @@ public class UserServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void editEmployee_EditNameAndPayment_ReturnsUpdatedEmployee() {
 		EmployeeDTO employeeDto = new EmployeeDTO();
 		employeeDto.setId(UserContants.DB_EDIT_EMPLOYEE_ID);
@@ -98,6 +104,8 @@ public class UserServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void editEmployee_EditOnlyName_ReturnsUpdatedEmployee() {
 		EmployeeDTO employeeDto = new EmployeeDTO();
 		employeeDto.setId(UserContants.DB_EDIT_EMPLOYEE_ID);
@@ -117,15 +125,12 @@ public class UserServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void deleteEmployee_ValidId_ReturnsNothing() {
-		EmployeeDTO employeeDto = new EmployeeDTO();
-		employeeDto.setName("Uros");
-		employeeDto.setPaymentBigDecimal(new BigDecimal(29000));
-		employeeDto.setType("COOK");
-		
-		EmployeeDTO created = userService.addNewEmployee(employeeDto);
-		
-		userService.deleteEmployee(created.getId());
+		Integer sizeBeforeRemove = userService.getNumberOfActiveEmployeeRecords();
+		userService.deleteEmployee(UserContants.DB_DELETE_EMPLOYEE_ID);
+		assertEquals(sizeBeforeRemove - 1, userService.getNumberOfActiveEmployeeRecords().intValue());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)

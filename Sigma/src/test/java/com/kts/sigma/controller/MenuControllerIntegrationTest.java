@@ -3,6 +3,7 @@ package com.kts.sigma.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
@@ -22,7 +23,11 @@ import com.kts.sigma.constants.ItemInMenuConstants;
 import com.kts.sigma.constants.MenuConstants;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
-import com.kts.sigma.service.MenuService;
+import com.kts.sigma.model.Item;
+import com.kts.sigma.model.ItemInMenu;
+import com.kts.sigma.model.Menu;
+import com.kts.sigma.repository.ItemInMenuRepository;
+import com.kts.sigma.repository.MenuRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,7 +38,10 @@ public class MenuControllerIntegrationTest {
 	private TestRestTemplate restTemplate;
 
 	@Autowired
-	private MenuService menuService;
+	private MenuRepository menuRepository;
+	
+	@Autowired
+	private ItemInMenuRepository itemInMenuRepository;
 	
 	@Test
 	public void findAll_ValidState_ReturnsAllMenus() {
@@ -43,13 +51,13 @@ public class MenuControllerIntegrationTest {
 		MenuDTO[] menus = responseEntity.getBody();
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(MenuConstants.DB_TOTAL_MENUS + 2, menus.length);
+		assertEquals(MenuConstants.DB_TOTAL_MENUS.intValue(), menus.length);
 		assertEquals(MenuConstants.DB_MENU_ID_1.intValue(), menus[0].getId().intValue());
 	}
 	
 	@Test
 	public void addMenu_ValidState_ReturnsCreatedMenu() {
-		Integer size = menuService.getAll().size();
+		Integer size = menuRepository.findAll().size();
 		
 		MenuDTO menuDto = new MenuDTO();
 		menuDto.setExpirationDate(LocalDateTime.of(2022, 3, 18, 0, 0));
@@ -61,9 +69,9 @@ public class MenuControllerIntegrationTest {
 		MenuDTO menu = responseEntity.getBody();
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-		assertEquals(size + 1, menuService.getAll().size());
+		assertEquals(size + 1, menuRepository.findAll().size());
 		
-		menuService.deleteMenuById(menu.getId());
+		menuRepository.deleteById(menu.getId());
 	}
 	
 	@Test
@@ -77,11 +85,11 @@ public class MenuControllerIntegrationTest {
 	
 	@Test
 	public void deleteMenuById_ValidId_ReturnsNothing() {
-		MenuDTO menuDto = new MenuDTO();
-		menuDto.setExpirationDate(LocalDateTime.of(2022, 3, 18, 0, 0));
-		menuDto.setActive(true);
+		Menu menu = new Menu();
+		menu.setExpirationDate(LocalDateTime.of(2022, 3, 18, 0, 0));
+		menu.setActive(true);
 		
-		MenuDTO createdMenu = menuService.addMenu(menuDto);
+		Menu createdMenu = menuRepository.save(menu);
 		
 		Integer createdMenuId = createdMenu.getId();
 			
@@ -90,7 +98,9 @@ public class MenuControllerIntegrationTest {
 				new HttpEntity<Object>(null), Void.class);
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertTrue(menuService.findById(createdMenuId).getActive() == false);
+		assertTrue(menuRepository.findById(createdMenuId).get().getActive() == false);
+		
+		menuRepository.deleteById(createdMenuId);
 	}
 	
 	@Test
@@ -147,7 +157,7 @@ public class MenuControllerIntegrationTest {
 	
 	@Test
 	public void addItemToMenu_ReaddItemToMenu_ReturnsNothing() {
-		Integer beforeAdd = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
+		Integer beforeAdd = itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
 		
 		ItemDTO itemDto = new ItemDTO();
 		itemDto.setId(ItemConstants.DB_ITEM_ID_2);
@@ -156,14 +166,16 @@ public class MenuControllerIntegrationTest {
 				"/menu/addItemToMenu?menuId=" + MenuConstants.DB_MENU_ID_1, itemDto, Void.class);
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(beforeAdd + 1, menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
+		assertEquals(beforeAdd + 1, itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
 		
-		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_2, MenuConstants.DB_MENU_ID_1);
+		ItemInMenu inm = itemInMenuRepository.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_2, MenuConstants.DB_MENU_ID_1);
+		inm.setActive(false);
+		itemInMenuRepository.save(inm);
 	}
 	
 	@Test
 	public void addItemToMenu_FirstTimeInMenu_ReturnsNothing() {
-		Integer beforeAdd = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
+		Integer beforeAdd = itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
 		
 		ItemDTO itemDto = new ItemDTO();
 		itemDto.setId(ItemConstants.DB_ITEM_ID_4);
@@ -172,9 +184,10 @@ public class MenuControllerIntegrationTest {
 				"/menu/addItemToMenu?menuId=" + MenuConstants.DB_MENU_ID_1, itemDto, Void.class);
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(beforeAdd + 1, menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
+		assertEquals(beforeAdd + 1, itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
 		
-		menuService.removeItemFromMenu(ItemConstants.DB_ITEM_ID_4, MenuConstants.DB_MENU_ID_1);
+		ItemInMenu inm = itemInMenuRepository.findActiveItemInMenuByItemIdAndMenuId(ItemConstants.DB_ITEM_ID_4, MenuConstants.DB_MENU_ID_1);
+		itemInMenuRepository.deleteById(inm.getId());
 	}
 	
 	@Test
@@ -201,12 +214,20 @@ public class MenuControllerIntegrationTest {
 	
 	@Test
 	public void removeItemFromMenu_ValidMenuIdAndValidItemId_ReturnsNothing() {
-		ItemDTO itemDto = new ItemDTO();
-		itemDto.setId(ItemConstants.DB_ITEM_ID_2);
+		Item item = new Item();
+		item.setId(ItemConstants.DB_ITEM_ID_2);
 		
-		menuService.addItemToMenu(itemDto, MenuConstants.DB_MENU_ID_1);
+		Menu menu = new Menu();
+		menu.setId(MenuConstants.DB_MENU_ID_1);
+
+		ItemInMenu newItemInMenu = new ItemInMenu();
+		newItemInMenu.setItem(item);
+		newItemInMenu.setMenu(menu);
+		newItemInMenu.setSellingPrice(new BigDecimal(200));
+		newItemInMenu.setActive(true);
+		newItemInMenu = itemInMenuRepository.save(newItemInMenu);
 		
-		Integer beforeRemove = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
+		Integer beforeRemove = itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1).size();
 		
 		ResponseEntity<Void> responseEntity = restTemplate.exchange(
 				"/menu/removeItemFromMenu?itemId=" + ItemConstants.DB_ITEM_ID_2 + 
@@ -215,6 +236,6 @@ public class MenuControllerIntegrationTest {
 				new HttpEntity<Object>(null), Void.class);
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(beforeRemove - 1, menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
+		assertEquals(beforeRemove - 1, itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1).size());
 	}
 }
