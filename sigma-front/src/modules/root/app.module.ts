@@ -3,12 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PeopleManagerComponent } from './components/people-manager/people-manager.component';
+import { PeopleManagerComponent } from '../manager/pages/people-manager/people-manager.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularMaterialModule } from './angular-material.module';
-import { WaiterTablesComponent } from './components/waiter-tables/waiter-tables.component';
+import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tables.component';
 
 @NgModule({
   declarations: [AppComponent, PeopleManagerComponent, WaiterTablesComponent],

@@ -8,9 +8,9 @@ import {
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { Employee } from '../../models/employee';
-import { PeopleManagerService } from 'src/app/services/people-manager.service';
-import { PaymentValidator } from './payment-validator';
+import { Employee } from '../../../root/models/employee';
+import { PeopleManagerService } from '../../services/people-manager.service';
+import { PaymentValidator } from '../../directives/payment-validator';
 
 @Component({
   selector: 'app-people-manager',

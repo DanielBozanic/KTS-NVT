@@ -9,12 +9,12 @@ import {
   API_GET_ITEMS_FOR_ORDER,
   API_CHANGE_TABLE_STATE,
   API_CHANGE_ITEM_STATE,
-  API_GET_ORDER
-} from '../api-routes';
-import { Table } from '../models/table';
-import { Item } from '../models/item';
-import { Zone } from '../models/zone';
-import { Order } from '../models/order';
+  API_GET_ORDER,
+} from 'src/modules/root/api-routes';
+import { Order } from 'src/modules/root/models/order';
+import { Table } from 'src/modules/root/models/table';
+import { Item } from 'src/modules/root/models/item';
+import { Zone } from 'src/modules/root/models/zone';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +26,7 @@ export class WaiterTablesService {
     return this.http.get<Zone[]>(API_GET_ALL_ZONES);
   }
 
-  getOrder(id : number): Observable<Order> {
+  getOrder(id: number): Observable<Order> {
     return this.http.get<Order>(API_GET_ORDER + id);
   }
 
@@ -35,17 +35,19 @@ export class WaiterTablesService {
   }
 
   getItemsForOrder(id: number): Observable<Item[]> {
-    return this.http.get<Item[]>(API_GET_ITEMS_FOR_ORDER + id)
+    return this.http.get<Item[]>(API_GET_ITEMS_FOR_ORDER + id);
   }
 
-  changeTableState(id : number, state : string, code : number) : Observable<void>{
-    return this.http.put<void>(API_CHANGE_TABLE_STATE + `${id}/${state}/${code}`, null)
-    .pipe(catchError(this.errorHander));
+  changeTableState(id: number, state: string, code: number): Observable<void> {
+    return this.http
+      .put<void>(API_CHANGE_TABLE_STATE + `${id}/${state}/${code}`, null)
+      .pipe(catchError(this.errorHander));
   }
 
-  changeItemState(id : number, state : string, code : number) : void{
-    this.http.put(API_CHANGE_ITEM_STATE + `${id}/${state}/${code}`, null)
-    .pipe(catchError(this.errorHander));
+  changeItemState(id: number, state: string, code: number): void {
+    this.http
+      .put(API_CHANGE_ITEM_STATE + `${id}/${state}/${code}`, null)
+      .pipe(catchError(this.errorHander));
   }
 
   errorHander(error: HttpErrorResponse): Observable<any> {

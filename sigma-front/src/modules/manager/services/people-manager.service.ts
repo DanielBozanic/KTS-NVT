@@ -3,7 +3,7 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Employee } from '../models/employee';
+import { Employee } from 'src/modules/root/models/employee';
 import {
   API_GET_ALL_EMPLOYEES,
   API_GET_EMPLOYEES_BY_CURRENT_PAGE,
@@ -11,7 +11,7 @@ import {
   API_ADD_EMPLOYEE,
   API_EDIT_EMPLOYEE,
   API_DELETE_EMPLOYEE,
-} from '../api-routes';
+} from 'src/modules/root/api-routes';
 
 @Injectable({
   providedIn: 'root',
