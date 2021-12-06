@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { Employee } from '../../../root/models/employee';
 import { PeopleManagerService } from '../../services/people-manager.service';
-import { PaymentValidator } from '../../directives/payment-validator';
+import { PaymentValidator } from '../../validators/payment-validator';
 
 @Component({
   selector: 'app-people-manager',
