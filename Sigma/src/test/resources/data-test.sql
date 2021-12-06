@@ -35,3 +35,13 @@ INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VA
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 4, 2);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 5, 2);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (2, 0, 6, 2);
+
+INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 1000, 1, 2);
+INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 3, 2);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 1);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 1);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 2);
