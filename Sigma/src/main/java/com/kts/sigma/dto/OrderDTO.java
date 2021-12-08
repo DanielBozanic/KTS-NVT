@@ -18,7 +18,7 @@ public class OrderDTO {
 
 	public Integer tableId;
 	
-	public List<ItemInOrderDTO> items;
+	public List<ItemInOrderDTO> dtos;
 
 	public LocalDateTime orderDateTime;
 
@@ -63,11 +63,11 @@ public class OrderDTO {
 	}
 
 	public List<ItemInOrderDTO> getItems() {
-		return items;
+		return dtos;
 	}
 
 	public void setItems(List<ItemInOrderDTO> items) {
-		this.items = items;
+		this.dtos = items;
 	}
 
 	public LocalDateTime getOrderDateTime() {

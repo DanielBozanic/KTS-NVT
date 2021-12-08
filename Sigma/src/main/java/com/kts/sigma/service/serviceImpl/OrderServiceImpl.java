@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -164,6 +166,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
+	@Transactional
 	public Iterable<ItemInOrderDTO> getAllItems(Integer id) {
 		RestaurantOrder order = orderRepository.findById(id).orElse(null);
 		if(order == null)
@@ -192,6 +195,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
+	@Transactional
 	public Iterable<ItemInOrderDTO> getAllDrinks(Integer id) {
 		RestaurantOrder order = orderRepository.findById(id).orElse(null);
 		if(order == null)
@@ -216,6 +220,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
+	@Transactional
 	public Iterable<ItemInOrderDTO> getAllFoods(Integer id) {
 		RestaurantOrder order = orderRepository.findById(id).orElse(null);
 		if(order == null)
@@ -256,10 +261,10 @@ public class OrderServiceImpl implements OrderService{
 		BigDecimal price = BigDecimal.ZERO;
 		
 		for(int i = 0; i < item.getQuantity(); i++) {
-			price = price.add(item.getSellingPrice());
 			item.setOrderId(order.getId());
 			item.setState(ItemInOrderState.NEW);
 			iioService.saveWithoutCode(item);
+			price = price.add(item.getSellingPrice());
 		}
 		
 		order.setTotalPrice(order.getTotalPrice().add(price));
