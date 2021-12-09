@@ -47,7 +47,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 	
 	@Override
 	public void deleteById(Integer id) {
-		ItemInMenu item = itemInMenuRepository.getOne(id);
+		ItemInMenu item = itemInMenuRepository.findById(id).orElse(null);
 		if (item == null) {
 			throw new ItemNotFoundException(id, "item in menu");
 		}
@@ -57,7 +57,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 	@Override
 	public ItemDTO findById(Integer id)
 	{
-		ItemInMenu item = itemInMenuRepository.getOne(id);
+		ItemInMenu item = itemInMenuRepository.findById(id).orElse(null);
 		if(item == null)
 		{
 			throw new ItemNotFoundException(id, "item in menu");

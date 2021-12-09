@@ -187,20 +187,20 @@ public class ItemInOrderServiceUnitTest {
 	
 	@Test(expected = ItemNotFoundException.class)
 	public void saveWithoutCode_InvalidId_ReturnsNothing() {
-		given(iimRepositoryMock.getOne(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID)).willReturn(null);
+		given(iimRepositoryMock.findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID)).willReturn(Optional.empty());
 		
 		ItemInOrderDTO itemDTO = new ItemInOrderDTO();
 		itemDTO.setId(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
 		itemDTO.setItemId(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
 		
 		itemInOrderService.saveWithoutCode(itemDTO);
-		verify(iimRepositoryMock, times(1)).getOne(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
+		verify(iimRepositoryMock, times(1)).findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
 	public void saveWithoutCode_InvalidEmployeeId_ReturnsNothing() {
-		given(iimRepositoryMock.getOne(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(new ItemInMenu());
-		given(uRepositoryMock.getOne(UserContants.INVALID_USER_ID)).willReturn(null);
+		given(iimRepositoryMock.findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(Optional.of(new ItemInMenu()));
+		given(uRepositoryMock.findById(UserContants.INVALID_USER_ID)).willReturn(Optional.empty());
 		
 		ItemInOrderDTO itemDTO = new ItemInOrderDTO();
 		itemDTO.setId(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
@@ -208,18 +208,18 @@ public class ItemInOrderServiceUnitTest {
 		itemDTO.setEmployeeId(UserContants.INVALID_USER_ID);
 		
 		itemInOrderService.saveWithoutCode(itemDTO);
-		verify(iimRepositoryMock, times(1)).getOne(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
-		verify(uRepositoryMock, times(1)).getOne(UserContants.INVALID_USER_ID);
+		verify(iimRepositoryMock, times(1)).findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
+		verify(uRepositoryMock, times(1)).findById(UserContants.INVALID_USER_ID);
 	}
 	
 	@Test
 	public void saveWithoutCode_ValidItem_ReturnsItem() {
-		given(iimRepositoryMock.getOne(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(new ItemInMenu());
+		given(iimRepositoryMock.findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(Optional.of(new ItemInMenu()));
 		
 		Employee employee = new Employee();
 		employee.setId(UserContants.DB_EMPLOYEE_ID_1);
 		
-		given(uRepositoryMock.getOne(UserContants.DB_EMPLOYEE_ID_1)).willReturn(employee);
+		given(uRepositoryMock.findById(UserContants.DB_EMPLOYEE_ID_1)).willReturn(Optional.of(employee));
 		
 		ItemInOrderDTO itemDTO = new ItemInOrderDTO();
 		itemDTO.setId(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
@@ -234,34 +234,34 @@ public class ItemInOrderServiceUnitTest {
 		given(itemInOrderRepositoryMock.save(any(ItemInOrder.class))).willReturn(savedItem);
 		
 		ItemInOrder result = itemInOrderService.saveWithoutCode(itemDTO);
-		verify(iimRepositoryMock, times(1)).getOne(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
-		verify(uRepositoryMock, times(1)).getOne(UserContants.DB_EMPLOYEE_ID_1);
+		verify(iimRepositoryMock, times(1)).findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
+		verify(uRepositoryMock, times(1)).findById(UserContants.DB_EMPLOYEE_ID_1);
 		
 		assertEquals(result.getState(), itemDTO.getState());
 	}
 
 	@Test(expected = ItemNotFoundException.class)
 	public void deleteById_InvalidId_ReturnsNothing() {
-		given(itemInOrderRepositoryMock.getOne(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID)).willReturn(null);
+		given(itemInOrderRepositoryMock.findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID)).willReturn(Optional.empty());
 		itemInOrderService.deleteById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
-		verify(itemInOrderRepositoryMock, times(1)).getOne(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
+		verify(itemInOrderRepositoryMock, times(1)).findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
 	}
 	@Test
 	public void deleteById_ValidId_ReturnsNothing() {
 		
 		ItemInOrder item = new ItemInOrder();
 		
-		given(itemInOrderRepositoryMock.getOne(ItemInOrderConstants.DB_DELETE_ITEM_IN_ORDER_ID)).willReturn(item);
+		given(itemInOrderRepositoryMock.findById(ItemInOrderConstants.DB_DELETE_ITEM_IN_ORDER_ID)).willReturn(Optional.of(item));
 		itemInOrderService.deleteById(ItemInOrderConstants.DB_DELETE_ITEM_IN_ORDER_ID);
-		verify(itemInOrderRepositoryMock, times(1)).getOne(ItemInOrderConstants.DB_DELETE_ITEM_IN_ORDER_ID);
+		verify(itemInOrderRepositoryMock, times(1)).findById(ItemInOrderConstants.DB_DELETE_ITEM_IN_ORDER_ID);
 	}
 
 	@Test(expected = ItemNotFoundException.class)
 	public void findById_InvalidId_ReturnsNothing()
 	{
-		given(itemInOrderRepositoryMock.getOne(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID)).willReturn(null);
+		given(itemInOrderRepositoryMock.findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID)).willReturn(Optional.empty());
 		itemInOrderService.findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
-		verify(itemInOrderRepositoryMock, times(1)).getOne(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
+		verify(itemInOrderRepositoryMock, times(1)).findById(ItemInOrderConstants.INVALID_ITEM_IN_ORDER_ID);
 	}
 	
 	@Test
@@ -278,11 +278,11 @@ public class ItemInOrderServiceUnitTest {
 						"Image"),
 				new Menu(),
 				true);
-		given(itemInOrderRepositoryMock.getOne(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(
-				new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1, menuItem)
+		given(itemInOrderRepositoryMock.findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(
+				Optional.of(new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1, menuItem))
 				);
 		itemInOrderService.findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
-		verify(itemInOrderRepositoryMock, times(1)).getOne(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
+		verify(itemInOrderRepositoryMock, times(1)).findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1);
 	}
 
 	@Test(expected = AccessForbiddenException.class)

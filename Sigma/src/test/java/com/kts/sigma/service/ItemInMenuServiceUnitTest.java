@@ -82,9 +82,9 @@ public class ItemInMenuServiceUnitTest {
 	
 	@Test(expected = ItemNotFoundException.class)
 	public void deleteItem_InvalidId_ThrowsException() {
-		given(itemInMenuRepositoryMock.getOne(ItemInMenuConstants.INVALID_ITEM_ID)).willReturn(null);
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.INVALID_ITEM_ID)).willReturn(Optional.empty());
 		itemInMenuService.deleteById(ItemInMenuConstants.INVALID_ITEM_ID);
-		verify(itemInMenuRepositoryMock, times(1)).getOne(ItemInMenuConstants.INVALID_ITEM_ID);
+		verify(itemInMenuRepositoryMock, times(1)).findById(ItemInMenuConstants.INVALID_ITEM_ID);
 	}
 	
 	@Test
@@ -94,17 +94,17 @@ public class ItemInMenuServiceUnitTest {
 				ItemInMenuConstants.DB_DELETE_ITEM_ID,
 				new BigDecimal(3000),new Item(),new Menu(),true);
 		
-		given(itemInMenuRepositoryMock.getOne(ItemInMenuConstants.DB_DELETE_ITEM_ID)).willReturn(item);
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_DELETE_ITEM_ID)).willReturn(Optional.of(item));
 		itemInMenuService.deleteById(ItemInMenuConstants.DB_DELETE_ITEM_ID);
-		verify(itemInMenuRepositoryMock, times(1)).getOne(ItemInMenuConstants.DB_DELETE_ITEM_ID);
+		verify(itemInMenuRepositoryMock, times(1)).findById(ItemInMenuConstants.DB_DELETE_ITEM_ID);
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
 	public void findById_InvalidId_ReturnsNothing()
 	{
-		given(itemInMenuRepositoryMock.getOne(ItemInMenuConstants.INVALID_ITEM_ID)).willReturn(null);
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.INVALID_ITEM_ID)).willReturn(Optional.empty());
 		itemInMenuService.findById(ItemInMenuConstants.INVALID_ITEM_ID);
-		verify(itemInMenuRepositoryMock, times(1)).getOne(ItemInMenuConstants.INVALID_ITEM_ID);
+		verify(itemInMenuRepositoryMock, times(1)).findById(ItemInMenuConstants.INVALID_ITEM_ID);
 	}
 	
 	@Test
@@ -114,8 +114,8 @@ public class ItemInMenuServiceUnitTest {
 				ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1,
 				new BigDecimal(3000),new Item(),new Menu(),true);
 		
-		given(itemInMenuRepositoryMock.getOne(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(item);
+		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.of(item));
 		itemInMenuService.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
-		verify(itemInMenuRepositoryMock, times(1)).getOne(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
+		verify(itemInMenuRepositoryMock, times(1)).findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
 	}
 }
