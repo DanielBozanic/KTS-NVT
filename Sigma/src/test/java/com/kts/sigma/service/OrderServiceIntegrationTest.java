@@ -127,23 +127,11 @@ public class OrderServiceIntegrationTest {
 	@Transactional
 	@Rollback(true)
  	public void addItemToOrder_ValidOrderIdValidItemValidCode_ReturnsItem() {
-//		OrderDTO dto = new OrderDTO();
-//		dto.setTableId(TableConstants.DB_TABLE_ID_4);
-//		dto.setWaiterId(UserContants.DB_EMPLOYEE_ID_1);
-//		
-//		List<ItemInOrderDTO> items = new ArrayList<ItemInOrderDTO>();
-//		
 		ItemInOrderDTO dto1 = new ItemInOrderDTO();
 		dto1.setItemId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
 		dto1.setQuantity(3);
 		dto1.setSellingPrice(BigDecimal.valueOf(300));
-//		items.add(dto1);
-//		
-//		ItemInOrderDTO dto2 = new ItemInOrderDTO();
-//		dto2.setItemId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2);
-//		dto2.setQuantity(2);
-//		dto2.setSellingPrice(BigDecimal.valueOf(100));
-//		items.add(dto2);
+		
 		OrderDTO dto = orderService.findById(OrderConstants.DB_ORDER_ID_1);
 		BigDecimal old = dto.getTotalPrice();
 		
