@@ -36,7 +36,7 @@ public class ItemInOrderController {
 	  return itemInOrderService.save(newEntity, code);
 	}
 	
-	@PutMapping("/code")
+	@PutMapping("/{code}")
 	public void put(@RequestBody ItemInOrderDTO item, @PathVariable Integer code) {
 		itemInOrderService.put(item, code);
 	}
