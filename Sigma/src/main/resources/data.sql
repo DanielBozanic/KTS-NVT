@@ -15,7 +15,10 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOO
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Coca Cola');
 
 
-INSERT INTO Menu (active) VALUES (true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Standard', '2021-12-10', '2022-05-31', true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Summer', '2022-06-01', '2022-08-31', true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Autumn', '2022-09-01', '2022-11-30', true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Christmas', '2022-12-01', '2022-12-31', true);
 
 
 INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 2);

@@ -13,4 +13,5 @@ public class MenuConstants {
 	
 	public final static Integer DB_TOTAL_MENUS = 4;
 	public final static Integer DB_TOTAL_ACTIVE_MENUS = 3;
+	public final static Integer DB_TOTAL_ACTIVE_MENUS_NON_EXPIRED = 3;
 }

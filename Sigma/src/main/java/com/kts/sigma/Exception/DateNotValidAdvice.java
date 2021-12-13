@@ -11,14 +11,14 @@ public class DateNotValidAdvice {
 
     @ResponseBody
     @ExceptionHandler(DateNotValidException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND) //TODO promeniti kasnije httpStatus
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //TODO promeniti kasnije httpStatus
     String dateNotValid(DateNotValidException ex) {
         return ex.getMessage();
     }
 
     @ResponseBody
     @ExceptionHandler(DateNotValidOrderException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND) //TODO promeniti kasnije httpStatus
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //TODO promeniti kasnije httpStatus
     String datesOrderNotValid(DateNotValidOrderException ex) {
         return ex.getMessage();
     }

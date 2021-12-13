@@ -56,11 +56,67 @@ public class MenuControllerIntegrationTest {
 	}
 	
 	@Test
+	public void getActiveNonExpiredMenus_ValidState_ReturnsActiveNonExpiredMenus() {
+		ResponseEntity<MenuDTO[]> responseEntity = restTemplate
+				.getForEntity("/menu/getActiveNonExpiredMenus", MenuDTO[].class);
+
+		MenuDTO[] menus = responseEntity.getBody();
+
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(MenuConstants.DB_TOTAL_ACTIVE_MENUS_NON_EXPIRED.intValue(), menus.length);
+		assertEquals(MenuConstants.DB_MENU_ID_1.intValue(), menus[0].getId().intValue());
+	}
+	
+	@Test
+	public void addMenu_PastStartAndEndDate_ReturnsBadRequest() {
+		MenuDTO menuDto = new MenuDTO();
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2020, 1, 1, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2020, 3, 1, 0, 0));
+		menuDto.setActive(true);
+		
+		ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+				"/menu/addMenu", menuDto, String.class);
+		
+		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+	}
+	
+	@Test
+	public void addMenu_StartDateAfterEndDate_ReturnsBadRequest() {
+		MenuDTO menuDto = new MenuDTO();
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2022, 12, 31, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2022, 12, 1, 0, 0));
+		menuDto.setActive(true);
+		
+		ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+				"/menu/addMenu", menuDto, String.class);
+		
+		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+	}
+	
+	@Test
+	public void addMenu_BetweenExistingDates_ReturnsBadRequest() {
+		MenuDTO menuDto = new MenuDTO();
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2022, 12, 1, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2023, 6, 1, 0, 0));
+		menuDto.setActive(true);
+		
+		ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+				"/menu/addMenu", menuDto, String.class);
+		
+		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+	}
+	
+	@Test
 	public void addMenu_ValidState_ReturnsCreatedMenu() {
 		Integer size = menuRepository.findAll().size();
 		
 		MenuDTO menuDto = new MenuDTO();
-		menuDto.setExpirationDate(LocalDateTime.of(2022, 3, 18, 0, 0));
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2023, 1, 1, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2023, 3, 1, 0, 0));
 		menuDto.setActive(true);
 		
 		ResponseEntity<MenuDTO> responseEntity = restTemplate.postForEntity(
@@ -199,6 +255,18 @@ public class MenuControllerIntegrationTest {
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU.intValue(), itemsInMenu.length);
+	}
+	
+	@Test
+	public void getItemsInMenuByCurrentPage_ValidMenuId_ReturnsItemsInMenuForCurrentPage() {
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/menu/getItemsInMenuByCurrentPage/" + MenuConstants.DB_MENU_ID_1 + "?currentPage=" + 
+								ItemInMenuConstants.CURRENT_PAGE + "&pageSize=" + ItemInMenuConstants.PAGE_SIZE, ItemDTO[].class);
+
+		ItemDTO[] itemsInMenu = responseEntity.getBody();
+		
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU_CURRENT_PAGE.intValue(), itemsInMenu.length);
 	}
 	
 	@Test

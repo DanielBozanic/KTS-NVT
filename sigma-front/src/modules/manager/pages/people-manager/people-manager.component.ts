@@ -58,6 +58,23 @@ export class PeopleManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeForms();
+    this.getNumberOfActiveEmployeeRecords();
+    this.getEmployeesByCurrentPage();
+  }
+
+  ngAfterViewInit(): void {
+    this.employeeDataSource.paginator = this.paginatorEmployee;
+  }
+
+  @ViewChild(MatPaginator)
+  paginatorEmployee!: MatPaginator;
+
+  @ViewChild('addEmployeeDialog') addEmployeeDialog!: TemplateRef<any>;
+
+  @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
+
+  initializeForms(): void {
     this.addEmployeeForm = new FormGroup(
       {
         name: new FormControl('', Validators.required),
@@ -74,20 +91,7 @@ export class PeopleManagerComponent implements OnInit {
       },
       PaymentValidator
     );
-    this.getNumberOfActiveEmployeeRecords();
-    this.getEmployeesByCurrentPage();
   }
-
-  ngAfterViewInit(): void {
-    this.employeeDataSource.paginator = this.paginatorEmployee;
-  }
-
-  @ViewChild(MatPaginator)
-  paginatorEmployee!: MatPaginator;
-
-  @ViewChild('addEmployeeDialog') addEmployeeDialog!: TemplateRef<any>;
-
-  @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
 
   get paymentBigDecimalAddForm(): AbstractControl | null {
     return this.addEmployeeForm.get('paymentBigDecimal');

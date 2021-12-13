@@ -10,10 +10,10 @@ INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (30000
 INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (40000, '2021-06-10', null, 4);
 INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (25000, '2020-06-10', '2021-04-10', 1);
 
-INSERT INTO Menu (expiration_date, active) VALUES ('2022-10-07', true);
-INSERT INTO Menu (expiration_date, active) VALUES ('2022-06-01', true);
-INSERT INTO Menu (expiration_date, active) VALUES ('2020-07-10', false);
-INSERT INTO Menu (expiration_date, active) VALUES ('2022-02-05', true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Standard', '2021-12-10', '2022-05-31', true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Summer', '2022-06-01', '2022-08-31', true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Autumn', '2022-09-01', '2022-11-30', false);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Christmas', '2022-12-01', '2022-12-31', true);
 
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Coca Cola');
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 200, 'tasty', 'Spaghetti', 2);

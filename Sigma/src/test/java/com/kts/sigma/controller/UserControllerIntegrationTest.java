@@ -207,7 +207,7 @@ public class UserControllerIntegrationTest {
 		payment.setDateCreated(LocalDateTime.now());
 		payment.setPayment(new BigDecimal(29000));
 		payment.setEmployee(employee);
-		paymentRepository.save(payment);
+		payment = paymentRepository.save(payment);
 		
 		Integer size = employeeRepository.getNumberOfActiveEmployeeRecords();
 
@@ -219,6 +219,7 @@ public class UserControllerIntegrationTest {
 
 		assertEquals(size - 1, employeeRepository.getNumberOfActiveEmployeeRecords().intValue());
 		
+		paymentRepository.deleteById(payment.getId());
 		employeeRepository.deleteById(employee.getId());
 	}
 	
