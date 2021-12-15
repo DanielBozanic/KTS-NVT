@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kts.sigma.Exception.ItemNotFoundException;
@@ -29,6 +31,25 @@ public class ItemServiceImpl implements ItemService{
 	public Iterable<ItemDTO> getAll() {
 		List<Item> items = itemRepository.findAll();
 		ArrayList<ItemDTO> results = new ArrayList<ItemDTO>();
+		
+		for (Item item : items) {
+			ItemDTO dto = Mapper.mapper.map(item, ItemDTO.class);
+			
+			if(item instanceof Food) {
+				dto.setFood(true);
+			}
+			
+			results.add(dto);
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public List<ItemDTO> getItemsByCurrentPage(Integer currentPage, Integer pageSize) {
+		Pageable page = PageRequest.of(currentPage, pageSize);
+		List<Item> items = itemRepository.findAll(page).toList();
+		List<ItemDTO> results = new ArrayList<ItemDTO>();
 		
 		for (Item item : items) {
 			ItemDTO dto = Mapper.mapper.map(item, ItemDTO.class);
