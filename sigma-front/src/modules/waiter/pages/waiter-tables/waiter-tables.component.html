@@ -13,13 +13,16 @@
     </mat-form-field>
   </div>
 
-  <div clas="tables">
-    <button mat-raised-button color="primary" (click)="tableClick(tables[0])">Table</button>
+
+  <div class="tables" *ngIf="tables.length !== 0">
+    <div class="inline" *ngFor="let table of tables">
+      <button class="table" mat-raised-button color="primary" (click)="tableClick(table)">Table {{table.tableNumber}} <br/> {{table.state}}  </button>
+    </div>
   </div>
 
   <ng-template #freeTableDialog>
-    <button mat-raised-button color="primary" (click)="reserveTable(1)">Reserve table</button>
-    <button mat-raised-button color="primary" (click)="order(tables[0])">Order</button>
+    <button mat-raised-button color="primary" (click)="reserveTable()">Reserve table</button>
+    <button mat-raised-button color="primary" (click)="order()">Order</button>
   </ng-template>
 
   <ng-template #tableOrderDialog>
@@ -43,7 +46,7 @@
     <span class="inline">{{currentOrder.totalPrice}}</span>
 
     <div class="action-buttons">
-      <button mat-raised-button color="primary" (click)="pay(1)">Pay</button>
+      <button mat-raised-button color="primary" (click)="pay()">Pay</button>
       <button mat-raised-button color="primary" (click)="closePaymentView()">Cancel</button>
     </div>
   </ng-template>

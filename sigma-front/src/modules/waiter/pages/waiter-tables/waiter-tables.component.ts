@@ -22,6 +22,7 @@ export class WaiterTablesComponent implements OnInit {
   zones: Zone[] = [];
   tables: Table[] = [];
   currentItems: Item[] = [];
+  currentTable!: Table;
   currentOrder: Order = {
     id: 0,
     state: '',
@@ -57,21 +58,21 @@ export class WaiterTablesComponent implements OnInit {
     this.paymentTableDialog.closeAll();
   }
 
-  reserveTable(id: number) {
+  reserveTable() {
     this.service
-      .changeTableState(id, 'RESERVED', 1234)
+      .changeTableState(this.currentTable.id, 'RESERVED', 1234)
       .subscribe((data) => this.getTables(this.zoneId));
     this.freeTableDialog.closeAll();
   }
 
-  order(table: Table) {
+  order() {
     this.freeTableDialog.closeAll();
     this.redirectToOrderComponent();
   }
 
-  pay(id: number) {
+  pay() {
     this.service
-      .changeTableState(id, 'FREE', 1234)
+      .changeTableState(this.currentTable.id, 'FREE', 1234)
       .subscribe((data) => this.getTables(this.zoneId));
     this.paymentTableDialog.closeAll();
   }
@@ -91,6 +92,7 @@ export class WaiterTablesComponent implements OnInit {
   }
 
   tableClick(table: Table) {
+    this.currentTable = table;
     switch (table.state) {
       case 'FREE':
         const dialogRef = this.freeTableDialog.open(this.freeDialog);
