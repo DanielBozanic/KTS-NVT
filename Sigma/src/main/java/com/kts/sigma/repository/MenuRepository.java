@@ -13,9 +13,6 @@ public interface MenuRepository extends JpaRepository<Menu, Integer>{
 	@Query("select m from Menu m where m.id = ?1 and m.active = true")
 	Menu getActiveMenu(Integer menuId);
 	
-	@Query("select m from Menu m where m.active = true and ((m.startDate <= ?1 and ?1 <= m.expirationDate) or (m.startDate <= ?2 and ?2 <= m.expirationDate))")
-	Menu getActiveMenuBetweenDates(LocalDateTime start, LocalDateTime end);
-	
-	@Query("select m from Menu m where m.active = true and m.expirationDate > ?1")
+	@Query("select m from Menu m where m.active = true and (m.expirationDate > ?1 or m.expirationDate = null)")
 	List<Menu> getActiveNonExpiredMenus(LocalDateTime now);
 }

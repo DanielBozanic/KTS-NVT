@@ -68,39 +68,11 @@ public class MenuControllerIntegrationTest {
 	}
 	
 	@Test
-	public void addMenu_PastStartAndEndDate_ReturnsBadRequest() {
-		MenuDTO menuDto = new MenuDTO();
-		menuDto.setName("Winter");
-		menuDto.setStartDate(LocalDateTime.of(2020, 1, 1, 0, 0));
-		menuDto.setExpirationDate(LocalDateTime.of(2020, 3, 1, 0, 0));
-		menuDto.setActive(true);
-		
-		ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-				"/menu/addMenu", menuDto, String.class);
-		
-		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-	}
-	
-	@Test
 	public void addMenu_StartDateAfterEndDate_ReturnsBadRequest() {
 		MenuDTO menuDto = new MenuDTO();
 		menuDto.setName("Winter");
 		menuDto.setStartDate(LocalDateTime.of(2022, 12, 31, 0, 0));
 		menuDto.setExpirationDate(LocalDateTime.of(2022, 12, 1, 0, 0));
-		menuDto.setActive(true);
-		
-		ResponseEntity<String> responseEntity = restTemplate.postForEntity(
-				"/menu/addMenu", menuDto, String.class);
-		
-		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-	}
-	
-	@Test
-	public void addMenu_BetweenExistingDates_ReturnsBadRequest() {
-		MenuDTO menuDto = new MenuDTO();
-		menuDto.setName("Winter");
-		menuDto.setStartDate(LocalDateTime.of(2022, 12, 1, 0, 0));
-		menuDto.setExpirationDate(LocalDateTime.of(2023, 6, 1, 0, 0));
 		menuDto.setActive(true);
 		
 		ResponseEntity<String> responseEntity = restTemplate.postForEntity(

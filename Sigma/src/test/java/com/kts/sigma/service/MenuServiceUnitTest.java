@@ -19,9 +19,7 @@ import com.kts.sigma.repository.ItemRepository;
 import com.kts.sigma.repository.MenuRepository;
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
-import com.kts.sigma.Exception.PastDateException;
 import com.kts.sigma.Exception.DateNotValidOrderException;
-import com.kts.sigma.Exception.MenuBetweenDatesExistsException;
 import com.kts.sigma.constants.MenuConstants;
 import com.kts.sigma.constants.ItemConstants;
 import com.kts.sigma.constants.ItemInMenuConstants;
@@ -125,17 +123,6 @@ public class MenuServiceUnitTest {
 		assertEquals(MenuConstants.DB_TOTAL_ACTIVE_MENUS_NON_EXPIRED.intValue(), found.size());
 	}
 	
-	@Test(expected = PastDateException.class)
-	public void addMenu_PastStartAndEndDate_ThrowsException() {
-		MenuDTO menuDto = new MenuDTO();
-		menuDto.setName("Winter");
-		menuDto.setStartDate(LocalDateTime.of(2020, 1, 1, 0, 0));
-		menuDto.setExpirationDate(LocalDateTime.of(2020, 3, 1, 0, 0));
-		menuDto.setActive(true);
-		
-		menuService.addMenu(menuDto);
-	}
-	
 	@Test(expected = DateNotValidOrderException.class)
 	public void addMenu_StartDateAfterEndDate_ThrowsException() {
 		MenuDTO menuDto = new MenuDTO();
@@ -147,28 +134,6 @@ public class MenuServiceUnitTest {
 		menuService.addMenu(menuDto);
 	}
 	
-	@Test(expected = MenuBetweenDatesExistsException.class)
-	public void addMenu_BetweenExistingDates_ThrowsException() {
-		Menu menu = new Menu();
-		menu.setActive(true);
-		menu.setStartDate(LocalDateTime.of(2022, 12, 13, 0, 0));
-		menu.setExpirationDate(LocalDateTime.of(2022, 12, 31, 0, 0));
-		
-		given(menuRepositoryMock.getActiveMenuBetweenDates(LocalDateTime.of(2022, 12, 13, 0, 0), 
-				LocalDateTime.of(2023, 6, 1, 0, 0))).willReturn(menu);
-		
-		MenuDTO menuDto = new MenuDTO();
-		menuDto.setName("Winter");
-		menuDto.setStartDate(LocalDateTime.of(2022, 12, 13, 0, 0));
-		menuDto.setExpirationDate(LocalDateTime.of(2023, 6, 1, 0, 0));
-		menuDto.setActive(true);
-		
-		menuService.addMenu(menuDto);
-		
-		verify(menuRepositoryMock, times(1)).getActiveMenuBetweenDates(LocalDateTime.of(2022, 12, 13, 0, 0), 
-				LocalDateTime.of(2023, 6, 1, 0, 0));
-	}
-	
 	@Test
 	public void addMenu_ValidState_ReturnsCreatedMenu() {	
 		Menu savedMenu = new Menu();
@@ -178,8 +143,6 @@ public class MenuServiceUnitTest {
 		savedMenu.setExpirationDate(LocalDateTime.of(2023, 3, 1, 0, 0));
 		savedMenu.setActive(true);
 		
-		given(menuRepositoryMock.getActiveMenuBetweenDates(LocalDateTime.of(2023, 1, 1, 0, 0), 
-				LocalDateTime.of(2023, 3, 1, 0, 0))).willReturn(null);
 		given(menuRepositoryMock.save(any(Menu.class))).willReturn(savedMenu);
 		
 		MenuDTO menuDto = new MenuDTO();
@@ -191,8 +154,6 @@ public class MenuServiceUnitTest {
 		MenuDTO createdMenu = menuService.addMenu(menuDto);
 		
 		verify(menuRepositoryMock, times(1)).save(any(Menu.class));
-		verify(menuRepositoryMock, times(1)).getActiveMenuBetweenDates(LocalDateTime.of(2023, 1, 1, 0, 0), 
-				LocalDateTime.of(2023, 3, 1, 0, 0));
 		
 		assertEquals(MenuConstants.NEW_MENU_ID, createdMenu.getId());
 		assertEquals(LocalDateTime.of(2023, 1, 1, 0, 0), createdMenu.getStartDate());

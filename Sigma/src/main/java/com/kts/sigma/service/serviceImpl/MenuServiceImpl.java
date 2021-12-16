@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import com.kts.sigma.Exception.DateNotValidOrderException;
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
-import com.kts.sigma.Exception.MenuBetweenDatesExistsException;
-import com.kts.sigma.Exception.PastDateException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
@@ -68,18 +66,9 @@ public class MenuServiceImpl implements MenuService {
 	
 	@Override
 	public MenuDTO addMenu(MenuDTO item) {
-		if (item.getStartDate().isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)) || 
-				item.getExpirationDate().isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT))) {
-			throw new PastDateException("Start and expiration date must not be before todays date!");
-		} else if (item.getStartDate().isAfter(item.getExpirationDate())) {
+		if (item.getExpirationDate() != null && item.getStartDate().isAfter(item.getExpirationDate())) {
 			throw new DateNotValidOrderException(item.getStartDate(), item.getExpirationDate());
 		}
-		
-		Menu menuBetweenDates = menuRepository.getActiveMenuBetweenDates(item.getStartDate(), item.getExpirationDate());
-		if (menuBetweenDates != null) {
-			throw new MenuBetweenDatesExistsException(item.getStartDate(), item.getExpirationDate());
-		}
-		
 		Menu newMenu = Mapper.mapper.map(item, Menu.class);
 		newMenu.setActive(true);
 		return Mapper.mapper.map(menuRepository.save(newMenu), MenuDTO.class);

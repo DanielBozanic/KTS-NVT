@@ -113,7 +113,7 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.createNewMenuForm = new FormGroup({
       name: new FormControl('', Validators.required),
       startDate: new FormControl('', Validators.required),
-      expirationDate: new FormControl('', Validators.required),
+      expirationDate: new FormControl(''),
     });
     this.addItemInMenuForm = new FormGroup({
       id: new FormControl(),
@@ -344,17 +344,10 @@ export class FoodDrinksManagerComponent implements OnInit {
     let validStartDate = DateValidator(
       this.createNewMenuForm.get('startDate')?.value
     );
-    let validExpirationDate = DateValidator(
-      this.createNewMenuForm.get('expirationDate')?.value
-    );
     if (validStartDate !== null) {
       this.createNewMenuForm
         .get('startDate')
         ?.setErrors([{ dateInvalid: validStartDate }]);
-    } else if (validExpirationDate !== null) {
-      this.createNewMenuForm
-        .get('expirationDate')
-        ?.setErrors([{ dateInvalid: validExpirationDate }]);
     }
   }
 

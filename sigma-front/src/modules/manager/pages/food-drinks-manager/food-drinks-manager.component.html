@@ -240,16 +240,6 @@
         formControlName="expirationDate"
         (input)="checkDate()"
       />
-      <mat-error *ngIf="hasErrorCreateNewMenuForm('expirationDate', 'required')"
-        >Expiration date is required!</mat-error
-      >
-      <mat-error
-        *ngIf="
-          expirationDate?.invalid &&
-          !hasErrorCreateNewMenuForm('expirationDate', 'required')
-        "
-        >Expiration date can not be a past date!</mat-error
-      >
     </mat-form-field>
   </form>
   <button
