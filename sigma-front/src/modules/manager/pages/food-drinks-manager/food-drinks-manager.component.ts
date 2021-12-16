@@ -16,6 +16,7 @@ import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
 import { FoodDrinksManagerService } from '../../services/food-drinks-manager.service';
 import { DateValidator } from '../../validators/date-validator';
+import { PositiveNumberValidator } from '../../validators/positive-number-validator';
 
 @Component({
   selector: 'app-food-drinks-manager',
@@ -34,8 +35,12 @@ export class FoodDrinksManagerComponent implements OnInit {
   isLoading: boolean;
   selectedMenu: Menu;
   categories: Array<string>;
+  types: Array<string>;
   originalItemData: Array<Item>;
   createNewMenuForm!: FormGroup;
+  createNewItemForm!: FormGroup;
+  foodIsTrue: boolean;
+  addItemInMenuForm!: FormGroup;
   searchForm!: FormGroup;
   RESPONSE_OK: number;
   RESPONSE_ERROR: number;
@@ -44,7 +49,9 @@ export class FoodDrinksManagerComponent implements OnInit {
   constructor(
     private foodDrinksService: FoodDrinksManagerService,
     private snackBar: MatSnackBar,
-    private createNewMenuDialog: MatDialog
+    private createNewMenuDialog: MatDialog,
+    private addItemInMenuDialog: MatDialog,
+    private createNewItemDialog: MatDialog
   ) {
     this.currentPage = 0;
     this.pageSize = 10;
@@ -59,10 +66,12 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.isLoading = false;
     this.selectedMenu = new Menu();
     this.categories = ['ALL', 'APPETISER', 'SALAD', 'MAIN_COURSE', 'DESERT'];
+    this.types = ['APPETISER', 'SALAD', 'MAIN_COURSE', 'DESERT'];
     this.originalItemData = [];
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
     this.verticalPosition = 'top';
+    this.foodIsTrue = true;
   }
 
   ngOnInit(): void {
@@ -80,6 +89,10 @@ export class FoodDrinksManagerComponent implements OnInit {
 
   @ViewChild('menuDialog') menuDialog!: TemplateRef<any>;
 
+  @ViewChild('itemInMenuDialog') itemInMenuDialog!: TemplateRef<any>;
+
+  @ViewChild('itemDialog') itemDialog!: TemplateRef<any>;
+
   get startDate(): AbstractControl | null {
     return this.createNewMenuForm.get('startDate');
   }
@@ -88,11 +101,30 @@ export class FoodDrinksManagerComponent implements OnInit {
     return this.createNewMenuForm.get('expirationDate');
   }
 
+  get sellingPrice(): AbstractControl | null {
+    return this.addItemInMenuForm.get('sellingPrice');
+  }
+
+  get buyingPrice(): AbstractControl | null {
+    return this.createNewItemForm.get('buyingPrice');
+  }
+
   initializeForms(): void {
     this.createNewMenuForm = new FormGroup({
       name: new FormControl('', Validators.required),
       startDate: new FormControl('', Validators.required),
       expirationDate: new FormControl('', Validators.required),
+    });
+    this.addItemInMenuForm = new FormGroup({
+      id: new FormControl(),
+      sellingPrice: new FormControl(0, Validators.required),
+    });
+    this.createNewItemForm = new FormGroup({
+      name: new FormControl('', Validators.required),
+      food: new FormControl(true),
+      type: new FormControl('APPETISER'),
+      buyingPrice: new FormControl(0, Validators.required),
+      description: new FormControl('', Validators.required),
     });
     this.searchForm = new FormGroup({
       searchTerm: new FormControl(''),
@@ -106,6 +138,11 @@ export class FoodDrinksManagerComponent implements OnInit {
         this.selectedMenu = data[0];
         this.getNumberOfActiveItemInMenuRecordsByMenuId(data[0].id);
         this.getItemsInMenuByCurrentPage(data[0].id, false);
+      } else {
+        this.selectedMenu = new Menu();
+        this.currentPage = 0;
+        this.totalRows = 0;
+        this.itemInMenuDataSource.data = [];
       }
     });
   }
@@ -159,8 +196,30 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.getItemsInMenuByCurrentPage(menuId, false);
   }
 
-  addItemToMenu(item: Item): void {
-    console.log(item);
+  openAddItemToMenuDialog(item: Item): void {
+    this.addItemInMenuForm.patchValue({
+      id: item.id,
+    });
+    let dialogRef = this.addItemInMenuDialog.open(this.itemInMenuDialog);
+    dialogRef.afterClosed().subscribe(() => {
+      this.addItemInMenuForm.reset();
+    });
+  }
+
+  addItemInMenu(): void {
+    this.foodDrinksService
+      .addItemInMenu(this.addItemInMenuForm.value, this.selectedMenu.id)
+      .subscribe(
+        (resp) => {
+          console.log(resp);
+          this.addItemInMenuDialog.closeAll();
+          this.getNumberOfActiveItemInMenuRecordsByMenuId(this.selectedMenu.id);
+          this.getItemsInMenuByCurrentPage(this.selectedMenu.id, false);
+        },
+        (err) => {
+          this.openSnackBar(err.error, this.RESPONSE_ERROR);
+        }
+      );
   }
 
   removeItemFromMenu(itemId: number): void {
@@ -168,6 +227,7 @@ export class FoodDrinksManagerComponent implements OnInit {
       .removeItemFromMenu(itemId, this.selectedMenu.id)
       .subscribe(
         (data) => {
+          this.getNumberOfActiveItemInMenuRecordsByMenuId(this.selectedMenu.id);
           this.getItemsInMenuByCurrentPage(this.selectedMenu.id, true);
         },
         (err) => {
@@ -176,7 +236,31 @@ export class FoodDrinksManagerComponent implements OnInit {
       );
   }
 
-  createNewItem(): void {}
+  openCreateNewItemDialog(): void {
+    let dialogRef = this.createNewItemDialog.open(this.itemDialog);
+    dialogRef.afterClosed().subscribe(() => {
+      this.createNewItemForm.reset();
+      this.createNewItemForm.patchValue({ food: true });
+      this.createNewItemForm.patchValue({
+        type: 'APPETISER',
+      });
+    });
+  }
+
+  createNewItem(): void {
+    this.foodDrinksService
+      .createNewItem(this.createNewItemForm.value)
+      .subscribe(
+        (resp) => {
+          console.log(resp);
+          this.createNewItemDialog.closeAll();
+          this.getAllItems();
+        },
+        (err) => {
+          this.openSnackBar(err.error, this.RESPONSE_ERROR);
+        }
+      );
+  }
 
   openCreateNewMenuDialog(): void {
     let dialogRef = this.createNewMenuDialog.open(this.menuDialog);
@@ -220,11 +304,13 @@ export class FoodDrinksManagerComponent implements OnInit {
   }
 
   search(): void {
-    this.foodDrinksService
-      .getItemsBySearchTerm(this.searchForm.get('searchTerm')?.value)
-      .subscribe((data) => {
-        this.items = data;
-      });
+    if (this.searchForm.get('searchTerm')?.value !== '') {
+      this.foodDrinksService
+        .getItemsBySearchTerm(this.searchForm.get('searchTerm')?.value)
+        .subscribe((data) => {
+          this.items = data;
+        });
+    }
   }
 
   resetSearchFilter(): void {
@@ -238,8 +324,20 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.getItemsInMenuByCurrentPage(this.selectedMenu.id, false);
   }
 
+  foodValueChanged(value: boolean): void {
+    this.foodIsTrue = value;
+  }
+
   hasErrorCreateNewMenuForm = (controlName: string, errorName: string) => {
     return this.createNewMenuForm.controls[controlName].hasError(errorName);
+  };
+
+  hasErrorAddItemInMenuForm = (controlName: string, errorName: string) => {
+    return this.addItemInMenuForm.controls[controlName].hasError(errorName);
+  };
+
+  hasErrorCreateNewItemForm = (controlName: string, errorName: string) => {
+    return this.createNewItemForm.controls[controlName].hasError(errorName);
   };
 
   checkDate(): void {
@@ -257,6 +355,28 @@ export class FoodDrinksManagerComponent implements OnInit {
       this.createNewMenuForm
         .get('expirationDate')
         ?.setErrors([{ dateInvalid: validExpirationDate }]);
+    }
+  }
+
+  checkSellingPrice(): void {
+    let validSellingPrice = PositiveNumberValidator(
+      this.addItemInMenuForm.get('sellingPrice')?.value
+    );
+    if (validSellingPrice !== null) {
+      this.addItemInMenuForm
+        .get('sellingPrice')
+        ?.setErrors([{ positiveNumberInvalid: validSellingPrice }]);
+    }
+  }
+
+  checkBuyingPrice(): void {
+    let validBuyingPrice = PositiveNumberValidator(
+      this.createNewItemForm.get('buyingPrice')?.value
+    );
+    if (validBuyingPrice !== null) {
+      this.createNewItemForm
+        .get('buyingPrice')
+        ?.setErrors([{ positiveNumberInvalid: validBuyingPrice }]);
     }
   }
 

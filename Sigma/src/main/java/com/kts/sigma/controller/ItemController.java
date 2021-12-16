@@ -46,12 +46,12 @@ public class ItemController {
 		return new ResponseEntity<>(itemService.createNewItem(itemDto), HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value = "getItemsBySearchTerm/{searchTerm}")
+	@GetMapping(value = "/getItemsBySearchTerm/{searchTerm}")
 	public ResponseEntity<ArrayList<ItemDTO>> getItemsBySearchTerm(@PathVariable String searchTerm) {
 		return new ResponseEntity<>(itemService.getItemsBySearchTerm(searchTerm), HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "getItemsByFoodType/{foodType}")
+	@GetMapping(value = "/getItemsByFoodType/{foodType}")
 	public ResponseEntity<ArrayList<ItemDTO>> getItemsByFoodType(@PathVariable FoodType foodType) {
 		return new ResponseEntity<>(itemService.getItemsByFoodType(foodType), HttpStatus.OK);
 	}

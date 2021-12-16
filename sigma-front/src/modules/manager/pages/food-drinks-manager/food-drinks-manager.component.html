@@ -68,7 +68,7 @@
           <button
             mat-raised-button
             color="primary"
-            (click)="addItemToMenu(item)"
+            (click)="openAddItemToMenuDialog(item)"
           >
             Add To Menu
           </button>
@@ -158,15 +158,54 @@
     >
       Create New Menu
     </button>
-    <button mat-raised-button color="primary">Create New Item</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openCreateNewItemDialog()"
+    >
+      Create New Item
+    </button>
     <button mat-raised-button color="warn" (click)="deleteSelectedMenu()">
       Delete Selected Menu
     </button>
   </div>
 </div>
 
+<ng-template #itemInMenuDialog>
+  <form [formGroup]="addItemInMenuForm" class="form">
+    <mat-form-field class="field-width">
+      <mat-label>Selling price</mat-label>
+      <input
+        type="number"
+        min="0"
+        matInput
+        formControlName="sellingPrice"
+        (input)="checkSellingPrice()"
+      />
+      <mat-error *ngIf="hasErrorAddItemInMenuForm('sellingPrice', 'required')"
+        >Selling price is required!</mat-error
+      >
+      <mat-error
+        *ngIf="
+          sellingPrice?.invalid &&
+          !hasErrorAddItemInMenuForm('sellingPrice', 'required')
+        "
+        >Selling price must be a positive number!</mat-error
+      >
+    </mat-form-field>
+  </form>
+  <button
+    (click)="addItemInMenu()"
+    [disabled]="addItemInMenuForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    Add item to menu
+  </button>
+</ng-template>
+
 <ng-template #menuDialog>
-  <form [formGroup]="createNewMenuForm" class="create-new-menu-form">
+  <form [formGroup]="createNewMenuForm" class="form">
     <mat-form-field class="field-width">
       <mat-label>Name</mat-label>
       <input type="text" matInput placeholder="Name" formControlName="name" />
@@ -220,5 +259,78 @@
     color="primary"
   >
     Create New Menu
+  </button>
+</ng-template>
+
+<ng-template #itemDialog>
+  <form [formGroup]="createNewItemForm" class="form">
+    <mat-form-field class="field-width">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput placeholder="Name" formControlName="name" />
+      <mat-error *ngIf="hasErrorCreateNewItemForm('name', 'required')"
+        >Name is required!</mat-error
+      >
+    </mat-form-field>
+    <mat-radio-group class="radio-group" formControlName="food">
+      <mat-radio-button
+        class="radio-button"
+        [value]="true"
+        [checked]="true"
+        (change)="foodValueChanged($event.value)"
+        >Food</mat-radio-button
+      >
+      <mat-radio-button
+        class="radio-button"
+        [value]="false"
+        (change)="foodValueChanged($event.value)"
+        >Drink</mat-radio-button
+      >
+    </mat-radio-group>
+    <mat-form-field class="field-width" *ngIf="foodIsTrue">
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="field-width">
+      <mat-label>Buying price</mat-label>
+      <input
+        type="number"
+        min="0"
+        matInput
+        formControlName="buyingPrice"
+        (input)="checkBuyingPrice()"
+      />
+      <mat-error *ngIf="hasErrorCreateNewItemForm('buyingPrice', 'required')"
+        >Selling price is required!</mat-error
+      >
+      <mat-error
+        *ngIf="
+          buyingPrice?.invalid &&
+          !hasErrorCreateNewItemForm('buyingPrice', 'required')
+        "
+        >Buying price must be a positive number!</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="field-width">
+      <mat-label>Description</mat-label>
+      <textarea
+        class="textarea-size"
+        matInput
+        formControlName="description"
+      ></textarea>
+      <mat-error *ngIf="hasErrorCreateNewItemForm('description', 'required')"
+        >Description is required!</mat-error
+      >
+    </mat-form-field>
+  </form>
+  <button
+    (click)="createNewItem()"
+    [disabled]="createNewItemForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    Create New Item
   </button>
 </ng-template>

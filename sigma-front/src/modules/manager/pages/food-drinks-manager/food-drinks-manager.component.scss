@@ -115,11 +115,26 @@ th.mat-header-cell {
   }
 }
 
-.create-new-menu-form {
+.form {
   min-width: 500px;
   width: 100%;
 
   .field-width {
     width: 100%;
+
+    .textarea-size {
+      max-width: 500px;
+      max-height: 100px;
+    }
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+
+  .radio-button {
+    margin: 5px;
   }
 }

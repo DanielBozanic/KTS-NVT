@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { Employee } from '../../../root/models/employee';
 import { PeopleManagerService } from '../../services/people-manager.service';
-import { PaymentValidator } from '../../validators/payment-validator';
+import { PositiveNumberValidator } from '../../validators/positive-number-validator';
 
 @Component({
   selector: 'app-people-manager',
@@ -75,22 +75,16 @@ export class PeopleManagerComponent implements OnInit {
   @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
 
   initializeForms(): void {
-    this.addEmployeeForm = new FormGroup(
-      {
-        name: new FormControl('', Validators.required),
-        paymentBigDecimal: new FormControl(0, Validators.required),
-        type: new FormControl('BARTENDER'),
-      },
-      PaymentValidator
-    );
-    this.editEmployeeForm = new FormGroup(
-      {
-        id: new FormControl(),
-        name: new FormControl(),
-        paymentBigDecimal: new FormControl(),
-      },
-      PaymentValidator
-    );
+    this.addEmployeeForm = new FormGroup({
+      name: new FormControl('', Validators.required),
+      paymentBigDecimal: new FormControl(0, Validators.required),
+      type: new FormControl('BARTENDER'),
+    });
+    this.editEmployeeForm = new FormGroup({
+      id: new FormControl(),
+      name: new FormControl(),
+      paymentBigDecimal: new FormControl(),
+    });
   }
 
   get paymentBigDecimalAddForm(): AbstractControl | null {
@@ -215,14 +209,20 @@ export class PeopleManagerComponent implements OnInit {
   };
 
   checkPayment(): void {
-    if (this.addEmployeeForm.hasError('paymentBigDecimalInvalid')) {
+    let addError = PositiveNumberValidator(
+      this.addEmployeeForm.get('paymentBigDecimal')?.value
+    );
+    let editError = PositiveNumberValidator(
+      this.editEmployeeForm.get('paymentBigDecimal')?.value
+    );
+    if (addError !== null) {
       this.addEmployeeForm
         .get('paymentBigDecimal')
-        ?.setErrors([{ paymentBigDecimalInvalid: true }]);
-    } else if (this.editEmployeeForm.hasError('paymentBigDecimalInvalid')) {
+        ?.setErrors([{ positiveNumberInvalid: addError }]);
+    } else if (editError !== null) {
       this.editEmployeeForm
         .get('paymentBigDecimal')
-        ?.setErrors([{ paymentBigDecimalInvalid: true }]);
+        ?.setErrors([{ positiveNumberInvalid: editError }]);
     }
   }
 
