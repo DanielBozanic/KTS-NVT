@@ -20,6 +20,10 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 	
+	private String name;
+	
+	private LocalDateTime startDate;
+	
     private LocalDateTime expirationDate;
     
     private Boolean active;
@@ -34,6 +38,22 @@ public class Menu {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public LocalDateTime getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(LocalDateTime startDate) {
+		this.startDate = startDate;
 	}
 
 	public LocalDateTime getExpirationDate() {

@@ -8,10 +8,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularMaterialModule } from './angular-material.module';
+import { CarouselModule } from 'primeng/carousel';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tables.component';
+import { FoodDrinksManagerComponent } from '../manager/pages/food-drinks-manager/food-drinks-manager.component';
 
 @NgModule({
-  declarations: [AppComponent, PeopleManagerComponent, WaiterTablesComponent],
+  declarations: [
+    AppComponent,
+    PeopleManagerComponent,
+    WaiterTablesComponent,
+    FoodDrinksManagerComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -20,6 +28,8 @@ import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tabl
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    CarouselModule,
+    FlexLayoutModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

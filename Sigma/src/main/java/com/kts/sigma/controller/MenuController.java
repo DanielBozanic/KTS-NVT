@@ -31,6 +31,11 @@ public class MenuController {
 		return new ResponseEntity<>(menuService.getAll(), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getActiveNonExpiredMenus", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<MenuDTO>> getActiveNonExpiredMenus(){
+		return new ResponseEntity<>(menuService.getActiveNonExpiredMenus(), HttpStatus.OK);
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<MenuDTO> getOne(@PathVariable Integer id) {
 		return new ResponseEntity<>(menuService.findById(id), HttpStatus.OK);
@@ -51,6 +56,17 @@ public class MenuController {
 		return new ResponseEntity<>(menuService.getItemsInMenu(menuId), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getItemsInMenuByCurrentPage/{menuId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<ItemDTO>> getItemsInMenuByCurrentPage(@PathVariable Integer menuId, @RequestParam("currentPage") Integer currentPage, 
+			@RequestParam("pageSize") Integer pageSize) {
+		return new ResponseEntity<>(menuService.getItemsInMenuByCurrentPage(menuId, currentPage, pageSize), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/getNumberOfActiveItemInMenuRecordsByMenuId/{menuId}")
+	public ResponseEntity<Integer> getNumberOfActiveItemInMenuRecordsByMenuId(@PathVariable Integer menuId) {
+		return new ResponseEntity<>(menuService.getNumberOfActiveItemInMenuRecordsByMenuId(menuId), HttpStatus.OK);
+	}
+	
 	@DeleteMapping(value = "/removeItemFromMenu")
 	public void removeItemFromMenu(@RequestParam("itemId") Integer itemId, @RequestParam("menuId") Integer menuId) {
 		menuService.removeItemFromMenu(itemId, menuId);
@@ -60,6 +76,4 @@ public class MenuController {
 	public void delete(@PathVariable Integer id) {
 		menuService.deleteMenuById(id);
 	}
-
-	//TODO dodaj search and stuff
 }

@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { Employee } from '../../../root/models/employee';
 import { PeopleManagerService } from '../../services/people-manager.service';
-import { PaymentValidator } from '../../validators/payment-validator';
+import { PositiveNumberValidator } from '../../validators/positive-number-validator';
 
 @Component({
   selector: 'app-people-manager',
@@ -58,24 +58,9 @@ export class PeopleManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.addEmployeeForm = new FormGroup(
-      {
-        name: new FormControl('', Validators.required),
-        paymentBigDecimal: new FormControl(0, Validators.required),
-        type: new FormControl('BARTENDER'),
-      },
-      PaymentValidator
-    );
-    this.editEmployeeForm = new FormGroup(
-      {
-        id: new FormControl(),
-        name: new FormControl(),
-        paymentBigDecimal: new FormControl(),
-      },
-      PaymentValidator
-    );
+    this.initializeForms();
     this.getNumberOfActiveEmployeeRecords();
-    this.getEmployeesByCurrentPage();
+    this.getEmployeesByCurrentPage(false);
   }
 
   ngAfterViewInit(): void {
@@ -89,6 +74,19 @@ export class PeopleManagerComponent implements OnInit {
 
   @ViewChild('editEmployeeDialog') editEmployeeDialog!: TemplateRef<any>;
 
+  initializeForms(): void {
+    this.addEmployeeForm = new FormGroup({
+      name: new FormControl('', Validators.required),
+      paymentBigDecimal: new FormControl(0, Validators.required),
+      type: new FormControl('BARTENDER'),
+    });
+    this.editEmployeeForm = new FormGroup({
+      id: new FormControl(),
+      name: new FormControl(),
+      paymentBigDecimal: new FormControl(),
+    });
+  }
+
   get paymentBigDecimalAddForm(): AbstractControl | null {
     return this.addEmployeeForm.get('paymentBigDecimal');
   }
@@ -97,7 +95,7 @@ export class PeopleManagerComponent implements OnInit {
     return this.editEmployeeForm.get('paymentBigDecimal');
   }
 
-  getEmployeesByCurrentPage(): void {
+  getEmployeesByCurrentPage(deleting: boolean): void {
     this.isLoading = true;
     this.peopleManagerService
       .getEmployeesByCurrentPage(this.currentPage, this.pageSize)
@@ -106,11 +104,13 @@ export class PeopleManagerComponent implements OnInit {
         this.employeeData = employees;
         this.employeeDataSource.data = employees;
         setTimeout(() => {
-          if (employees.length === 0) {
-            const setPrev = this.currentPage - 1;
-            this.currentPage = setPrev;
-            this.paginatorEmployee.pageIndex = setPrev;
-            this.getEmployeesByCurrentPage();
+          if (employees.length === 0 && deleting) {
+            if (this.currentPage !== 0) {
+              const setPrev = this.currentPage - 1;
+              this.currentPage = setPrev;
+              this.paginatorEmployee.pageIndex = setPrev;
+            }
+            this.getEmployeesByCurrentPage(false);
           } else {
             this.paginatorEmployee.pageIndex = this.currentPage;
           }
@@ -143,7 +143,7 @@ export class PeopleManagerComponent implements OnInit {
       (response) => {
         console.log(response);
         this.getNumberOfActiveEmployeeRecords();
-        this.getEmployeesByCurrentPage();
+        this.getEmployeesByCurrentPage(false);
         this.addDialog.closeAll();
       },
       (error) => {
@@ -182,7 +182,7 @@ export class PeopleManagerComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log(response);
-          this.getEmployeesByCurrentPage();
+          this.getEmployeesByCurrentPage(false);
           this.editDialog.closeAll();
         },
         (error) => {
@@ -196,7 +196,7 @@ export class PeopleManagerComponent implements OnInit {
     this.peopleManagerService.deleteEmployee(employeeId).subscribe(
       () => {
         this.getNumberOfActiveEmployeeRecords();
-        this.getEmployeesByCurrentPage();
+        this.getEmployeesByCurrentPage(true);
       },
       (error) => {
         console.log(error);
@@ -209,20 +209,26 @@ export class PeopleManagerComponent implements OnInit {
   };
 
   checkPayment(): void {
-    if (this.addEmployeeForm.hasError('paymentBigDecimalInvalid')) {
+    let addError = PositiveNumberValidator(
+      this.addEmployeeForm.get('paymentBigDecimal')?.value
+    );
+    let editError = PositiveNumberValidator(
+      this.editEmployeeForm.get('paymentBigDecimal')?.value
+    );
+    if (addError !== null) {
       this.addEmployeeForm
         .get('paymentBigDecimal')
-        ?.setErrors([{ paymentBigDecimalInvalid: true }]);
-    } else if (this.editEmployeeForm.hasError('paymentBigDecimalInvalid')) {
+        ?.setErrors([{ positiveNumberInvalid: addError }]);
+    } else if (editError !== null) {
       this.editEmployeeForm
         .get('paymentBigDecimal')
-        ?.setErrors([{ paymentBigDecimalInvalid: true }]);
+        ?.setErrors([{ positiveNumberInvalid: editError }]);
     }
   }
 
   pageChanged(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.getEmployeesByCurrentPage();
+    this.getEmployeesByCurrentPage(false);
   }
 }

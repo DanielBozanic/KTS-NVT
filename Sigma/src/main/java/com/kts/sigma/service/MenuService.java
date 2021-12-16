@@ -7,7 +7,10 @@ import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
 
 public interface MenuService {
+	
 	List<MenuDTO> getAll();
+	
+	List<MenuDTO> getActiveNonExpiredMenus();
 	
 	MenuDTO findById(Integer id);
 	
@@ -18,6 +21,10 @@ public interface MenuService {
 	void addItemToMenu(ItemDTO itemDto, Integer menuId);
 	
 	ArrayList<ItemDTO> getItemsInMenu(Integer menuId);
+	
+	List<ItemDTO> getItemsInMenuByCurrentPage(Integer menuId, Integer currentPage, Integer pageSize);
+	
+	Integer getNumberOfActiveItemInMenuRecordsByMenuId(Integer menuId);
 	
 	void removeItemFromMenu(Integer itemId, Integer menuId);
 }

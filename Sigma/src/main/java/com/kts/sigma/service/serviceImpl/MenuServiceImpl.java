@@ -1,13 +1,21 @@
 package com.kts.sigma.service.serviceImpl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.kts.sigma.Exception.DateNotValidOrderException;
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.Exception.MenuBetweenDatesExistsException;
+import com.kts.sigma.Exception.PastDateException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemDTO;
 import com.kts.sigma.dto.MenuDTO;
@@ -46,8 +54,34 @@ public class MenuServiceImpl implements MenuService {
 	}
 	
 	@Override
+	public List<MenuDTO> getActiveNonExpiredMenus() {
+		List<Menu> menus = menuRepository.getActiveNonExpiredMenus(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT));
+		List<MenuDTO> results = new ArrayList<MenuDTO>();
+		
+		for (Menu menu : menus) {
+			MenuDTO dto = Mapper.mapper.map(menu, MenuDTO.class);
+			results.add(dto);
+		}
+		
+		return results;
+	}
+	
+	@Override
 	public MenuDTO addMenu(MenuDTO item) {
+		if (item.getStartDate().isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)) || 
+				item.getExpirationDate().isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT))) {
+			throw new PastDateException("Start and expiration date must not be before todays date!");
+		} else if (item.getStartDate().isAfter(item.getExpirationDate())) {
+			throw new DateNotValidOrderException(item.getStartDate(), item.getExpirationDate());
+		}
+		
+		Menu menuBetweenDates = menuRepository.getActiveMenuBetweenDates(item.getStartDate(), item.getExpirationDate());
+		if (menuBetweenDates != null) {
+			throw new MenuBetweenDatesExistsException(item.getStartDate(), item.getExpirationDate());
+		}
+		
 		Menu newMenu = Mapper.mapper.map(item, Menu.class);
+		newMenu.setActive(true);
 		return Mapper.mapper.map(menuRepository.save(newMenu), MenuDTO.class);
 	}
 	
@@ -117,6 +151,34 @@ public class MenuServiceImpl implements MenuService {
 			itemsInMenuDto.add(dto);
 		}
 		return itemsInMenuDto;
+	}
+	
+	@Override
+	public List<ItemDTO> getItemsInMenuByCurrentPage(Integer menuId, Integer currentPage, Integer pageSize) {
+		Pageable page = PageRequest.of(currentPage, pageSize);
+		List<ItemInMenu> itemsInMenu = itemInMenuRepository.findAllActiveItemsInMenuByCurrentPage(menuId, page).toList();
+		ArrayList<ItemDTO> itemsInMenuDto = new ArrayList<ItemDTO>();
+		
+		for (ItemInMenu inm : itemsInMenu) {
+			ItemDTO dto = Mapper.mapper.map(inm.getItem(), ItemDTO.class);
+			
+			if (inm.getItem() instanceof Food) {
+				dto.setFood(true);
+			}
+			dto.setSellingPrice(inm.getSellingPrice());
+			
+			itemsInMenuDto.add(dto);
+		}
+		return itemsInMenuDto;
+	}
+	
+	@Override
+	public Integer getNumberOfActiveItemInMenuRecordsByMenuId(Integer menuId) {
+		Menu m = menuRepository.getActiveMenu(menuId);
+		if (m == null) {
+			throw new ItemNotFoundException(menuId, "menu");
+		}
+		return itemInMenuRepository.getNumberOfActiveItemInMenuRecordsByMenuId(menuId);
 	}
 
 	@Override

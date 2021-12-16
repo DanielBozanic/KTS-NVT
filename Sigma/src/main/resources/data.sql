@@ -13,9 +13,16 @@ INSERT INTO Payment (payment, date_created, date_end, employee_id) VALUES (40000
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 200, 'tasty', 'Spaghetti', 2);
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 150, 'healthy', 'Cesar Salad', 1);
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Coca Cola');
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 200, 'tasty', 'Pizza', 2);
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 150, 'healthy', 'Chicken', 2);
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Sprite');
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 200, 'tasty', 'Pasta', 2);
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOOD', 150, 'healthy', 'Cheeseburger', 2);
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Fanta');
+INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Pepsi');
 
 
-INSERT INTO Menu (active) VALUES (true);
+INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Standard', '2021-12-10', '2022-05-31', true);
 
 
 INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 2);
@@ -23,6 +30,14 @@ INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0
 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (350, 1, 1, true);
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 3, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (200, 2, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (300, 4, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (250, 5, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 6, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (300, 7, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (200, 8, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 9, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 10, 1, true);
 
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);

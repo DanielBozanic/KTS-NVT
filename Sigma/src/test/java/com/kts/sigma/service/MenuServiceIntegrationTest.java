@@ -8,8 +8,11 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kts.sigma.Exception.DateNotValidOrderException;
 import com.kts.sigma.Exception.ItemExistsException;
 import com.kts.sigma.Exception.ItemNotFoundException;
+import com.kts.sigma.Exception.MenuBetweenDatesExistsException;
+import com.kts.sigma.Exception.PastDateException;
 import com.kts.sigma.constants.ItemConstants;
 import com.kts.sigma.constants.ItemInMenuConstants;
 import com.kts.sigma.constants.MenuConstants;
@@ -40,19 +43,61 @@ public class MenuServiceIntegrationTest {
 	}
 	
 	@Test
+	public void getActiveNonExpiredMenus_ValidState_ReturnsActiveNonExpiredMenus() {
+		List<MenuDTO> found = menuService.getActiveNonExpiredMenus();
+		assertEquals(MenuConstants.DB_TOTAL_ACTIVE_MENUS_NON_EXPIRED.intValue(), found.size());
+	}
+	
+	@Test(expected = PastDateException.class)
+	public void addMenu_PastStartAndEndDate_ThrowsException() {
+		MenuDTO menuDto = new MenuDTO();
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2020, 1, 1, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2020, 3, 1, 0, 0));
+		menuDto.setActive(true);
+		
+		menuService.addMenu(menuDto);
+	}
+	
+	@Test(expected = DateNotValidOrderException.class)
+	public void addMenu_StartDateAfterEndDate_ThrowsException() {
+		MenuDTO menuDto = new MenuDTO();
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2022, 12, 31, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2022, 12, 1, 0, 0));
+		menuDto.setActive(true);
+		
+		menuService.addMenu(menuDto);
+	}
+	
+	@Test(expected = MenuBetweenDatesExistsException.class)
+	public void addMenu_BetweenExistingDates_ThrowsException() {
+		MenuDTO menuDto = new MenuDTO();
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2022, 12, 1, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2023, 6, 1, 0, 0));
+		menuDto.setActive(true);
+		
+		menuService.addMenu(menuDto);
+	}
+	
+	@Test
 	@Transactional
 	@Rollback(true)
 	public void addMenu_ValidState_ReturnsCreatedMenu() {
 		Integer sizeBeforeAdd = menuService.getAll().size();
 		
 		MenuDTO menuDto = new MenuDTO();
-		menuDto.setExpirationDate(LocalDateTime.of(2022, 3, 18, 0, 0));
+		menuDto.setName("Winter");
+		menuDto.setStartDate(LocalDateTime.of(2023, 1, 1, 0, 0));
+		menuDto.setExpirationDate(LocalDateTime.of(2023, 3, 1, 0, 0));
 		menuDto.setActive(true);
 		
 		MenuDTO createdMenu = menuService.addMenu(menuDto);
 		
 		assertEquals(sizeBeforeAdd + 1, menuService.getAll().size());
-		assertEquals(LocalDateTime.of(2022, 3, 18, 0, 0), createdMenu.getExpirationDate());
+		assertEquals(LocalDateTime.of(2023, 1, 1, 0, 0), createdMenu.getStartDate());
+		assertEquals(LocalDateTime.of(2023, 3, 1, 0, 0), createdMenu.getExpirationDate());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -61,6 +106,8 @@ public class MenuServiceIntegrationTest {
 	}
 	
 	@Test
+	@Transactional
+	@Rollback(true)
 	public void deleteMenuById_ValidId_ReturnsNothing() {	
 		menuService.deleteMenuById(MenuConstants.DB_MENU_ID_2);
 		assertTrue(menuService.findById(MenuConstants.DB_MENU_ID_2).getActive() == false);
@@ -133,6 +180,13 @@ public class MenuServiceIntegrationTest {
 	public void getItemsInMenu_ValidMenuId_ReturnsItemsInMenu() {
 		ArrayList<ItemDTO> found = menuService.getItemsInMenu(MenuConstants.DB_MENU_ID_1);
 		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU.intValue(), found.size());
+	}
+	
+	@Test
+	public void getItemsInMenuByCurrentPage_ValidMenuId_ReturnsItemsInMenuForCurrentPage() {
+		List<ItemDTO> found = menuService.getItemsInMenuByCurrentPage(MenuConstants.DB_MENU_ID_1, 
+				ItemInMenuConstants.CURRENT_PAGE, ItemInMenuConstants.PAGE_SIZE);
+		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU_CURRENT_PAGE.intValue(), found.size());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)

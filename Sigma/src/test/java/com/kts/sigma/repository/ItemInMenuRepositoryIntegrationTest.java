@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -16,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,5 +70,19 @@ public class ItemInMenuRepositoryIntegrationTest {
 	public void getActiveItemsInMenu_ValidMenuId_ReturnsItemsInMenu() {
 		ArrayList<ItemInMenu> itemsInMenu = itemInMenuRepository.getActiveItemsInMenu(MenuConstants.DB_MENU_ID_1);
 		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU.intValue(), itemsInMenu.size());
+	}
+	
+	@Test
+	public void findAllActiveItemsInMenuByCurrentPage_InvalidMenuId_ReturnsEmptyList() {
+		Pageable page = PageRequest.of(ItemInMenuConstants.CURRENT_PAGE, ItemInMenuConstants.PAGE_SIZE);
+		List<ItemInMenu> itemsInMenu = itemInMenuRepository.findAllActiveItemsInMenuByCurrentPage(MenuConstants.INVALID_MENU_ID, page).toList();
+		assertEquals(0, itemsInMenu.size());
+	}
+	
+	@Test
+	public void findAllActiveItemsInMenuByCurrentPage_ValidMenuId_ReturnsItemsInMenu() {
+		Pageable page = PageRequest.of(ItemInMenuConstants.CURRENT_PAGE, ItemInMenuConstants.PAGE_SIZE);
+		List<ItemInMenu> itemsInMenu = itemInMenuRepository.findAllActiveItemsInMenuByCurrentPage(MenuConstants.DB_MENU_ID_1, page).toList();
+		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU_CURRENT_PAGE.intValue(), itemsInMenu.size());
 	}
 }

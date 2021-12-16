@@ -22,7 +22,7 @@ public class ItemInMenuController {
 	public Iterable<ItemDTO> getAll(){
 		return itemInMenuService.getAll();
 	}
-	
+		
 	@GetMapping("/{id}")
 	ItemDTO getOne(@PathVariable Integer id) {
 		return itemInMenuService.findById(id);

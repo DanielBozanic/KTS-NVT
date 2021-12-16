@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<div>
+  <mat-card class="search-card">
+    <div fxLayout="row">
+      <div class="div-category-select">
+        <mat-label>Select Category:</mat-label>
+        <mat-select
+          [value]="categories[0]"
+          class="category-select"
+          (selectionChange)="filterByCategory($event.value)"
+        >
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="div-search-bar">
+        <form [formGroup]="searchForm">
+          <mat-form-field
+            ><input
+              type="text"
+              matInput
+              placeholder="Search"
+              formControlName="searchTerm"
+          /></mat-form-field>
+        </form>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div class="button-group">
+        <button
+          class="search-button"
+          mat-raised-button
+          color="primary"
+          (click)="search()"
+        >
+          Search
+        </button>
+        <button
+          class="reset-button"
+          mat-raised-button
+          color="primary"
+          (click)="resetSearchFilter()"
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<div>
+  <p-carousel
+    [value]="items"
+    [numVisible]="3"
+    [numScroll]="3"
+    [circular]="false"
+  >
+    <ng-template let-item pTemplate="item">
+      <mat-card class="item-card">
+        <div class="item-content">
+          <div>
+            <h2>{{ item.name }}</h2>
+            <h2>{{ item.description }}</h2>
+            <h2>Buying Price: {{ item.buyingPrice }}RSD</h2>
+          </div>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openAddItemToMenuDialog(item)"
+          >
+            Add To Menu
+          </button>
+        </div>
+      </mat-card>
+    </ng-template>
+  </p-carousel>
+</div>
+
+<div>
+  <mat-card class="table-card">
+    <div class="data-table">
+      <mat-progress-bar
+        mode="indeterminate"
+        *ngIf="isLoading"
+      ></mat-progress-bar>
+      <table mat-table [dataSource]="itemInMenuDataSource">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef class="column-name">
+            Menu: {{ selectedMenu.name }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="column-name">
+            {{ element.name }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="sellingPrice">
+          <th mat-header-cell *matHeaderCellDef class="column-selling-price">
+            Start date: {{ selectedMenu.startDate | date: "dd/MM/yyyy" }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="column-selling-price">
+            Selling Price: {{ element.sellingPrice }}RSD
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef class="column-remove-button">
+            Expiration date:
+            {{ selectedMenu.expirationDate | date: "dd/MM/yyyy" }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="column-remove-button">
+            <button
+              (click)="removeItemFromMenu(element.id)"
+              mat-raised-button
+              color="primary"
+            >
+              Remove
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsItemsInMenu"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumnsItemsInMenu"
+        ></tr>
+      </table>
+      <mat-paginator
+        #paginatorItemsInMenu
+        [pageIndex]="currentPage"
+        [pageSize]="pageSize"
+        [length]="totalRows"
+        showFirstLastButtons
+        (page)="pageChanged($event)"
+      ></mat-paginator>
+    </div>
+    <div class="div-menu-select">
+      <mat-label>Select Menu:</mat-label>
+      <mat-select
+        [value]="selectedMenu.id"
+        (selectionChange)="changeMenu($event.value)"
+      >
+        <mat-option
+          *ngFor="let menu of activeNonExpiredMenus"
+          [value]="menu.id"
+        >
+          {{ menu.name }}
+        </mat-option>
+      </mat-select>
+    </div>
+  </mat-card>
+</div>
+
+<div fxLayout="row">
+  <div class="div-create-new-item-and-menu-buttons">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openCreateNewMenuDialog()"
+    >
+      Create New Menu
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="openCreateNewItemDialog()"
+    >
+      Create New Item
+    </button>
+    <button mat-raised-button color="warn" (click)="deleteSelectedMenu()">
+      Delete Selected Menu
+    </button>
+  </div>
+</div>
+
+<ng-template #itemInMenuDialog>
+  <form [formGroup]="addItemInMenuForm" class="form">
+    <mat-form-field class="field-width">
+      <mat-label>Selling price</mat-label>
+      <input
+        type="number"
+        min="0"
+        matInput
+        formControlName="sellingPrice"
+        (input)="checkSellingPrice()"
+      />
+      <mat-error *ngIf="hasErrorAddItemInMenuForm('sellingPrice', 'required')"
+        >Selling price is required!</mat-error
+      >
+      <mat-error
+        *ngIf="
+          sellingPrice?.invalid &&
+          !hasErrorAddItemInMenuForm('sellingPrice', 'required')
+        "
+        >Selling price must be a positive number!</mat-error
+      >
+    </mat-form-field>
+  </form>
+  <button
+    (click)="addItemInMenu()"
+    [disabled]="addItemInMenuForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    Add item to menu
+  </button>
+</ng-template>
+
+<ng-template #menuDialog>
+  <form [formGroup]="createNewMenuForm" class="form">
+    <mat-form-field class="field-width">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput placeholder="Name" formControlName="name" />
+      <mat-error *ngIf="hasErrorCreateNewMenuForm('name', 'required')"
+        >Name is required!</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="field-width">
+      <mat-label>Start date</mat-label>
+      <input
+        type="datetime-local"
+        matInput
+        formControlName="startDate"
+        (input)="checkDate()"
+      />
+      <mat-error *ngIf="hasErrorCreateNewMenuForm('startDate', 'required')"
+        >Start date is required!</mat-error
+      >
+      <mat-error
+        *ngIf="
+          startDate?.invalid &&
+          !hasErrorCreateNewMenuForm('startDate', 'required')
+        "
+        >Start date can not be a past date!</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="field-width">
+      <mat-label>Expiration date</mat-label>
+      <input
+        type="datetime-local"
+        matInput
+        formControlName="expirationDate"
+        (input)="checkDate()"
+      />
+      <mat-error *ngIf="hasErrorCreateNewMenuForm('expirationDate', 'required')"
+        >Expiration date is required!</mat-error
+      >
+      <mat-error
+        *ngIf="
+          expirationDate?.invalid &&
+          !hasErrorCreateNewMenuForm('expirationDate', 'required')
+        "
+        >Expiration date can not be a past date!</mat-error
+      >
+    </mat-form-field>
+  </form>
+  <button
+    (click)="createNewMenu()"
+    [disabled]="createNewMenuForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    Create New Menu
+  </button>
+</ng-template>
+
+<ng-template #itemDialog>
+  <form [formGroup]="createNewItemForm" class="form">
+    <mat-form-field class="field-width">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput placeholder="Name" formControlName="name" />
+      <mat-error *ngIf="hasErrorCreateNewItemForm('name', 'required')"
+        >Name is required!</mat-error
+      >
+    </mat-form-field>
+    <mat-radio-group class="radio-group" formControlName="food">
+      <mat-radio-button
+        class="radio-button"
+        [value]="true"
+        [checked]="true"
+        (change)="foodValueChanged($event.value)"
+        >Food</mat-radio-button
+      >
+      <mat-radio-button
+        class="radio-button"
+        [value]="false"
+        (change)="foodValueChanged($event.value)"
+        >Drink</mat-radio-button
+      >
+    </mat-radio-group>
+    <mat-form-field class="field-width" *ngIf="foodIsTrue">
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="field-width">
+      <mat-label>Buying price</mat-label>
+      <input
+        type="number"
+        min="0"
+        matInput
+        formControlName="buyingPrice"
+        (input)="checkBuyingPrice()"
+      />
+      <mat-error *ngIf="hasErrorCreateNewItemForm('buyingPrice', 'required')"
+        >Selling price is required!</mat-error
+      >
+      <mat-error
+        *ngIf="
+          buyingPrice?.invalid &&
+          !hasErrorCreateNewItemForm('buyingPrice', 'required')
+        "
+        >Buying price must be a positive number!</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="field-width">
+      <mat-label>Description</mat-label>
+      <textarea
+        class="textarea-size"
+        matInput
+        formControlName="description"
+      ></textarea>
+      <mat-error *ngIf="hasErrorCreateNewItemForm('description', 'required')"
+        >Description is required!</mat-error
+      >
+    </mat-form-field>
+  </form>
+  <button
+    (click)="createNewItem()"
+    [disabled]="createNewItemForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    Create New Item
+  </button>
+</ng-template>
