@@ -171,6 +171,15 @@ public class MenuServiceImpl implements MenuService {
 		}
 		return itemsInMenuDto;
 	}
+	
+	@Override
+	public Integer getNumberOfActiveItemInMenuRecordsByMenuId(Integer menuId) {
+		Menu m = menuRepository.getActiveMenu(menuId);
+		if (m == null) {
+			throw new ItemNotFoundException(menuId, "menu");
+		}
+		return itemInMenuRepository.getNumberOfActiveItemInMenuRecordsByMenuId(menuId);
+	}
 
 	@Override
 	public void removeItemFromMenu(Integer itemId, Integer menuId) {

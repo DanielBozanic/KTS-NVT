@@ -10,12 +10,20 @@ export const API_EDIT_EMPLOYEE = API_BASE + '/users/editEmployee';
 export const API_DELETE_EMPLOYEE = API_BASE + '/users/deleteEmployee';
 
 export const API_GET_ALL_ITEMS = API_BASE + '/items';
+export const API_GET_ITEMS_BY_FOOD_TYPE =
+  API_BASE + '/items/getItemsByFoodType/';
+export const API_GET_ITEMS_BY_SEARCH_TERM =
+  API_BASE + '/items/getItemsBySearchTerm/';
 export const API_GET_ITEMS_BY_CURRENT_PAGE =
   API_BASE + '/items/getItemsByCurrentPage';
 
+export const API_CREATE_NEW_MENU = API_BASE + '/menu/addMenu';
+export const API_DELETE_MENU = API_BASE + '/menu/';
 export const API_GET_ITEMS_IN_MENU_BY_CURRENT_PAGE =
   API_BASE + '/menu/getItemsInMenuByCurrentPage/';
-
+export const API_GET_NUMBER_OF_ACTIVE_ITEM_IN_MENU_RECORDS_BY_MENU_ID =
+  API_BASE + '/menu/getNumberOfActiveItemInMenuRecordsByMenuId/';
+export const API_REMOVE_ITEM_FROM_MENU = API_BASE + '/menu/removeItemFromMenu';
 export const API_GET_ACTIVE_NON_EXPIRED_MENUS =
   API_BASE + '/menu/getActiveNonExpiredMenus';
 

@@ -60,7 +60,7 @@ export class PeopleManagerComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForms();
     this.getNumberOfActiveEmployeeRecords();
-    this.getEmployeesByCurrentPage();
+    this.getEmployeesByCurrentPage(false);
   }
 
   ngAfterViewInit(): void {
@@ -101,7 +101,7 @@ export class PeopleManagerComponent implements OnInit {
     return this.editEmployeeForm.get('paymentBigDecimal');
   }
 
-  getEmployeesByCurrentPage(): void {
+  getEmployeesByCurrentPage(deleting: boolean): void {
     this.isLoading = true;
     this.peopleManagerService
       .getEmployeesByCurrentPage(this.currentPage, this.pageSize)
@@ -110,11 +110,13 @@ export class PeopleManagerComponent implements OnInit {
         this.employeeData = employees;
         this.employeeDataSource.data = employees;
         setTimeout(() => {
-          if (employees.length === 0) {
-            const setPrev = this.currentPage - 1;
-            this.currentPage = setPrev;
-            this.paginatorEmployee.pageIndex = setPrev;
-            this.getEmployeesByCurrentPage();
+          if (employees.length === 0 && deleting) {
+            if (this.currentPage !== 0) {
+              const setPrev = this.currentPage - 1;
+              this.currentPage = setPrev;
+              this.paginatorEmployee.pageIndex = setPrev;
+            }
+            this.getEmployeesByCurrentPage(false);
           } else {
             this.paginatorEmployee.pageIndex = this.currentPage;
           }
@@ -147,7 +149,7 @@ export class PeopleManagerComponent implements OnInit {
       (response) => {
         console.log(response);
         this.getNumberOfActiveEmployeeRecords();
-        this.getEmployeesByCurrentPage();
+        this.getEmployeesByCurrentPage(false);
         this.addDialog.closeAll();
       },
       (error) => {
@@ -186,7 +188,7 @@ export class PeopleManagerComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log(response);
-          this.getEmployeesByCurrentPage();
+          this.getEmployeesByCurrentPage(false);
           this.editDialog.closeAll();
         },
         (error) => {
@@ -200,7 +202,7 @@ export class PeopleManagerComponent implements OnInit {
     this.peopleManagerService.deleteEmployee(employeeId).subscribe(
       () => {
         this.getNumberOfActiveEmployeeRecords();
-        this.getEmployeesByCurrentPage();
+        this.getEmployeesByCurrentPage(true);
       },
       (error) => {
         console.log(error);
@@ -227,6 +229,6 @@ export class PeopleManagerComponent implements OnInit {
   pageChanged(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.getEmployeesByCurrentPage();
+    this.getEmployeesByCurrentPage(false);
   }
 }

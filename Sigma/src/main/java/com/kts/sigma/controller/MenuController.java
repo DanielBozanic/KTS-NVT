@@ -62,6 +62,11 @@ public class MenuController {
 		return new ResponseEntity<>(menuService.getItemsInMenuByCurrentPage(menuId, currentPage, pageSize), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getNumberOfActiveItemInMenuRecordsByMenuId/{menuId}")
+	public ResponseEntity<Integer> getNumberOfActiveItemInMenuRecordsByMenuId(@PathVariable Integer menuId) {
+		return new ResponseEntity<>(menuService.getNumberOfActiveItemInMenuRecordsByMenuId(menuId), HttpStatus.OK);
+	}
+	
 	@DeleteMapping(value = "/removeItemFromMenu")
 	public void removeItemFromMenu(@RequestParam("itemId") Integer itemId, @RequestParam("menuId") Integer menuId) {
 		menuService.removeItemFromMenu(itemId, menuId);

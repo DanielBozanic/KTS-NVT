@@ -1,6 +1,7 @@
 package com.kts.sigma.Exception;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ public class MenuBetweenDatesExistsException extends RuntimeException {
 	private static final Logger LOGGER=LoggerFactory.getLogger(MenuBetweenDatesExistsException.class);
 	
     public MenuBetweenDatesExistsException(LocalDateTime start, LocalDateTime end) {
-        super("An active menu between " + start.toString() + "and " + end.toString() + " already exists!");
+        super("An active menu between " + start.format(DateTimeFormatter.ISO_LOCAL_DATE) + " and " + end.format(DateTimeFormatter.ISO_LOCAL_DATE) + " already exists!");
         LOGGER.error("Invalid start and end dates for menu");
     }
 }

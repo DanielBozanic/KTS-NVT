@@ -24,5 +24,7 @@ public interface MenuService {
 	
 	List<ItemDTO> getItemsInMenuByCurrentPage(Integer menuId, Integer currentPage, Integer pageSize);
 	
+	Integer getNumberOfActiveItemInMenuRecordsByMenuId(Integer menuId);
+	
 	void removeItemFromMenu(Integer itemId, Integer menuId);
 }

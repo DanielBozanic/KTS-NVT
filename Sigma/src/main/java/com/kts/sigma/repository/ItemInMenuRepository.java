@@ -23,4 +23,7 @@ public interface ItemInMenuRepository extends JpaRepository<ItemInMenu, Integer>
 	
 	@Query("select inm from ItemInMenu inm where inm.menu.id = ?1 and inm.active = true")
 	Page<ItemInMenu> findAllActiveItemsInMenuByCurrentPage(Integer menuId, Pageable pageable);
+	
+	@Query("select count(inm) from ItemInMenu inm where inm.active = true and inm.menu.id = ?1")
+	Integer getNumberOfActiveItemInMenuRecordsByMenuId(Integer menuId);
 }
