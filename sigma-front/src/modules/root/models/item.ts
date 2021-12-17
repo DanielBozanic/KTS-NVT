@@ -5,4 +5,6 @@ export class Item {
     description!: string;
     name!: string;
     state!: string;
+    quantity!: number;
+    itemId: number | undefined;
   }

@@ -22,6 +22,12 @@ export const API_CREATE_NEW_MENU = API_BASE + '/menu/addMenu';
 export const API_DELETE_MENU = API_BASE + '/menu/';
 export const API_GET_ITEMS_IN_MENU_BY_CURRENT_PAGE =
   API_BASE + '/menu/getItemsInMenuByCurrentPage/';
+export const API_GET_ITEMS_IN_MENU =
+  API_BASE + '/item-in-menu/getAll/';
+export const API_GET_ITEMS_IN_MENU_BY_SEARCH_TERM =
+  API_BASE + '/item-in-menu/getItemsBySearchTerm/';
+export const API_GET_ITEMS_IN_MENU_BY_FOOD_TYPE =
+  API_BASE + '/item-in-menu/getItemsByFoodType/';
 export const API_GET_NUMBER_OF_ACTIVE_ITEM_IN_MENU_RECORDS_BY_MENU_ID =
   API_BASE + '/menu/getNumberOfActiveItemInMenuRecordsByMenuId/';
 export const API_ADD_ITEM_IN_MENU = API_BASE + '/menu/addItemToMenu';
@@ -38,3 +44,4 @@ export const API_GET_FOODS_FOR_ORDER = API_BASE + '/orders/foods/';
 export const API_CHANGE_TABLE_STATE = API_BASE + '/tables/';
 export const API_CHANGE_ITEM_STATE = API_BASE + '/item-in-order/';
 export const API_GET_ORDER = API_BASE + '/orders/';
+export const API_POST_ORDER = API_BASE + '/orders/';

@@ -28,6 +28,7 @@ export class WaiterTablesComponent implements OnInit {
     state: '',
     totalPrice: 0,
     items: [],
+    tableId: 0
   };
   zoneId: number = 0;
 
