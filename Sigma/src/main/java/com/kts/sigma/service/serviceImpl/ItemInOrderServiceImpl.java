@@ -104,6 +104,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	public ItemInOrder saveWithoutCode(ItemInOrderDTO i) {
 		ItemInOrder item = new ItemInOrder();
 		item.setId(i.getId());
+		item.setOrder(oRepository.getOne(i.getOrderId()));
 		
 		ItemInMenu iim = iimRepository.findById(i.getItemId()).orElse(null);
 		if(iim == null) {

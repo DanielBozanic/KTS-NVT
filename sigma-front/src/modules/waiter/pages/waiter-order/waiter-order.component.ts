@@ -12,6 +12,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
 import { Order } from 'src/modules/root/models/order';
@@ -45,6 +46,7 @@ export class WaiterOrderComponent implements OnInit {
   constructor(
     private foodDrinksService: WaiterOrderService,
     private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.items = [];
     this.activeNonExpiredMenus = [];
@@ -67,8 +69,7 @@ export class WaiterOrderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.table.id = 1;
-    this.table.tableNumber = 1;
+    this.table = history.state.data;
     this.initializeForms();
     this.getActiveNonExpiredMenus();
   }
@@ -178,9 +179,13 @@ export class WaiterOrderComponent implements OnInit {
     order.tableId = this.table.id;
     this.foodDrinksService.createOrder(order, 1234).subscribe(
       response => {
-        
+        this.cancel();
       }
     )
+  }
+
+  cancel(){
+    this.router.navigate(['/waiterTables']);
   }
 
   calculateTotal(){

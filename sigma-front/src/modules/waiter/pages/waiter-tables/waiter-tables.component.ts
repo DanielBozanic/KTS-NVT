@@ -1,5 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Item } from 'src/modules/root/models/item';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
@@ -16,13 +18,22 @@ export class WaiterTablesComponent implements OnInit {
     private service: WaiterTablesService,
     private freeTableDialog: MatDialog,
     private tableOrderDialog: MatDialog,
-    private paymentTableDialog: MatDialog
-  ) {}
+    private paymentTableDialog: MatDialog,
+    private router: Router
+  ) {
+    this.displayedColumnsItemsInOrder = ['name', 'sellingPrice', 'delete'];
+    this.itemInOrderDataSource = new MatTableDataSource<Item>(
+      this.currentItems
+    );
+  }
 
+  
   zones: Zone[] = [];
   tables: Table[] = [];
   currentItems: Item[] = [];
   currentTable!: Table;
+  displayedColumnsItemsInOrder: string[];
+  itemInOrderDataSource: MatTableDataSource<Item>;
   currentOrder: Order = {
     id: 0,
     state: '',
@@ -78,7 +89,9 @@ export class WaiterTablesComponent implements OnInit {
     this.paymentTableDialog.closeAll();
   }
 
-  redirectToOrderComponent() {}
+  redirectToOrderComponent() {
+    this.router.navigate(['/waiterOrder'], {state: {data: this.currentTable}});
+  }
 
   itemColor(state: string) {
     if (state === 'NEW') {
@@ -104,29 +117,24 @@ export class WaiterTablesComponent implements OnInit {
         break;
 
       case 'IN_PROGRESS':
-        if (this.tables[0].orderId) {
+        if (table.orderId) {
           this.service
-            .getItemsForOrder(this.tables[0].orderId)
+            .getItemsForOrder(table.orderId)
             .subscribe((data) => {
               this.currentItems = data;
-              const dialogref = this.tableOrderDialog.open(this.orderDialog, {
-                height: '80%',
-                width: '50%',
-              });
+              this.itemInOrderDataSource.data = data;
+              const dialogref = this.tableOrderDialog.open(this.orderDialog, {width: '45em'});
             });
         }
         break;
 
       case 'TO_DELIVER':
-        if (this.tables[0].orderId) {
+        if (table.orderId) {
           this.service
-            .getItemsForOrder(this.tables[0].orderId)
+            .getItemsForOrder(table.orderId)
             .subscribe((data) => {
               this.currentItems = data;
-              const dialogref = this.tableOrderDialog.open(this.orderDialog, {
-                height: '80%',
-                width: '50%',
-              });
+              const dialogref = this.tableOrderDialog.open(this.orderDialog, {width: '45em'});
             });
         }
         break;

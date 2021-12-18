@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <div>
 
-  <div class="dropdown-zones">
-    <h4>Zone:</h4>
-    <mat-form-field appearance="fill">
-      <mat-label>Choose zone</mat-label>
-      <mat-select #z (selectionChange)="getTables(z.value)">
-        <mat-option *ngFor="let zone of zones" [value]="zone.id">
-          {{zone.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-
-  <div class="tables" *ngIf="tables.length !== 0">
-    <div class="inline" *ngFor="let table of tables">
-      <button class="table" mat-raised-button color="primary" (click)="tableClick(table)">Table {{table.tableNumber}} <br/> {{table.state}}  </button>
+  <mat-card>
+    <div class="dropdown-zones">
+      <h4>Zone:</h4>
+      <mat-form-field appearance="fill">
+        <mat-label>Choose zone</mat-label>
+        <mat-select #z (selectionChange)="getTables(z.value)">
+          <mat-option *ngFor="let zone of zones" [value]="zone.id">
+            {{zone.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-  </div>
+  </mat-card>
+
+  <mat-card *ngIf="tables.length !== 0">
+    <div class="tables">
+      <div class="inline" *ngFor="let table of tables">
+        <button class="table" mat-raised-button color="primary" (click)="tableClick(table)">Table {{table.tableNumber}} <br/> {{table.state}}  </button>
+      </div>
+    </div>
+  </mat-card>
 
   <ng-template #freeTableDialog>
     <button mat-raised-button color="primary" (click)="reserveTable()">Reserve table</button>
@@ -27,17 +30,60 @@
 
   <ng-template #tableOrderDialog>
     
-        <div class="table-items">
-          <h2>Table 1</h2>
-
-          <div *ngFor="let item of currentItems">
-            <mat-card class="table-item" [ngStyle]="{'backgroundColor' : itemColor(item.state)}">
-              <span>{{item.name}}</span>
-              <button class="item-button" mat-raised-button color="primary">Change</button>
-            </mat-card>
-          </div>
-
-        </div>
+    <mat-card class="table-card">
+      <mat-card-title class="inline">Table {{currentTable.tableNumber}}</mat-card-title>
+      <button
+        class="floatRight"
+        mat-raised-button
+        color="primary"
+      >
+          Remove
+      </button>
+      <button
+        class="floatRight"
+        mat-raised-button
+        color="primary"
+      >
+          Add item
+      </button>
+      <div class="data-table">
+        <table mat-table [dataSource]="itemInOrderDataSource">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="column-name">
+              Item
+            </th>
+            <td mat-cell *matCellDef="let element" class="column-name">
+              {{element.name}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="sellingPrice">
+            <th mat-header-cell *matHeaderCellDef class="column-selling-price">
+              Price
+            </th>
+            <td mat-cell *matCellDef="let element" class="column-selling-price">
+              {{ element.sellingPrice }}RSD
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef class="column-remove-button">
+            </th>
+            <td mat-cell *matCellDef="let element" class="column-remove-button">
+              <button
+                mat-raised-button
+                color="primary"
+              >
+                Remove
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsItemsInOrder"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumnsItemsInOrder"
+          ></tr>
+        </table>
+      </div>
+    </mat-card>
 
   </ng-template>
 
