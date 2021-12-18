@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -19,7 +20,7 @@ export class WaiterTablesComponent implements OnInit {
     private freeTableDialog: MatDialog,
     private tableOrderDialog: MatDialog,
     private paymentTableDialog: MatDialog,
-    private router: Router
+    private router: Router,
   ) {
     this.displayedColumnsItemsInOrder = ['name', 'sellingPrice', 'delete'];
     this.itemInOrderDataSource = new MatTableDataSource<Item>(
@@ -27,20 +28,14 @@ export class WaiterTablesComponent implements OnInit {
     );
   }
 
-  
+  zonesForm!: FormGroup;
   zones: Zone[] = [];
   tables: Table[] = [];
   currentItems: Item[] = [];
   currentTable!: Table;
   displayedColumnsItemsInOrder: string[];
   itemInOrderDataSource: MatTableDataSource<Item>;
-  currentOrder: Order = {
-    id: 0,
-    state: '',
-    totalPrice: 0,
-    items: [],
-    tableId: 0
-  };
+  currentOrder: Order = new Order();
   zoneId: number = 0;
 
   @ViewChild('freeTableDialog') freeDialog!: TemplateRef<any>;
@@ -50,8 +45,14 @@ export class WaiterTablesComponent implements OnInit {
   @ViewChild('paymentTableDialog') paymentDialog!: TemplateRef<any>;
 
   ngOnInit(): void {
+    this.zonesForm = new FormGroup({
+      zoneSelect: new FormControl()
+    })
     this.service.getAllZones().subscribe((data) => {
       this.zones = data;
+      this.zoneId = this.zones[0].id;
+      this.zonesForm.get('zoneSelect')?.setValue(this.zoneId);
+      this.getTables(this.zoneId);
     });
   }
 
@@ -89,8 +90,50 @@ export class WaiterTablesComponent implements OnInit {
     this.paymentTableDialog.closeAll();
   }
 
+  deliver(id: number) {
+    this.service
+      .changeItemState(id, 'DONE', 1234)
+      .subscribe((data) => this.getTables(this.zoneId));
+    
+    const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
+    if(delivered === this.currentItems.length){
+      this.service
+      .changeTableState(this.currentTable.id, 'DONE', 1234)
+      .subscribe((data) => this.getTables(this.zoneId));
+    }
+  }
+
   redirectToOrderComponent() {
     this.router.navigate(['/waiterOrder'], {state: {data: this.currentTable}});
+  }
+
+  removeItem(id: number){
+    if(this.currentTable.orderId){
+      this.service.removeItemFromOrder(this.currentTable.orderId, '1234', id).subscribe(response =>{
+        this.currentItems = this.currentItems.filter(item => item.id !== id)
+        this.itemInOrderDataSource.data = this.currentItems;
+      })
+    }
+  }
+
+  addItem(item: Item){
+    if(this.currentTable.orderId){
+      this.service.addItemToOrder(this.currentTable.orderId, '1234', item).subscribe(response =>{
+
+      })
+    }
+  }
+
+  removeOrder(){
+    if(this.currentTable.orderId){
+      this.service.deleteOrder(this.currentTable.orderId, '1234').subscribe(response =>{
+
+      })
+      this.service
+      .changeTableState(this.currentTable.id, 'FREE', 1234)
+      .subscribe((data) => this.getTables(this.zoneId));
+      this.tableOrderDialog.closeAll();
+    }
   }
 
   itemColor(state: string) {
@@ -100,6 +143,20 @@ export class WaiterTablesComponent implements OnInit {
       return 'orange';
     } else if (state === 'TO_DELIVER') {
       return 'red';
+    } else {
+      return 'blue';
+    }
+  }
+
+  tableColor(state: string) {
+    if (state === 'RESERVED') {
+      return 'lightgray';
+    } else if (state === 'IN_PROGRESS') {
+      return 'orange';
+    } else if (state === 'TO_DELIVER') {
+      return 'red';
+    } else if(state === 'FREE'){
+      return 'green'
     } else {
       return 'blue';
     }

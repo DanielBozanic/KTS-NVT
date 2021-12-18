@@ -2,23 +2,26 @@
 <div>
 
   <mat-card>
-    <div class="dropdown-zones">
-      <h4>Zone:</h4>
-      <mat-form-field appearance="fill">
-        <mat-label>Choose zone</mat-label>
-        <mat-select #z (selectionChange)="getTables(z.value)">
-          <mat-option *ngFor="let zone of zones" [value]="zone.id">
-            {{zone.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <form [formGroup]="zonesForm">
+      <div class="dropdown-zones">
+        <h4>Zone:</h4>
+        <mat-form-field appearance="fill">
+          <mat-label>Choose zone</mat-label>
+          <mat-select #z (selectionChange)="getTables(z.value)" formControlName="zoneSelect">
+            <mat-option *ngFor="let zone of zones" [value]="zone.id">
+              {{zone.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
   </mat-card>
 
   <mat-card *ngIf="tables.length !== 0">
     <div class="tables">
       <div class="inline" *ngFor="let table of tables">
-        <button class="table" mat-raised-button color="primary" (click)="tableClick(table)">Table {{table.tableNumber}} <br/> {{table.state}}  </button>
+        <button class="table" mat-raised-button [ngStyle]="{'backgroundColor' : tableColor(table.state)}" (click)="tableClick(table)">
+          Table {{table.tableNumber}} <br/> {{table.state}}  </button>
       </div>
     </div>
   </mat-card>
@@ -36,6 +39,7 @@
         class="floatRight"
         mat-raised-button
         color="primary"
+        (click)="removeOrder()"
       >
           Remove
       </button>
@@ -71,8 +75,16 @@
               <button
                 mat-raised-button
                 color="primary"
-              >
+                *ngIf="element.state === 'NEW'"
+                (click)="removeItem(element.id)">
                 Remove
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                *ngIf="element.state === 'TO_DELIVER'"
+                (click)="deliver(element.id)">
+                Deliver
               </button>
             </td>
           </ng-container>
@@ -80,6 +92,7 @@
           <tr
             mat-row
             *matRowDef="let row; columns: displayedColumnsItemsInOrder"
+            [ngStyle]="{'backgroundColor' : itemColor(row.state)}"
           ></tr>
         </table>
       </div>

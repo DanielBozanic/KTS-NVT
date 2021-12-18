@@ -9,6 +9,9 @@ import {
   API_GET_ITEMS_FOR_ORDER,
   API_CHANGE_TABLE_STATE,
   API_CHANGE_ITEM_STATE,
+  API_REMOVE_ITEM_FROM_ORDER,
+  API_ADD_ITEM_TO_ORDER,
+  API_DELETE_ORDER,
   API_GET_ORDER,
 } from 'src/modules/root/api-routes';
 import { Order } from 'src/modules/root/models/order';
@@ -44,10 +47,25 @@ export class WaiterTablesService {
       .pipe(catchError(this.errorHander));
   }
 
-  changeItemState(id: number, state: string, code: number): void {
-    this.http
-      .put(API_CHANGE_ITEM_STATE + `${id}/${state}/${code}`, null)
+  changeItemState(id: number, state: string, code: number): Observable<void> {
+    return this.http
+      .put<Observable<void>>(API_CHANGE_ITEM_STATE + `${id}/${state}/${code}`, null)
       .pipe(catchError(this.errorHander));
+  }
+
+  addItemToOrder(id: number, code: string, item: Item): Observable<Item> {
+    return this.http.put<Observable<Item>>(API_ADD_ITEM_TO_ORDER + `${id}/${code}`, item)
+    .pipe(catchError(this.errorHander));
+  }
+
+  removeItemFromOrder(orderId: number, code: string, itemId: number): Observable<void>{
+    return this.http.delete<Observable<void>>(API_REMOVE_ITEM_FROM_ORDER + `${orderId}/${itemId}/${code}`)
+    .pipe(catchError(this.errorHander));
+  }
+
+  deleteOrder(id: number, code: string): Observable<void>{
+    return this.http.delete<Observable<void>>(API_DELETE_ORDER + `${id}/${code}`)
+    .pipe(catchError(this.errorHander));
   }
 
   errorHander(error: HttpErrorResponse): Observable<any> {

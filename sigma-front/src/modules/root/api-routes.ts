@@ -45,3 +45,6 @@ export const API_CHANGE_TABLE_STATE = API_BASE + '/tables/';
 export const API_CHANGE_ITEM_STATE = API_BASE + '/item-in-order/';
 export const API_GET_ORDER = API_BASE + '/orders/';
 export const API_POST_ORDER = API_BASE + '/orders/';
+export const API_DELETE_ORDER = API_BASE + '/orders/';
+export const API_ADD_ITEM_TO_ORDER = API_BASE + '/orders/';
+export const API_REMOVE_ITEM_FROM_ORDER = API_BASE + '/orders/';
