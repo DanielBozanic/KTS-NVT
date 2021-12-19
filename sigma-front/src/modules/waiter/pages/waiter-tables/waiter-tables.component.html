@@ -47,8 +47,9 @@
         class="floatRight"
         mat-raised-button
         color="primary"
+        (click)="redirectToAddItemsComponent()"
       >
-          Add item
+          Add items
       </button>
       <div class="data-table">
         <table mat-table [dataSource]="itemInOrderDataSource">

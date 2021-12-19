@@ -25,7 +25,7 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 5
 INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Standard', '2021-12-10', '2022-05-31', true);
 
 
-INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 2);
+INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 3);
 
 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (350, 1, 1, true);
@@ -51,6 +51,6 @@ INSERT INTO zone (name) VALUES ('1st floor');
 INSERT INTO zone (name) VALUES ('2nd floor');
 
 
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 1, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 2, 1, 1);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 0, 2, 1);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 3, 2);

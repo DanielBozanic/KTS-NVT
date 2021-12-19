@@ -107,6 +107,11 @@ export class WaiterTablesComponent implements OnInit {
     this.router.navigate(['/waiterOrder'], {state: {data: this.currentTable}});
   }
 
+  redirectToAddItemsComponent() {
+    this.closeOrderView();
+    this.router.navigate(['/waiterAddItems'], {state: {data: this.currentTable}});
+  }
+
   removeItem(id: number){
     if(this.currentTable.orderId){
       this.service.removeItemFromOrder(this.currentTable.orderId, '1234', id).subscribe(response =>{

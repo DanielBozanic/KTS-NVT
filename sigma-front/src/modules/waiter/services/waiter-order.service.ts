@@ -9,6 +9,7 @@ import {
   API_GET_ACTIVE_NON_EXPIRED_MENUS,
   API_GET_ITEMS_IN_MENU_BY_FOOD_TYPE,
   API_GET_ITEMS_IN_MENU_BY_SEARCH_TERM,
+  API_ADD_ITEM_TO_ORDER
 } from 'src/modules/root/api-routes';
 import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
@@ -54,6 +55,11 @@ export class WaiterOrderService {
     return this.http.post<Order>(`${API_POST_ORDER}${code}`, order)
     .pipe(catchError(this.errorHander));
   }
+
+  addItemToOrder(item: Item, orderId: number, code: number): Observable<void>{
+    return this.http.put<void>(`${API_ADD_ITEM_TO_ORDER}${orderId}/${code}`, item)
+    .pipe(catchError(this.errorHander));
+  } 
 
   errorHander(error: HttpErrorResponse): Observable<any> {
     return throwError(error);
