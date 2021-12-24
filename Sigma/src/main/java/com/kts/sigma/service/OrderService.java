@@ -9,6 +9,10 @@ import com.kts.sigma.model.RestaurantOrder;
 public interface OrderService {
 	public Iterable<OrderDTO> getAll();
 	
+	public Iterable<OrderDTO> getAllFoodOrders();
+	
+	public Iterable<OrderDTO> getAllDrinkOrders();
+	
 	public OrderDTO findById(Integer id);
 	
 	public RestaurantOrder save(OrderDTO item, Integer code);

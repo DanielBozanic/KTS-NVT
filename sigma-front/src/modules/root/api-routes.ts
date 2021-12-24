@@ -8,6 +8,7 @@ export const API_GET_NUMBER_OF_ACTIVE_EMPLOYEE_RECORDS =
 export const API_ADD_EMPLOYEE = API_BASE + '/users/addEmployee';
 export const API_EDIT_EMPLOYEE = API_BASE + '/users/editEmployee';
 export const API_DELETE_EMPLOYEE = API_BASE + '/users/deleteEmployee';
+export const API_GET_EMPLOYEE = API_BASE + '/users/';
 
 export const API_GET_ALL_ITEMS = API_BASE + '/items';
 export const API_GET_ITEMS_BY_FOOD_TYPE =
@@ -44,4 +45,6 @@ export const API_GET_FOODS_FOR_ORDER = API_BASE + '/orders/foods/';
 export const API_CHANGE_TABLE_STATE = API_BASE + '/tables/';
 export const API_CHANGE_ITEM_STATE = API_BASE + '/item-in-order/';
 export const API_GET_ORDER = API_BASE + '/orders/';
+export const API_GET_ITEM_IN_ORDER = API_BASE + '/item-in-order/';
+export const API_GET_ALL_FOOD_ORDERS = API_BASE + '/orders/allFoodOrders/';
 export const API_POST_ORDER = API_BASE + '/orders/';

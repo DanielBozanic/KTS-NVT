@@ -17,6 +17,8 @@ import com.kts.sigma.Exception.ItemNotValidException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
+import com.kts.sigma.model.Bartender;
+import com.kts.sigma.model.Cook;
 import com.kts.sigma.model.Drink;
 import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Food;
@@ -33,6 +35,7 @@ import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.ItemInOrderService;
+import com.kts.sigma.service.ItemService;
 import com.kts.sigma.service.OrderService;
 
 @Service
@@ -47,6 +50,9 @@ public class OrderServiceImpl implements OrderService{
 	private ItemInOrderService iioService;
 	
 	@Autowired
+	private ItemService iService;
+	
+	@Autowired
 	private ItemInOrderRepository iioRepo;
 	
 	@Autowired
@@ -58,8 +64,42 @@ public class OrderServiceImpl implements OrderService{
 		ArrayList<OrderDTO> results = new ArrayList<OrderDTO>();
 		
 		for (RestaurantOrder order : orders) {
+
 			OrderDTO dto = Mapper.mapper.map(order, OrderDTO.class);
+			dto.setItems(iioService.getOrderItems(order.getId()));
 			results.add(dto);
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public Iterable<OrderDTO> getAllFoodOrders() {
+		List<RestaurantOrder> orders = orderRepository.findAll();
+		ArrayList<OrderDTO> results = new ArrayList<OrderDTO>();
+		
+		for (RestaurantOrder order : orders) {
+
+			OrderDTO dto = Mapper.mapper.map(order, OrderDTO.class);
+			dto.setItems(iioService.getFoodItemsByOrderId(order.getId()));
+			if(dto.getItems().size() > 0)
+				results.add(dto);
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public Iterable<OrderDTO> getAllDrinkOrders() {
+		List<RestaurantOrder> orders = orderRepository.findAll();
+		ArrayList<OrderDTO> results = new ArrayList<OrderDTO>();
+		
+		for (RestaurantOrder order : orders) {
+
+			OrderDTO dto = Mapper.mapper.map(order, OrderDTO.class);
+			dto.setItems(iioService.getDrinkItemsByOrderId(order.getId()));
+			if(dto.getItems().size() > 0)
+				results.add(dto);
 		}
 		
 		return results;
@@ -313,7 +353,8 @@ public class OrderServiceImpl implements OrderService{
 		}
 		
 		Employee worker = empRep.findByCode(code);
-		if(worker == null || !(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId())
+		//!(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId()
+		if(worker == null)
 		{
 			throw new AccessForbiddenException();
 		}

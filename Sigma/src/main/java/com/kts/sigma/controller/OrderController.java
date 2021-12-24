@@ -30,6 +30,16 @@ public class OrderController {
 		return orderService.getAll();
 	}
 	
+	@GetMapping(path="allFoodOrders")
+	public Iterable<OrderDTO> getAllFoodOrders(){
+		return orderService.getAllFoodOrders();
+	}
+	
+	@GetMapping(path="allDrinkOrders")
+	public Iterable<OrderDTO> getAllDrinkOrders(){
+		return orderService.getAllDrinkOrders();
+	}
+	
 	@GetMapping("/{id}")
 	OrderDTO getOne(@PathVariable Integer id) {
 		return orderService.findById(id);

@@ -13,6 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tables.component';
 import { FoodDrinksManagerComponent } from '../manager/pages/food-drinks-manager/food-drinks-manager.component';
 import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.component';
+import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.
     PeopleManagerComponent,
     WaiterTablesComponent,
     FoodDrinksManagerComponent,
-    WaiterOrderComponent
+    WaiterOrderComponent,
+    CookComponent
   ],
   imports: [
     BrowserModule,

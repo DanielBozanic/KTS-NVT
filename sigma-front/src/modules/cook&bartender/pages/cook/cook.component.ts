@@ -1,0 +1,171 @@
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { GroupedOrder } from 'src/modules/root/models/groupedOrder';
+import { Item } from 'src/modules/root/models/item';
+import { Menu } from 'src/modules/root/models/menu';
+import { Order } from 'src/modules/root/models/order';
+import { Table } from 'src/modules/root/models/table';
+import { CookService } from '../../services/cook.service';
+
+@Component({
+  selector: 'app-cook',
+  templateUrl: './cook.component.html',
+  styleUrls: ['./cook&bartender.component.scss'],
+})
+export class CookComponent implements OnInit {
+  items: Array<Item>;
+  newOrders: Array<Order>;
+  groupedNewOrders: Array<GroupedOrder>;
+  ordersInProgress: Array<Order>;
+  validatingForm: FormGroup;
+  validCode: boolean;
+  code: number;
+  ItemsOfWorker: Map<number, string>;
+  constructor(
+    private service: CookService,
+    private codeVerificationDialog: MatDialog,
+  ) {
+    this.items = [];
+    this.newOrders = [];
+    this.groupedNewOrders = [];
+    this.validCode = false;
+    this.ordersInProgress = [];
+    this.code = 0;
+    this.ItemsOfWorker = new Map();
+    this.validatingForm = new FormGroup({
+      code: new FormControl('', Validators.required)
+    });
+  }
+
+  @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
+
+
+
+  ngOnInit(): void {
+    this.getAllOrders();
+  }
+
+  closeCodeDialog(): void {
+    this.codeVerificationDialog.closeAll();
+  }
+
+  checkCode(): void {
+    let code = this.validatingForm.get('code')?.value;
+    this.code = parseInt(code);
+    this.codeVerificationDialog.closeAll();
+  }
+
+  get codeFromDialog() {
+    return this.validatingForm.get('code') as FormControl;
+  }
+
+  getAllOrders(): void {
+    this.service.getAllFoodOrders().subscribe((data) => {
+      this.newOrders = [];
+      this.ordersInProgress = [];
+      this.groupedNewOrders = [];
+      this.ItemsOfWorker.clear();
+      data.forEach(order => {
+        if (order.state == "NEW") {
+          this.newOrders.push(order);
+        }
+        else if (order.state == "IN_PROGRESS")
+          this.ordersInProgress.push(order);
+      });
+
+      console.log(this.newOrders);
+      console.log(this.ordersInProgress);
+
+      this.newOrders.forEach(order => {
+        let go = {
+          id: order.id,
+          table: new Table(),
+          state: order.state,
+          totalPrice: order.totalPrice,
+          itemsByQuantity: new Map()
+        };
+        order.items.forEach(item => {
+          if (go.itemsByQuantity.has(item.name))
+            go.itemsByQuantity.set(item.name, go.itemsByQuantity.get(item.name) + 1);
+          else
+            go.itemsByQuantity.set(item.name, 1);
+        });
+        this.groupedNewOrders.push(go);
+      });
+
+      let i = 0;
+      this.newOrders.forEach(order => {
+        this.service.getTableFromId(order.tableId).subscribe((table) => {
+          this.groupedNewOrders[i].table = table;
+          i += 1;
+        });
+      });
+
+      this.ordersInProgress.forEach(order => {
+        order.items.forEach(item => {
+          if (item.employeeId) {
+            this.service.getEmployee(item.employeeId).subscribe(data => {
+              this.ItemsOfWorker.set(item.id, data.name);
+            });
+          }
+        });
+      });
+    });
+  }
+
+  setOrderToInProgress(itemId: number) {
+    this.service.setOrderState(itemId, "IN_PROGRESS", 3456).subscribe(data => {
+      this.getAllOrders();
+    });
+  }
+
+  setOrderToDone(itemId: number) {
+    this.service.setOrderState(itemId, "DONE", 3456).subscribe(data => {
+      this.getAllOrders();
+    });
+  }
+
+  async setItemStateToInProgress(itemId: number) {
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if (this.code != 0) {
+      this.service.setItemState(itemId, "IN_PROGRESS", this.code).subscribe(data => {
+        this.getAllOrders();
+      },
+        error => { alert("Invalid Code!"); }
+      );
+      this.code = 0;
+    }
+  }
+  async setItemStateToDeliver(itemId: number, order: Order) {
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if (this.code != 0) {
+      this.service.setItemState(itemId, "TO_DELIVER", this.code).subscribe(data => {
+        let allDone = true;
+        order.items.forEach(item => {
+          if (itemId != item.id && item.state != "TO_DELIVER") {
+            allDone = false;
+          }
+        });
+        if (allDone) {
+          this.setOrderToDone(order.id);
+        }
+        else {
+          this.getAllOrders();
+        }
+      },
+        error => { alert("Invalid Code!"); }
+      );
+      this.code = 0;
+    }
+  }
+}

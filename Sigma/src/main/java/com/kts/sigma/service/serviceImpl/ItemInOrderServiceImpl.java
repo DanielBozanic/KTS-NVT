@@ -26,6 +26,7 @@ import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.ItemInOrderService;
+import com.kts.sigma.service.ItemService;
 
 @Service
 public class ItemInOrderServiceImpl implements ItemInOrderService{
@@ -44,6 +45,8 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	@Autowired
 	private ItemInMenuRepository iimRepository;
 	
+	@Autowired
+	private ItemService iService;
 	
 	
 	@Override
@@ -53,6 +56,10 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		
 		for (ItemInOrder item : items) {
 			ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+			
+			if (iService.findById(item.getItem().item.getId()).isFood()) {
+				dto.setFood(true);
+			}
 			
 			dto.setDescription(item.getItem().getItem().getDescription());
 			dto.setName(item.getItem().getItem().getName());
@@ -64,6 +71,73 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		return results;
 	}
 	
+	@Override
+	public ArrayList<ItemInOrderDTO> getFoodItemsByOrderId(Integer order_id) {
+		List<ItemInOrder> items = itemInOrderRepository.getByOrderId(order_id);
+		ArrayList<ItemInOrderDTO> results = new ArrayList<ItemInOrderDTO>();
+		
+		for (ItemInOrder item : items) {
+			
+			ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+			
+			if (iService.findById(item.getItem().item.getId()).isFood()) {
+				dto.setFood(true);
+			}
+			
+			dto.setDescription(item.getItem().getItem().getDescription());
+			dto.setName(item.getItem().getItem().getName());
+			dto.setSellingPrice(item.getItem().getSellingPrice());
+			if(dto.isFood())
+				results.add(dto);
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public ArrayList<ItemInOrderDTO> getDrinkItemsByOrderId(Integer order_id) {
+		List<ItemInOrder> items = itemInOrderRepository.getByOrderId(order_id);
+		ArrayList<ItemInOrderDTO> results = new ArrayList<ItemInOrderDTO>();
+		
+		for (ItemInOrder item : items) {
+			ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+			
+			if (iService.findById(item.getItem().item.getId()).isFood()) {
+				dto.setFood(true);
+			}
+			
+			dto.setDescription(item.getItem().getItem().getDescription());
+			dto.setName(item.getItem().getItem().getName());
+			dto.setSellingPrice(item.getItem().getSellingPrice());
+			if(!dto.isFood())
+				results.add(dto);
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public ArrayList<ItemInOrderDTO> getOrderItems(Integer order_id) {
+		List<ItemInOrder> items = itemInOrderRepository.getByOrderId(order_id);
+		ArrayList<ItemInOrderDTO> results = new ArrayList<ItemInOrderDTO>();
+		
+		for (ItemInOrder item : items) {
+			ItemInOrderDTO dto = Mapper.mapper.map(item, ItemInOrderDTO.class);
+			
+			if (iService.findById(item.getItem().item.getId()).isFood()) {
+				dto.setFood(true);
+			}
+			
+			dto.setDescription(item.getItem().getItem().getDescription());
+			dto.setName(item.getItem().getItem().getName());
+			dto.setSellingPrice(item.getItem().getSellingPrice());
+			
+			results.add(dto);
+		}
+		
+		return results;
+	}
+
 	@Override
 	public ItemInOrder save(ItemInOrderDTO i, Integer code) {
 		Employee worker = employeeRepository.findByCode(code);
@@ -166,7 +240,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			throw new ItemNotFoundException(id, "item in order");
 		}
 
-		if(state == ItemInOrderState.IN_PROGRESS)
+		if(state == ItemInOrderState.IN_PROGRESS || state == ItemInOrderState.DONE)
 		{
 			if(employee instanceof Cook && item.getItem().item instanceof Food)
 			{
@@ -184,6 +258,10 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		
 		
 		item.setState(state);
+		if(state == ItemInOrderState.IN_PROGRESS)
+		{
+			item.setEmployee(employee);
+		}
 		ItemInOrder returnItem = itemInOrderRepository.save(item);
 		
 		return Mapper.mapper.map(returnItem, ItemInOrderDTO.class);

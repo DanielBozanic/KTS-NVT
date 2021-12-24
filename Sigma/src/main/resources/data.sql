@@ -25,7 +25,9 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 5
 INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Standard', '2021-12-10', '2022-05-31', true);
 
 
-INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 800, 1, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 1800, 2, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 1200, 3, 2);
 
 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (350, 1, 1, true);
@@ -43,6 +45,13 @@ INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 1);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 2, 2);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 3, 2);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 4, 3);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 4, 3);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 3, 3);
 
 
 INSERT INTO Zone (name) VALUES ('Ground floor');
