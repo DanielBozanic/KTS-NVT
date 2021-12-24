@@ -91,13 +91,13 @@
 <ng-template #codeVerificationDialog>
 
   <form class="example-form">
-    <h2> Verifikacija </h2>
+    <h2> Verification </h2>
     <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Unesite kod:</mat-label>
+      <mat-label>Enter code:</mat-label>
       <input matInput value="" [formControl]="codeFromDialog">
     </mat-form-field>
     <br>
     <button mat-raised-button color="primary" (click)="checkCode()">Ok</button>
-    <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" (click)="closeCodeDialog()">Otkazi</button>
+    <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" (click)="closeCodeDialog()">Cancel</button>
   </form>
 </ng-template>
