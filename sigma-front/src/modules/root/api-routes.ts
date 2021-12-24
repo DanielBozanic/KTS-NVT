@@ -48,3 +48,6 @@ export const API_GET_ORDER = API_BASE + '/orders/';
 export const API_GET_ITEM_IN_ORDER = API_BASE + '/item-in-order/';
 export const API_GET_ALL_FOOD_ORDERS = API_BASE + '/orders/allFoodOrders/';
 export const API_POST_ORDER = API_BASE + '/orders/';
+export const API_DELETE_ORDER = API_BASE + '/orders/';
+export const API_ADD_ITEM_TO_ORDER = API_BASE + '/orders/';
+export const API_REMOVE_ITEM_FROM_ORDER = API_BASE + '/orders/';

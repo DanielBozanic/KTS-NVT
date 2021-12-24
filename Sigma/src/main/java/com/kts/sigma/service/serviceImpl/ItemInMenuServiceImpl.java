@@ -30,6 +30,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		
 		for (ItemInMenu item : items) {
 			ItemDTO dto = Mapper.mapper.map(item.getItem(), ItemDTO.class);
+			dto.setId(item.getId());
 			
 			dto.setSellingPrice(item.getSellingPrice());
 			
@@ -67,6 +68,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		}
 		
 		ItemDTO result = Mapper.mapper.map(item.getItem(), ItemDTO.class);
+		result.setId(item.getId());
 		result.setSellingPrice(item.getSellingPrice());
 		
 		if(item.getItem() instanceof Food) {
@@ -84,6 +86,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		
 		for (ItemInMenu item : items) {
 			ItemDTO dto = Mapper.mapper.map(item.getItem(), ItemDTO.class);
+			dto.setId(item.getId());
 			
 			dto.setSellingPrice(item.getSellingPrice());
 			
@@ -104,6 +107,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		
 		for (ItemInMenu item : items) {
 			ItemDTO dto = Mapper.mapper.map(item.getItem(), ItemDTO.class);
+			dto.setId(item.getId());
 			
 			dto.setSellingPrice(item.getSellingPrice());
 			
@@ -124,6 +128,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		
 		for (ItemInMenu item : items) {
 			ItemDTO dto = Mapper.mapper.map(item.getItem(), ItemDTO.class);
+			dto.setId(item.getId());
 			
 			dto.setSellingPrice(item.getSellingPrice());
 			
@@ -144,6 +149,7 @@ public class ItemInMenuServiceImpl implements ItemInMenuService{
 		
 		for (ItemInMenu item : items) {
 			ItemDTO dto = Mapper.mapper.map(item.getItem(), ItemDTO.class);
+			dto.setId(item.getId());
 			
 			dto.setSellingPrice(item.getSellingPrice());
 			

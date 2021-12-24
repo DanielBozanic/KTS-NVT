@@ -14,6 +14,7 @@ import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tabl
 import { FoodDrinksManagerComponent } from '../manager/pages/food-drinks-manager/food-drinks-manager.component';
 import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.component';
 import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
+import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-addItems.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
     WaiterTablesComponent,
     FoodDrinksManagerComponent,
     WaiterOrderComponent,
-    CookComponent
+    CookComponent,
+    WaiterAddItemsComponent,
   ],
   imports: [
     BrowserModule,

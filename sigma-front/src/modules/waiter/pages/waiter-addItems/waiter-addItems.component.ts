@@ -20,11 +20,11 @@ import { Table } from 'src/modules/root/models/table';
 import { WaiterOrderService } from '../../services/waiter-order.service';
 
 @Component({
-  selector: 'app-waiter-order',
-  templateUrl: './waiter-order.component.html',
-  styleUrls: ['./waiter-order.component.scss'],
+  selector: 'app-waiter-addItems',
+  templateUrl: './waiter-addItems.component.html',
+  styleUrls: ['./waiter-addItems.component.scss'],
 })
-export class WaiterOrderComponent implements OnInit {
+export class WaiterAddItemsComponent implements OnInit {
   displayedColumnsItemsInOrder: string[];
   items: Array<Item>;
   activeNonExpiredMenus: Array<Menu>;
@@ -168,20 +168,20 @@ export class WaiterOrderComponent implements OnInit {
     this.calculateTotal()
   }
 
-  createOrder(){
+  addItems(){
     if(this.itemsInOrderData.length === 0){
-      this.openSnackBar('Order has to have at least 1 item', this.RESPONSE_ERROR);
+      this.openSnackBar('You could have just clicked cancel...', this.RESPONSE_ERROR);
       return;
     }
 
-    let order = new Order();
-    order.items = this.itemsInOrderData;
-    order.tableId = this.table.id;
-    this.foodDrinksService.createOrder(order, 1234).subscribe(
-      response => {
-        this.cancel();
+    this.itemsInOrderData.forEach(item => {
+      if(this.table.orderId){
+        this.foodDrinksService.addItemToOrder(item, this.table.orderId, 1234).subscribe(response =>{
+          
+        });
       }
-    )
+    })
+    this.cancel();
   }
 
   cancel(){

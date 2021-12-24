@@ -1,3 +1,14 @@
+$background-color-light-blue: #deede6;
+
+%center-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+mat-card{
+  margin: 1em;
+}
+
 .dropdown-zones{
   margin: 3em;
 }
@@ -38,8 +49,31 @@ button{
 
 .table{
   border-radius: 100%;
+  width: auto;
 }
 
 .tables{
   border-style: groove;
+}
+
+.table-card {
+  @extend %center-content;
+  max-width: 700px;
+  background-color: $background-color-light-blue;
+}
+
+table {
+  width: 100%;
+
+  .column-name {
+    width: 45%;
+  }
+
+  .column-selling-price {
+    width: 30%;
+  }
+
+  .column-remove-button {
+    width: 25%;
+  }
 }
