@@ -27,14 +27,32 @@ public class PeoplePage {
 	@FindBy(css = "#add-employee-payment-field")
 	private WebElement addEmployeePaymentInputField;
 	
+	@FindBy(css = "#job-field")
+	private WebElement jobInputField;
+	
 	@FindBy(css = "#add-employee-payment-field-required-error-msg")
 	private WebElement addEmployeePaymentInputFieldRequiredErrorMsg;
 	
 	@FindBy(css = "#add-employee-payment-field-negative-number-error-msg")
 	private WebElement addEmployeePaymentInputFieldNegativeNumberErrorMsg;
 	
-	@FindBy(css = "#job-field")
-	private WebElement jobInputField;
+	@FindBy(css = "#edit-employee-btn2")
+	private WebElement editButton;
+	
+	@FindBy(css = "#edit-employee-btn-dialog")
+	private WebElement editButtonDialog;
+	
+	@FindBy(css = "#edit-employee-name-field")
+	private WebElement editEmployeeNameInputField;
+
+	@FindBy(css = "#edit-employee-payment-field")
+	private WebElement editEmployeePaymentInputField;
+	
+	@FindBy(css = "#edit-employee-payment-field-negative-number-error-msg")
+	private WebElement editEmployeePaymentInputFieldNegativeNumberErrorMsg;
+	
+	@FindBy(css = "#delete-employee-btn3")
+	private WebElement deleteButton;
 	
 	public PeoplePage() {
 		
@@ -98,5 +116,51 @@ public class PeoplePage {
 	
 	public WebElement getAddEmployeePaymentNegativeErrorMsg() {
 		return addEmployeePaymentInputFieldNegativeNumberErrorMsg;
+	}
+	
+	public void ensureIsDisplayedEditButton() {
+        (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(editButton));
+    }
+	
+	public WebElement getEditButton() {
+		return editButton;
+	}
+	
+	public void ensureIsDisplayedEditEmployeeForm() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(editEmployeeNameInputField));
+    }
+	
+	public WebElement getEditButtonDialog() {
+		return editButtonDialog;
+	}
+	
+	public WebElement getEditEmployeeNameInputField() {
+		return editEmployeeNameInputField;
+	}
+	
+	public void setEditEmployeeNameInputField(String name) {
+		editEmployeeNameInputField.clear();
+		editEmployeeNameInputField.sendKeys(name);
+	}
+	
+	public WebElement getEditEmployeePaymentInputField() {
+		return editEmployeePaymentInputField;
+	}
+	
+	public void setEditEmployeePaymentInputField(String payment) {
+		editEmployeePaymentInputField.clear();
+		editEmployeePaymentInputField.sendKeys(payment);
+	}
+	
+	public WebElement getEditEmployeePaymentNegativeErrorMsg() {
+		return editEmployeePaymentInputFieldNegativeNumberErrorMsg;
+	}
+	
+	public void ensureIsDisplayedDeleteButton() {
+        (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(deleteButton));
+    }
+	
+	public WebElement getDeleteButton() {
+		return deleteButton;
 	}
 }

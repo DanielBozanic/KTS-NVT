@@ -82,4 +82,43 @@ public class PeopleTest {
 		assertTrue(peoplePage.getAddButtonDialog().isEnabled());
 		peoplePage.getAddButtonDialog().click();
 	}
+	
+	@Test
+	public void editEmployeeNegativePayment() {
+		driver.get(E2EConstants.PEOPLE_URL);
+		
+		peoplePage.ensureIsDisplayedEditButton();
+		peoplePage.getEditButton().click();
+		peoplePage.ensureIsDisplayedEditEmployeeForm();
+		
+		peoplePage.setEditEmployeePaymentInputField("-100");
+		peoplePage.setEditEmployeeNameInputField("Petruza");
+		
+		assertTrue(peoplePage.getEditEmployeePaymentNegativeErrorMsg().isDisplayed());
+		
+		assertFalse(peoplePage.getEditButtonDialog().isEnabled());
+	}
+	
+	@Test
+	public void editEmployeeValidFields() {
+		driver.get(E2EConstants.PEOPLE_URL);
+		
+		peoplePage.ensureIsDisplayedEditButton();
+		peoplePage.getEditButton().click();
+		peoplePage.ensureIsDisplayedEditEmployeeForm();
+		
+		peoplePage.setEditEmployeePaymentInputField("20000");
+		peoplePage.setEditEmployeeNameInputField("Petruza");
+
+		assertTrue(peoplePage.getEditButtonDialog().isEnabled());
+		peoplePage.getEditButtonDialog().click();
+	}
+	
+	@Test
+	public void deleteEmployee() {
+		driver.get(E2EConstants.PEOPLE_URL);
+		
+		peoplePage.ensureIsDisplayedDeleteButton();
+		peoplePage.getDeleteButton().click();
+	}
 }
