@@ -35,8 +35,8 @@ export class CookService {
     return this.http.get<Array<Order>>(API_GET_ALL_FOOD_ORDERS);
   }
 
-  setOrderState(OrderId: number, NewState: string, Code: number): Observable<void> {
-    return this.http.put<any>(API_GET_ORDER + OrderId + "/" + NewState + "/" + Code + "/", "");
+  setOrderState(OrderId: number, NewState: string): Observable<void> {
+    return this.http.put<any>(API_GET_ORDER + "changeWithoutCode/" + OrderId + "/" + NewState + "/", "");
   }
 
   setItemState(OrderId: number, NewState: string, Code: number): Observable<void> {
