@@ -30,4 +30,6 @@ public interface OrderService {
 	public void removeItemFromOrder(Integer itemId, Integer code, Integer orderId);
 
 	public void changeState(OrderState state, Integer code, Integer orderId);
+	
+	public void changeStateWithoutCode(OrderState state, Integer orderId);
 }

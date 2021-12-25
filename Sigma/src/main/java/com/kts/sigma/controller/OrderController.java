@@ -72,6 +72,11 @@ public class OrderController {
 	  return orderService.addItemToOrder(item, code, orderId);
 	}
 	
+	@PutMapping("/changeWithoutCode/{orderId}/{state}")
+	void changeStateWithoutCode(@PathVariable OrderState state, @PathVariable Integer orderId) {
+	  orderService.changeStateWithoutCode(state, orderId);
+	}
+	
 	@PutMapping("/{orderId}/{state}/{code}")
 	void changeState(@PathVariable OrderState state, @PathVariable Integer code, @PathVariable Integer orderId) {
 	  orderService.changeState(state, code, orderId);

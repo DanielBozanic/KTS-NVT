@@ -4,6 +4,10 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import {
+  MatSnackBar,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { GroupedOrder } from 'src/modules/root/models/groupedOrder';
@@ -26,9 +30,13 @@ export class CookComponent implements OnInit {
   validatingForm: FormGroup;
   validCode: boolean;
   code: number;
+  RESPONSE_OK: number;
+  RESPONSE_ERROR: number;
+  verticalPosition: MatSnackBarVerticalPosition;
   ItemsOfWorker: Map<number, string>;
   constructor(
     private service: CookService,
+    private snackBar: MatSnackBar,
     private codeVerificationDialog: MatDialog,
   ) {
     this.items = [];
@@ -41,6 +49,9 @@ export class CookComponent implements OnInit {
     this.validatingForm = new FormGroup({
       code: new FormControl('', Validators.required)
     });
+    this.RESPONSE_OK = 0;
+    this.RESPONSE_ERROR = -1;
+    this.verticalPosition = 'top';
   }
 
   @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
@@ -121,13 +132,14 @@ export class CookComponent implements OnInit {
   }
 
   setOrderToInProgress(itemId: number) {
-    this.service.setOrderState(itemId, "IN_PROGRESS", 3456).subscribe(data => {
+    this.service.setOrderState(itemId, "IN_PROGRESS").subscribe(data => {
+      this.openSnackBar("Order moved to current orders", 0);
       this.getAllOrders();
     });
   }
 
   setOrderToDone(itemId: number) {
-    this.service.setOrderState(itemId, "DONE", 3456).subscribe(data => {
+    this.service.setOrderState(itemId, "DONE").subscribe(data => {
       this.getAllOrders();
     });
   }
@@ -140,7 +152,7 @@ export class CookComponent implements OnInit {
       this.service.setItemState(itemId, "IN_PROGRESS", this.code).subscribe(data => {
         this.getAllOrders();
       },
-        error => { alert("Invalid Code!"); }
+        error => { this.openSnackBar("Invalid Code!", -1); }
       );
       this.code = 0;
     }
@@ -158,15 +170,24 @@ export class CookComponent implements OnInit {
           }
         });
         if (allDone) {
+          this.openSnackBar("All items of the order are done!", 0);
           this.setOrderToDone(order.id);
         }
         else {
           this.getAllOrders();
         }
       },
-        error => { alert("Invalid Code!"); }
+        error => { this.openSnackBar("Invalid Code!", -1); }
       );
       this.code = 0;
     }
+  }
+
+  openSnackBar(msg: string, responseCode: number) {
+    this.snackBar.open(msg, 'x', {
+      duration: responseCode === this.RESPONSE_OK ? 3000 : 20000,
+      verticalPosition: this.verticalPosition,
+      panelClass: responseCode === this.RESPONSE_OK ? 'back-green' : 'back-red',
+    });
   }
 }

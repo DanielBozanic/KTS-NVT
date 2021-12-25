@@ -363,4 +363,16 @@ public class OrderServiceImpl implements OrderService{
 		orderRepository.save(order);
 		
 	}
+	
+	@Override
+	public void changeStateWithoutCode(OrderState state, Integer orderId) {
+		RestaurantOrder order = orderRepository.findById(orderId).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(orderId, "order");
+		}
+		order.setState(state);
+		orderRepository.save(order);
+		
+	}
 }
