@@ -77,7 +77,7 @@ export class PeopleManagerComponent implements OnInit {
   initializeForms(): void {
     this.addEmployeeForm = new FormGroup({
       name: new FormControl('', Validators.required),
-      paymentBigDecimal: new FormControl(0, Validators.required),
+      paymentBigDecimal: new FormControl(null, Validators.required),
       type: new FormControl('BARTENDER'),
     });
     this.editEmployeeForm = new FormGroup({

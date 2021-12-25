@@ -22,7 +22,7 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 5
 INSERT INTO Item (ITEM_TYPE, buying_price, description, name) VALUES ('DRINK', 50, 'classic', 'Pepsi');
 
 
-INSERT INTO Menu (name, start_date, expiration_date, active) VALUES ('Standard', '2021-12-10', '2022-05-31', true);
+INSERT INTO Menu (name, start_date, active) VALUES ('Standard', '2021-12-10', true);
 
 
 
