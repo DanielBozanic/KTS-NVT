@@ -123,9 +123,14 @@ export class WaiterTablesComponent implements OnInit {
       .changeTableState(this.currentTable.id, 'FREE', this.code)
       .subscribe((data) => {
         this.getTables(this.zoneId);
-        this.openSnackBar("Successfully charged order", this.RESPONSE_OK);
-      }, (error) => {
-        this.openSnackBar(error.error, this.RESPONSE_ERROR);
+
+        if(this.currentTable.orderId)
+          this.service.changeOrderState(this.currentTable.orderId, 'CHARGED', this.code).subscribe((response) => {
+            this.openSnackBar("Successfully charged order", this.RESPONSE_OK);
+          }, (error) => {
+            this.openSnackBar(error.error, this.RESPONSE_ERROR);
+          });
+
       });
       this.paymentTableDialog.closeAll();
     }
@@ -139,18 +144,32 @@ export class WaiterTablesComponent implements OnInit {
       this.service
       .changeItemState(id, 'DONE', this.code)
       .subscribe((data) => {
+
         this.getTables(this.zoneId);
+        if(this.currentTable.orderId)
+          this.service
+              .getItemsForOrder(this.currentTable.orderId)
+              .subscribe((data) => {
+                this.currentItems = data;
+                this.itemInOrderDataSource.data = data;
+                
+                const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
+                if(delivered === this.currentItems.length){
+
+                  this.service
+                  .changeTableState(this.currentTable.id, 'DONE', this.code)
+                  .subscribe((data) => {
+                    this.getTables(this.zoneId)
+                    this.closeOrderView();
+                  });
+                }
+
+              });
         this.openSnackBar("Successfully delivered item", this.RESPONSE_OK)
+      
       }, (error) => {
         this.openSnackBar(error.error, this.RESPONSE_ERROR);
       });
-    
-      const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
-      if(delivered === this.currentItems.length){
-        this.service
-        .changeTableState(this.currentTable.id, 'DONE', this.code)
-        .subscribe((data) => this.getTables(this.zoneId));
-      }
     }
   }
 
@@ -171,10 +190,27 @@ export class WaiterTablesComponent implements OnInit {
       this.service.removeItemFromOrder(this.currentTable.orderId, this.code, id).subscribe(response =>{
         this.currentItems = this.currentItems.filter(item => item.id !== id)
         this.itemInOrderDataSource.data = this.currentItems;
+        const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
+                if(delivered === this.currentItems.length){
+
+                  this.service
+                  .changeTableState(this.currentTable.id, 'DONE', this.code)
+                  .subscribe((data) => {
+                    this.getTables(this.zoneId)
+                    this.closeOrderView();
+                  });
+                }
         this.openSnackBar("Successfully removed item from order", this.RESPONSE_OK)
       }, (error) => {
         this.openSnackBar(error.error, this.RESPONSE_ERROR);
       })
+
+      const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
+      if(delivered === this.currentItems.length){
+        this.service
+        .changeTableState(this.currentTable.id, 'DONE', this.code)
+        .subscribe((data) => this.getTables(this.zoneId));
+      }
     }
   }
 
@@ -270,8 +306,8 @@ export class WaiterTablesComponent implements OnInit {
         break;
 
       case 'DONE':
-        if (this.tables[0].orderId) {
-          this.service.getOrder(this.tables[0].orderId).subscribe((data) => {
+        if (table.orderId) {
+          this.service.getOrder(table.orderId).subscribe((data) => {
             this.currentOrder = data;
             const dialogref = this.paymentTableDialog.open(this.paymentDialog);
           });

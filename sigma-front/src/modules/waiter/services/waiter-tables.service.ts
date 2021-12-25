@@ -9,6 +9,7 @@ import {
   API_GET_ITEMS_FOR_ORDER,
   API_CHANGE_TABLE_STATE,
   API_CHANGE_ITEM_STATE,
+  API_POST_ORDER,
   API_REMOVE_ITEM_FROM_ORDER,
   API_ADD_ITEM_TO_ORDER,
   API_DELETE_ORDER,
@@ -50,6 +51,12 @@ export class WaiterTablesService {
   changeItemState(id: number, state: string, code: number): Observable<void> {
     return this.http
       .put<Observable<void>>(API_CHANGE_ITEM_STATE + `${id}/${state}/${code}`, null)
+      .pipe(catchError(this.errorHander));
+  }
+
+  changeOrderState(id: number, state: string, code: number): Observable<void> {
+    return this.http
+      .put<Observable<void>>(API_POST_ORDER + `${id}/${state}/${code}`, null)
       .pipe(catchError(this.errorHander));
   }
 

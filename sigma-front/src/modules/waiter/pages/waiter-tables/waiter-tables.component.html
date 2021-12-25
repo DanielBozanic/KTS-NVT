@@ -102,12 +102,13 @@
   </ng-template>
 
   <ng-template #paymentTableDialog>
+    <h2> Charge order </h2>
     <h3 class="inline">Amount that needs to be payed: </h3>
     <span class="inline">{{currentOrder.totalPrice}}</span>
 
     <div class="action-buttons">
       <button mat-raised-button color="primary" (click)="pay()">Pay</button>
-      <button mat-raised-button color="primary" [mat-dialog-close]="true">Cancel</button>
+      <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
     </div>
   </ng-template>
 

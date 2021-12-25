@@ -241,7 +241,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			throw new ItemNotFoundException(id, "item in order");
 		}
 
-		if(state == ItemInOrderState.IN_PROGRESS || state == ItemInOrderState.DONE)
+		if(state == ItemInOrderState.IN_PROGRESS)
 		{
 			if(employee instanceof Cook && item.getItem().item instanceof Food)
 			{
