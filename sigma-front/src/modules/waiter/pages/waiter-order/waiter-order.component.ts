@@ -42,10 +42,13 @@ export class WaiterOrderComponent implements OnInit {
   selectedMenu: Menu;
   table: Table;
   totalPrice: number;
+  validatingForm: FormGroup;
+  code!: number;
 
   constructor(
     private foodDrinksService: WaiterOrderService,
     private snackBar: MatSnackBar,
+    private codeVerificationDialog: MatDialog,
     private router: Router
   ) {
     this.items = [];
@@ -55,6 +58,9 @@ export class WaiterOrderComponent implements OnInit {
     this.itemInOrderDataSource = new MatTableDataSource<Item>(
       this.itemsInOrderData
     );
+    this.validatingForm = new FormGroup({
+      code: new FormControl('', Validators.required)
+    });
     this.selectedMenu = new Menu();
     this.table = new Table();
     this.isLoading = false;
@@ -68,6 +74,8 @@ export class WaiterOrderComponent implements OnInit {
     this.totalPrice = 0;
   }
 
+  @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
+
   ngOnInit(): void {
     this.table = history.state.data;
     this.initializeForms();
@@ -78,6 +86,15 @@ export class WaiterOrderComponent implements OnInit {
     this.searchForm = new FormGroup({
       searchTerm: new FormControl(''),
     });
+  }
+
+  get codeFromDialog() {
+    return this.validatingForm.get('code') as FormControl;
+  }
+
+  checkCode(): void {
+    this.code = this.validatingForm.get('code')?.value;
+    this.validatingForm.reset();
   }
 
   getActiveNonExpiredMenus(): void {
@@ -168,20 +185,27 @@ export class WaiterOrderComponent implements OnInit {
     this.calculateTotal()
   }
 
-  createOrder(){
+  async createOrder(){
     if(this.itemsInOrderData.length === 0){
       this.openSnackBar('Order has to have at least 1 item', this.RESPONSE_ERROR);
       return;
     }
 
-    let order = new Order();
-    order.items = this.itemsInOrderData;
-    order.tableId = this.table.id;
-    this.foodDrinksService.createOrder(order, 1234).subscribe(
-      response => {
-        this.cancel();
-      }
-    )
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if(this.code){
+      let order = new Order();
+      order.items = this.itemsInOrderData;
+      order.tableId = this.table.id;
+      this.foodDrinksService.createOrder(order, this.code).subscribe(
+        response => {
+          this.cancel();
+          this.openSnackBar('Successfully created order', this.RESPONSE_OK);
+        }, error =>{
+          this.openSnackBar(error.error, this.RESPONSE_ERROR);
+        })
+    }
   }
 
   cancel(){

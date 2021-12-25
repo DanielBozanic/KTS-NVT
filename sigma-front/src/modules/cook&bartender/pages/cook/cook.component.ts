@@ -58,6 +58,7 @@ export class CookComponent implements OnInit {
   checkCode(): void {
     let code = this.validatingForm.get('code')?.value;
     this.code = parseInt(code);
+    this.validatingForm.reset();
     this.codeVerificationDialog.closeAll();
   }
 

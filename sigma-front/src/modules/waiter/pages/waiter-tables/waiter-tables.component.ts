@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Item } from 'src/modules/root/models/item';
@@ -15,34 +16,49 @@ import { WaiterTablesService } from '../../services/waiter-tables.service';
   styleUrls: ['./waiter-tables.component.scss'],
 })
 export class WaiterTablesComponent implements OnInit {
+  RESPONSE_OK: number;
+  RESPONSE_ERROR: number;
+  validatingForm: FormGroup;
+  zonesForm!: FormGroup;
+  zones: Zone[] = [];
+  tables: Table[] = [];
+  currentItems: Item[] = [];
+  currentTable!: Table;
+  code!: number;
+  displayedColumnsItemsInOrder: string[];
+  itemInOrderDataSource: MatTableDataSource<Item>;
+  currentOrder: Order = new Order();
+  zoneId!: number;
+  verticalPosition: MatSnackBarVerticalPosition;
+
   constructor(
     private service: WaiterTablesService,
     private freeTableDialog: MatDialog,
     private tableOrderDialog: MatDialog,
     private paymentTableDialog: MatDialog,
     private router: Router,
+    private codeVerificationDialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {
     this.displayedColumnsItemsInOrder = ['name', 'sellingPrice', 'delete'];
     this.itemInOrderDataSource = new MatTableDataSource<Item>(
       this.currentItems
     );
+    this.validatingForm = new FormGroup({
+      code: new FormControl('', Validators.required)
+    });
+    this.RESPONSE_OK = 0;
+    this.RESPONSE_ERROR = -1;
+    this.verticalPosition = 'top';
   }
-
-  zonesForm!: FormGroup;
-  zones: Zone[] = [];
-  tables: Table[] = [];
-  currentItems: Item[] = [];
-  currentTable!: Table;
-  displayedColumnsItemsInOrder: string[];
-  itemInOrderDataSource: MatTableDataSource<Item>;
-  currentOrder: Order = new Order();
-  zoneId: number = 0;
 
   @ViewChild('freeTableDialog') freeDialog!: TemplateRef<any>;
 
   @ViewChild('tableOrderDialog') orderDialog!: TemplateRef<any>;
 
   @ViewChild('paymentTableDialog') paymentDialog!: TemplateRef<any>;
+
+  @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
 
   ngOnInit(): void {
     this.zonesForm = new FormGroup({
@@ -63,19 +79,34 @@ export class WaiterTablesComponent implements OnInit {
     });
   }
 
+  get codeFromDialog() {
+    return this.validatingForm.get('code') as FormControl;
+  }
+
+  checkCode(): void {
+    this.code = this.validatingForm.get('code')?.value;
+    this.validatingForm.reset();
+  }
+
   closeOrderView() {
     this.tableOrderDialog.closeAll();
   }
 
-  closePaymentView() {
-    this.paymentTableDialog.closeAll();
-  }
+  async reserveTable() {
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
 
-  reserveTable() {
-    this.service
-      .changeTableState(this.currentTable.id, 'RESERVED', 1234)
-      .subscribe((data) => this.getTables(this.zoneId));
-    this.freeTableDialog.closeAll();
+    if(this.code){
+      this.service
+      .changeTableState(this.currentTable.id, 'RESERVED', this.code)
+      .subscribe((data) => {
+        this.getTables(this.zoneId);
+        this.openSnackBar("Successfully reserved table", this.RESPONSE_OK)
+      }, (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
+      });
+      this.freeTableDialog.closeAll();
+    }
   }
 
   order() {
@@ -83,23 +114,43 @@ export class WaiterTablesComponent implements OnInit {
     this.redirectToOrderComponent();
   }
 
-  pay() {
-    this.service
-      .changeTableState(this.currentTable.id, 'FREE', 1234)
-      .subscribe((data) => this.getTables(this.zoneId));
-    this.paymentTableDialog.closeAll();
+  async pay() {
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if(this.code){
+      this.service
+      .changeTableState(this.currentTable.id, 'FREE', this.code)
+      .subscribe((data) => {
+        this.getTables(this.zoneId);
+        this.openSnackBar("Successfully charged order", this.RESPONSE_OK);
+      }, (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
+      });
+      this.paymentTableDialog.closeAll();
+    }
   }
 
-  deliver(id: number) {
-    this.service
-      .changeItemState(id, 'DONE', 1234)
-      .subscribe((data) => this.getTables(this.zoneId));
-    
-    const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
-    if(delivered === this.currentItems.length){
+  async deliver(id: number) {
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if(this.code){
       this.service
-      .changeTableState(this.currentTable.id, 'DONE', 1234)
-      .subscribe((data) => this.getTables(this.zoneId));
+      .changeItemState(id, 'DONE', this.code)
+      .subscribe((data) => {
+        this.getTables(this.zoneId);
+        this.openSnackBar("Successfully delivered item", this.RESPONSE_OK)
+      }, (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
+      });
+    
+      const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
+      if(delivered === this.currentItems.length){
+        this.service
+        .changeTableState(this.currentTable.id, 'DONE', this.code)
+        .subscribe((data) => this.getTables(this.zoneId));
+      }
     }
   }
 
@@ -112,32 +163,49 @@ export class WaiterTablesComponent implements OnInit {
     this.router.navigate(['/waiterAddItems'], {state: {data: this.currentTable}});
   }
 
-  removeItem(id: number){
-    if(this.currentTable.orderId){
-      this.service.removeItemFromOrder(this.currentTable.orderId, '1234', id).subscribe(response =>{
+  async removeItem(id: number){
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if(this.currentTable.orderId && this.code){
+      this.service.removeItemFromOrder(this.currentTable.orderId, this.code, id).subscribe(response =>{
         this.currentItems = this.currentItems.filter(item => item.id !== id)
         this.itemInOrderDataSource.data = this.currentItems;
+        this.openSnackBar("Successfully removed item from order", this.RESPONSE_OK)
+      }, (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
       })
     }
   }
 
-  addItem(item: Item){
-    if(this.currentTable.orderId){
-      this.service.addItemToOrder(this.currentTable.orderId, '1234', item).subscribe(response =>{
+  async addItem(item: Item){
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
 
+    if(this.currentTable.orderId && this.code){
+      this.service.addItemToOrder(this.currentTable.orderId, this.code, item).subscribe(response =>{
+        this.openSnackBar("Successfully added item to order", this.RESPONSE_OK)
+      },
+      (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
       })
     }
   }
 
-  removeOrder(){
-    if(this.currentTable.orderId){
-      this.service.deleteOrder(this.currentTable.orderId, '1234').subscribe(response =>{
+  async removeOrder(){
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
 
+    if(this.currentTable.orderId && this.code != 0){
+      this.service.deleteOrder(this.currentTable.orderId, this.code).subscribe(response =>{
+        this.service
+        .changeTableState(this.currentTable.id, 'FREE', this.code)
+        .subscribe((data) => this.getTables(this.zoneId));
+        this.tableOrderDialog.closeAll();
+      },
+      (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
       })
-      this.service
-      .changeTableState(this.currentTable.id, 'FREE', 1234)
-      .subscribe((data) => this.getTables(this.zoneId));
-      this.tableOrderDialog.closeAll();
     }
   }
 
@@ -210,5 +278,13 @@ export class WaiterTablesComponent implements OnInit {
         }
         break;
     }
+  }
+
+  openSnackBar(msg: string, responseCode: number) {
+    this.snackBar.open(msg, 'x', {
+      duration: responseCode === this.RESPONSE_OK ? 3000 : 20000,
+      verticalPosition: this.verticalPosition,
+      panelClass: responseCode === this.RESPONSE_OK ? 'back-green' : 'back-red',
+    });
   }
 }

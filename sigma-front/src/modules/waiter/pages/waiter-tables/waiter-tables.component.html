@@ -107,8 +107,22 @@
 
     <div class="action-buttons">
       <button mat-raised-button color="primary" (click)="pay()">Pay</button>
-      <button mat-raised-button color="primary" (click)="closePaymentView()">Cancel</button>
+      <button mat-raised-button color="primary" [mat-dialog-close]="true">Cancel</button>
     </div>
+  </ng-template>
+
+  <ng-template #codeVerificationDialog>
+
+    <form class="example-form">
+      <h2> Verification </h2>
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Enter code:</mat-label>
+        <input matInput type="number" value="" [formControl]="codeFromDialog" min="0">
+      </mat-form-field>
+      <br>
+      <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true">Ok</button>
+      <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
+    </form>
   </ng-template>
 
 </div>

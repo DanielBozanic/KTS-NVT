@@ -65,5 +65,11 @@ INSERT INTO zone (name) VALUES ('2nd floor');
 
 
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 2, 1, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 0, 2, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 3, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 2, 2, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 2, 3, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 4, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (2, 0, 5, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 6, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 7, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 0, 8, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (10, 0, 9, 2);

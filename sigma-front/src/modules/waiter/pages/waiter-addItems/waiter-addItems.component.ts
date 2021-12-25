@@ -42,10 +42,13 @@ export class WaiterAddItemsComponent implements OnInit {
   selectedMenu: Menu;
   table: Table;
   totalPrice: number;
+  validatingForm: FormGroup;
+  code!: number;
 
   constructor(
     private foodDrinksService: WaiterOrderService,
     private snackBar: MatSnackBar,
+    private codeVerificationDialog: MatDialog,
     private router: Router
   ) {
     this.items = [];
@@ -55,6 +58,9 @@ export class WaiterAddItemsComponent implements OnInit {
     this.itemInOrderDataSource = new MatTableDataSource<Item>(
       this.itemsInOrderData
     );
+    this.validatingForm = new FormGroup({
+      code: new FormControl('', Validators.required)
+    });
     this.selectedMenu = new Menu();
     this.table = new Table();
     this.isLoading = false;
@@ -68,6 +74,8 @@ export class WaiterAddItemsComponent implements OnInit {
     this.totalPrice = 0;
   }
 
+  @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
+
   ngOnInit(): void {
     this.table = history.state.data;
     this.initializeForms();
@@ -78,6 +86,15 @@ export class WaiterAddItemsComponent implements OnInit {
     this.searchForm = new FormGroup({
       searchTerm: new FormControl(''),
     });
+  }
+
+  get codeFromDialog() {
+    return this.validatingForm.get('code') as FormControl;
+  }
+
+  checkCode(): void {
+    this.code = this.validatingForm.get('code')?.value;
+    this.validatingForm.reset();
   }
 
   getActiveNonExpiredMenus(): void {
@@ -168,20 +185,27 @@ export class WaiterAddItemsComponent implements OnInit {
     this.calculateTotal()
   }
 
-  addItems(){
+  async addItems(){
     if(this.itemsInOrderData.length === 0){
       this.openSnackBar('You could have just clicked cancel...', this.RESPONSE_ERROR);
       return;
     }
 
-    this.itemsInOrderData.forEach(item => {
-      if(this.table.orderId){
-        this.foodDrinksService.addItemToOrder(item, this.table.orderId, 1234).subscribe(response =>{
-          
-        });
-      }
-    })
-    this.cancel();
+    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+    await dialogRef.afterClosed().toPromise();
+
+    if(this.code){
+      this.itemsInOrderData.forEach(item => {
+        if(this.table.orderId){
+          this.foodDrinksService.addItemToOrder(item, this.table.orderId, this.code).subscribe(response =>{
+            this.openSnackBar('Successfully added items to order', this.RESPONSE_OK);
+            this.cancel();
+          }, error =>{
+            this.openSnackBar(error.error, this.RESPONSE_ERROR);
+          });
+        }
+      })
+    }
   }
 
   cancel(){

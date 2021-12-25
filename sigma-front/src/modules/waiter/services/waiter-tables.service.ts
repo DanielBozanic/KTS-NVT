@@ -53,17 +53,17 @@ export class WaiterTablesService {
       .pipe(catchError(this.errorHander));
   }
 
-  addItemToOrder(id: number, code: string, item: Item): Observable<Item> {
+  addItemToOrder(id: number, code: number, item: Item): Observable<Item> {
     return this.http.put<Observable<Item>>(API_ADD_ITEM_TO_ORDER + `${id}/${code}`, item)
     .pipe(catchError(this.errorHander));
   }
 
-  removeItemFromOrder(orderId: number, code: string, itemId: number): Observable<void>{
+  removeItemFromOrder(orderId: number, code: number, itemId: number): Observable<void>{
     return this.http.delete<Observable<void>>(API_REMOVE_ITEM_FROM_ORDER + `${orderId}/${itemId}/${code}`)
     .pipe(catchError(this.errorHander));
   }
 
-  deleteOrder(id: number, code: string): Observable<void>{
+  deleteOrder(id: number, code: number): Observable<void>{
     return this.http.delete<Observable<void>>(API_DELETE_ORDER + `${id}/${code}`)
     .pipe(catchError(this.errorHander));
   }
