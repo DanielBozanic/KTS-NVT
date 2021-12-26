@@ -3,6 +3,8 @@ package com.kts.sigma.service.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.criteria.Order;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import com.kts.sigma.model.Food;
 import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
+import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.User;
 import com.kts.sigma.repository.EmployeeRepository;
@@ -27,6 +30,7 @@ import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.ItemInOrderService;
 import com.kts.sigma.service.ItemService;
+import com.kts.sigma.service.OrderService;
 
 @Service
 public class ItemInOrderServiceImpl implements ItemInOrderService{
@@ -240,6 +244,20 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		{
 			throw new ItemNotFoundException(id, "item in order");
 		}
+		
+		boolean allAreDone = true;
+		for (ItemInOrder i : item.getOrder().items) {
+			if(i.getState() != ItemInOrderState.TO_DELIVER)
+			{
+				allAreDone = false;
+			}
+		}
+		
+		if(allAreDone)
+		{
+			item.getOrder().setState(OrderState.DONE);
+			oRepository.save(item.getOrder());
+		}
 
 		if(state == ItemInOrderState.IN_PROGRESS)
 		{
@@ -257,12 +275,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			}
 		}
 		
-		
 		item.setState(state);
-		if(state == ItemInOrderState.IN_PROGRESS)
-		{
-			item.setEmployee(employee);
-		}
 		ItemInOrder returnItem = itemInOrderRepository.save(item);
 		
 		return Mapper.mapper.map(returnItem, ItemInOrderDTO.class);

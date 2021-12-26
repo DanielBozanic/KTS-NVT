@@ -18,11 +18,11 @@ import { Table } from 'src/modules/root/models/table';
 import { CookBartenderService } from '../../services/cook&bartender.service';
 
 @Component({
-  selector: 'app-cook',
-  templateUrl: './cook.component.html',
-  styleUrls: ['./cook.component.scss'],
+  selector: 'app-bartender',
+  templateUrl: './bartender.component.html',
+  styleUrls: ['./bartender.component.scss'],
 })
-export class CookComponent implements OnInit {
+export class BartenderComponent implements OnInit {
   items: Array<Item>;
   newOrders: Array<Order>;
   groupedNewOrders: Array<GroupedOrder>;
@@ -78,7 +78,7 @@ export class CookComponent implements OnInit {
   }
 
   getAllOrders(): void {
-    this.service.getAllFoodOrders().subscribe((data) => {
+    this.service.getAllDrinkOrders().subscribe((data) => {
       this.newOrders = [];
       this.ordersInProgress = [];
       this.groupedNewOrders = [];

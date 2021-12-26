@@ -14,6 +14,7 @@ import {
   API_GET_ITEM_IN_ORDER,
   API_CHANGE_TABLE_STATE,
   API_GET_EMPLOYEE,
+  API_GET_ALL_DRINK_ORDERS,
 } from 'src/modules/root/api-routes';
 import { Employee } from 'src/modules/root/models/employee';
 import { Item } from 'src/modules/root/models/item';
@@ -24,15 +25,15 @@ import { Table } from 'src/modules/root/models/table';
 @Injectable({
   providedIn: 'root',
 })
-export class CookService {
+export class CookBartenderService {
   constructor(private http: HttpClient) { }
-
-  getAllOrders(): Observable<Array<Order>> {
-    return this.http.get<Array<Order>>(API_GET_ORDER);
-  }
 
   getAllFoodOrders(): Observable<Array<Order>> {
     return this.http.get<Array<Order>>(API_GET_ALL_FOOD_ORDERS);
+  }
+
+  getAllDrinkOrders(): Observable<Array<Order>> {
+    return this.http.get<Array<Order>>(API_GET_ALL_DRINK_ORDERS);
   }
 
   setOrderState(OrderId: number, NewState: string): Observable<void> {

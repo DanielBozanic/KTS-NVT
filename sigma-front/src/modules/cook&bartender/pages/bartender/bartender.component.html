@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<div>
+  <p-carousel [value]="groupedNewOrders" [numVisible]="3" [numScroll]="3" [circular]="false">
+    <ng-template let-item pTemplate="item">
+      <mat-card class="item-card">
+        <div class="item-content">
+          <div>
+            <h2>Table {{ item.table.tableNumber }}</h2>
+
+            <div class="inline" *ngFor="let i of item.itemsByQuantity | keyvalue">
+              <h2>{{ i.key }} X {{i.value}}</h2>
+            </div>
+
+          </div>
+          <button mat-raised-button color="primary" (click)="setOrderToInProgress(item.id)">
+            Start Making
+          </button>
+        </div>
+      </mat-card>
+    </ng-template>
+  </p-carousel>
+</div>
+
+
+<div class="expansion-panel">
+  <div class="inline" *ngFor="let order of ordersInProgress">
+
+    <mat-expansion-panel class="expansion-panel" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Table: {{order.tableId}}</h2>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-list>
+        <div *ngFor="let item of order.items; last as last">
+
+          <mat-list-item class="inline" *ngIf="item.state==='NEW'" [ngStyle]="{'background-color': '#D8D8D8'}">
+            <h2 matLine>
+              {{item.name}}
+            </h2>
+
+            <button mat-raised-button color="primary" (click)="setItemStateToInProgress(item.id)"
+              [ngStyle]="{ 'background-color': 'grey'}">
+              Start
+            </button>
+            <mat-divider [inset]="true" *ngIf="!last">
+              <mat-divider></mat-divider>
+            </mat-divider>
+          </mat-list-item>
+
+          <mat-list-item class="inline" *ngIf="item.state==='IN_PROGRESS'" [ngStyle]="{'background-color': '#11ACE8'}">
+            <h2 matLine>
+              {{item.name}}
+            </h2>
+
+            <button mat-raised-button [disabled]="true" color="primary" [ngStyle]="{'background-color': '#11ACE8', 'color': 'white'}">
+              {{ItemsOfWorker.get(item.id)}} 
+            </button>
+
+            <button mat-raised-button color="primary" (click)="setItemStateToDeliver(item.id, order)"
+              [ngStyle]="{ 'background-color': 'grey'}">
+              Done
+            </button>
+            <mat-divider [inset]="true" *ngIf="!last">
+              <mat-divider></mat-divider>
+            </mat-divider>
+          </mat-list-item>
+
+          <mat-list-item class="inline" *ngIf="item.state==='DONE' || item.state==='TO_DELIVER'"
+            [ngStyle]="{'background-color': '#1FB928'}">
+            <h2 matLine>
+              {{item.name}}
+            </h2>
+
+            <button mat-raised-button color="primary" (click)="setItemStateToInProgress(item.id)"
+              [ngStyle]="{ 'background-color': 'red'}">
+              Undo
+            </button>
+            <mat-divider [inset]="true" *ngIf="!last">
+              <mat-divider></mat-divider>
+            </mat-divider>
+          </mat-list-item>
+        </div>
+      </mat-list>
+
+    </mat-expansion-panel>
+  </div>
+</div>
+
+<ng-template #codeVerificationDialog>
+
+  <form class="example-form">
+    <h2> Verification </h2>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Enter code:</mat-label>
+      <input matInput value="" [formControl]="codeFromDialog">
+    </mat-form-field>
+    <br>
+    <button mat-raised-button color="primary" (click)="checkCode()">Ok</button>
+    <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" (click)="closeCodeDialog()">Cancel</button>
+  </form>
+</ng-template>

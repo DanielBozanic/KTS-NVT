@@ -1,0 +1,155 @@
+$background-color-light-blue: #deede6;
+
+%prev-next-buttons {
+  background-color: #673ab7;
+  color: white;
+  width: 3rem;
+  height: 3rem;
+}
+
+%center-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.search-card {
+  @extend %center-content;
+  margin-top: 10px;
+  min-height: 150px;
+  min-width: 150px;
+  max-width: 900px;
+  background-color: $background-color-light-blue;
+  .div-category-select {
+    margin-top: 20px;
+    font-weight: bold;
+    width: 300px;
+    mat-select {
+      margin-top: 10px;
+    }
+  }
+
+  .div-search-bar {
+    margin-top: 30px;
+    margin-left: 50px;
+    mat-form-field {
+      width: 500px;
+    }
+  }
+
+  .button-group {
+    @extend %center-content;
+    .reset-button {
+      margin-left: 10px;
+      width: 100px;
+      height: 40px;
+    }
+
+    .search-button {
+      margin-left: 50px;
+      width: 100px;
+      height: 40px;
+    }
+  }
+}
+
+.item-card {
+  background-color: $background-color-light-blue;
+  margin-top: 10px;
+  margin-left: 10px;
+  .item-content {
+    margin: 0.3rem;
+    text-align: center;
+    padding: 2rem 0;
+  }
+}
+
+.expansion-panel {
+  @extend %center-content;
+  max-width: 700px;
+  max-height: 700px;
+  background-color: $background-color-light-blue;
+}
+
+::ng-deep .p-carousel .p-carousel-content .p-carousel-prev {
+  @extend %prev-next-buttons;
+}
+
+::ng-deep .p-carousel .p-carousel-content .p-carousel-next {
+  @extend %prev-next-buttons;
+}
+
+.table-card {
+  @extend %center-content;
+  max-width: 700px;
+  max-height: 700px;
+  background-color: $background-color-light-blue;
+}
+
+th.mat-header-cell {
+  font-size: 13px;
+  font-weight: bold;
+  color: black;
+}
+
+table {
+  width: 100%;
+
+  .column-name {
+    width: 35%;
+  }
+
+  .column-quantity {
+    width: 20%;
+  }
+
+  .column-selling-price {
+    width: 25%;
+  }
+
+  .column-remove-button {
+    width: 20%;
+  }
+}
+
+.div-menu-select {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.div-create-new-item-and-menu-buttons {
+  @extend %center-content;
+  margin-top: 20px;
+  button {
+    margin-left: 10px;
+    width: 200px;
+    height: 50px;
+  }
+}
+
+.form {
+  min-width: 500px;
+  width: 100%;
+
+  .field-width {
+    width: 100%;
+
+    .textarea-size {
+      max-width: 500px;
+      max-height: 100px;
+    }
+  }
+}
+
+.total{
+  margin: 0.3rem;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+
+  .radio-button {
+    margin: 5px;
+  }
+}

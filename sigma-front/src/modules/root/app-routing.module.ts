@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.component';
 import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
 import { FoodDrinksManagerComponent } from '../manager/pages/food-drinks-manager/food-drinks-manager.component';
 import { PeopleManagerComponent } from '../manager/pages/people-manager/people-manager.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'waiterTables', component: WaiterTablesComponent },
   { path: 'waiterOrder', component: WaiterOrderComponent },
   { path: 'cook', component: CookComponent },
+  { path: 'bartender', component: BartenderComponent },
   { path: 'waiterAddItems', component: WaiterAddItemsComponent },
 ];
 
