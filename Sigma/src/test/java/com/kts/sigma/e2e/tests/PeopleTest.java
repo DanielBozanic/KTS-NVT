@@ -1,5 +1,6 @@
 package com.kts.sigma.e2e.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -7,6 +8,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import com.kts.sigma.constants.E2EConstants;
@@ -71,6 +73,8 @@ public class PeopleTest {
 	public void addEmployeeValidFields() {
 		driver.get(E2EConstants.PEOPLE_URL);
 		
+		int numberOfEmployeesBeforeAdd = peoplePage.getNumberOfPeople();
+		
 		peoplePage.ensureIsDisplayedAddButton();
 		peoplePage.getAddButton().click();
 		peoplePage.ensureIsDisplayedAddEmployeeForm();
@@ -81,14 +85,23 @@ public class PeopleTest {
 		
 		assertTrue(peoplePage.getAddButtonDialog().isEnabled());
 		peoplePage.getAddButtonDialog().click();
+		
+		peoplePage.ensureIsNotDisplayedAddEmployeeForm();
+	
+		int numberOfEmployeesAfterAdd = peoplePage.getNumberOfPeople();
+
+		assertEquals(numberOfEmployeesBeforeAdd + 1, numberOfEmployeesAfterAdd);
+		assertTrue(peoplePage.isEmployeePresent("Markuza"));
 	}
 	
 	@Test
 	public void editEmployeeNegativePayment() {
 		driver.get(E2EConstants.PEOPLE_URL);
 		
-		peoplePage.ensureIsDisplayedEditButton();
-		peoplePage.getEditButton().click();
+		String xpath = "//tr[last()]/td[last() - 1]/button";
+		WebElement editButton = peoplePage.findWebElementByXPath(xpath);
+		editButton.click();
+		
 		peoplePage.ensureIsDisplayedEditEmployeeForm();
 		
 		peoplePage.setEditEmployeePaymentInputField("-100");
@@ -103,8 +116,10 @@ public class PeopleTest {
 	public void editEmployeeValidFields() {
 		driver.get(E2EConstants.PEOPLE_URL);
 		
-		peoplePage.ensureIsDisplayedEditButton();
-		peoplePage.getEditButton().click();
+		String xpath = "//tr[last()]/td[last() - 1]/button";
+		WebElement editButton = peoplePage.findWebElementByXPath(xpath);
+		editButton.click();
+		
 		peoplePage.ensureIsDisplayedEditEmployeeForm();
 		
 		peoplePage.setEditEmployeePaymentInputField("20000");
@@ -112,13 +127,25 @@ public class PeopleTest {
 
 		assertTrue(peoplePage.getEditButtonDialog().isEnabled());
 		peoplePage.getEditButtonDialog().click();
+		
+		peoplePage.ensureIsNotDisplayedEditEmployeeForm();
+		
+		assertTrue(peoplePage.isEmployeePresent("Petruza"));
 	}
 	
 	@Test
 	public void deleteEmployee() {
 		driver.get(E2EConstants.PEOPLE_URL);
 		
-		peoplePage.ensureIsDisplayedDeleteButton();
-		peoplePage.getDeleteButton().click();
+		int numberOfPeopleBeforeDelete = peoplePage.getNumberOfPeople();
+		
+		String xpath = "//tr[last()]/td[last()]/button";
+		WebElement deleteButton = peoplePage.findWebElementByXPath(xpath);
+		deleteButton.click();
+		
+		peoplePage.ensureIsNotDisplayedWebElement(deleteButton);
+	
+		int numberOfPeopleAfterDelete = peoplePage.getNumberOfPeople();
+		assertEquals(numberOfPeopleBeforeDelete - 1, numberOfPeopleAfterDelete);
 	}
 }

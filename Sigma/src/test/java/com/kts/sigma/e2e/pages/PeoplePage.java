@@ -1,6 +1,7 @@
 package com.kts.sigma.e2e.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -36,9 +37,6 @@ public class PeoplePage {
 	@FindBy(css = "#add-employee-payment-field-negative-number-error-msg")
 	private WebElement addEmployeePaymentInputFieldNegativeNumberErrorMsg;
 	
-	@FindBy(css = "#edit-employee-btn2")
-	private WebElement editButton;
-	
 	@FindBy(css = "#edit-employee-btn-dialog")
 	private WebElement editButtonDialog;
 	
@@ -50,10 +48,7 @@ public class PeoplePage {
 	
 	@FindBy(css = "#edit-employee-payment-field-negative-number-error-msg")
 	private WebElement editEmployeePaymentInputFieldNegativeNumberErrorMsg;
-	
-	@FindBy(css = "#delete-employee-btn3")
-	private WebElement deleteButton;
-	
+		
 	public PeoplePage() {
 		
 	}
@@ -64,7 +59,7 @@ public class PeoplePage {
 	}
 	
 	public void ensureIsDisplayedAddButton() {
-        (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(addButton));
+        (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(By.id("add-employee-btn")));
     }
 	
 	public WebElement getAddButton() {
@@ -72,9 +67,13 @@ public class PeoplePage {
 	}
 	
 	public void ensureIsDisplayedAddEmployeeForm() {
-        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(addEmployeeNameInputField));
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("add-employee-btn-dialog")));
     }
 	
+	public void ensureIsNotDisplayedAddEmployeeForm() {
+        (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("add-employee-btn-dialog")));
+    }
+
 	public WebElement getAddButtonDialog() {
 		return addButtonDialog;
 	}
@@ -118,16 +117,12 @@ public class PeoplePage {
 		return addEmployeePaymentInputFieldNegativeNumberErrorMsg;
 	}
 	
-	public void ensureIsDisplayedEditButton() {
-        (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(editButton));
+	public void ensureIsDisplayedEditEmployeeForm() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-employee-btn-dialog")));
     }
 	
-	public WebElement getEditButton() {
-		return editButton;
-	}
-	
-	public void ensureIsDisplayedEditEmployeeForm() {
-        new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(editEmployeeNameInputField));
+	public void ensureIsNotDisplayedEditEmployeeForm() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.id("edit-employee-btn-dialog")));
     }
 	
 	public WebElement getEditButtonDialog() {
@@ -156,11 +151,28 @@ public class PeoplePage {
 		return editEmployeePaymentInputFieldNegativeNumberErrorMsg;
 	}
 	
-	public void ensureIsDisplayedDeleteButton() {
-        (new WebDriverWait(driver, 30)).until(ExpectedConditions.elementToBeClickable(deleteButton));
-    }
+	public int getNumberOfPeople() {
+		return new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//table[@id = 'people-table']/tbody/tr"))).size();
+	}
 	
-	public WebElement getDeleteButton() {
-		return deleteButton;
+	public boolean isEmployeePresent(String name) {
+		String xpath = String.format("//td[contains(text(),'%s')]", name);
+		try {
+			return driver.findElement(By.xpath(xpath)).isDisplayed();
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+	}
+	
+	public WebElement findWebElementByXPath(String xpath) {
+		return driver.findElement(By.xpath(xpath));
+	}
+	
+	public void ensureIsNotDisplayedWebElement(WebElement webElement) {
+		new WebDriverWait(driver, 30).until(ExpectedConditions.invisibilityOf(webElement));
+	}
+	
+	public void ensureIsNotDisplayedWebElementById(String id) {
+		new WebDriverWait(driver, 30).until(ExpectedConditions.invisibilityOfElementLocated(By.id(id)));
 	}
 }

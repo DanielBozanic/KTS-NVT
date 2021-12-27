@@ -20,7 +20,7 @@
             mode="indeterminate"
             *ngIf="isLoading"
           ></mat-progress-bar>
-          <table mat-table [dataSource]="employeeDataSource">
+          <table id="people-table" mat-table [dataSource]="employeeDataSource">
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef class="column-name">
                 Name
@@ -97,6 +97,7 @@
           </table>
           <mat-paginator
             #paginatorEmployee
+            id="people-paginator"
             [pageSizeOptions]="pageSizeOptions"
             [pageIndex]="currentPage"
             [pageSize]="pageSize"
