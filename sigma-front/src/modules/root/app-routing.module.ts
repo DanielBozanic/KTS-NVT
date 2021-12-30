@@ -12,6 +12,8 @@ const routes: Routes = [
   { path: 'waiterTables', component: WaiterTablesComponent },
   { path: 'waiterOrder', component: WaiterOrderComponent },
   { path: 'waiterAddItems', component: WaiterAddItemsComponent },
+  // { path: 'login', component: undefined },
+  { path: '', redirectTo: '/waiterTables', pathMatch: 'full' },
 ];
 
 @NgModule({

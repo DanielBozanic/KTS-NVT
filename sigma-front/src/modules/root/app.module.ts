@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +14,8 @@ import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tabl
 import { FoodDrinksManagerComponent } from '../manager/pages/food-drinks-manager/food-drinks-manager.component';
 import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.component';
 import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-addItems.component';
+import { HeaderComponent } from '../navigation/header/header.component';
+import { SidenavListComponent } from '../navigation/sidenav-list/sidenav-list.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-
     FoodDrinksManagerComponent,
     WaiterOrderComponent,
     WaiterAddItemsComponent,
+    HeaderComponent,
+    SidenavListComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,7 +39,8 @@ import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-
     CarouselModule,
     FlexLayoutModule,
   ],
-  providers: [],
+  providers: [HeaderComponent],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}
