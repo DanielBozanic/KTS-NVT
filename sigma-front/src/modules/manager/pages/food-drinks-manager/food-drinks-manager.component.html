@@ -6,11 +6,16 @@
       <div class="div-category-select">
         <mat-label>Select Category:</mat-label>
         <mat-select
+          id="category-filter-select"
           [value]="categories[0]"
           class="category-select"
           (selectionChange)="filterByCategory($event.value)"
         >
-          <mat-option *ngFor="let category of categories" [value]="category">
+          <mat-option
+            id="{{ 'filter-category-' + category }}"
+            *ngFor="let category of categories"
+            [value]="category"
+          >
             {{ category }}
           </mat-option>
         </mat-select>
@@ -19,6 +24,7 @@
         <form [formGroup]="searchForm">
           <mat-form-field
             ><input
+              id="search-input-field"
               type="text"
               matInput
               placeholder="Search"
@@ -30,6 +36,7 @@
     <div fxLayout="row">
       <div class="button-group">
         <button
+          id="search-btn"
           class="search-button"
           mat-raised-button
           color="primary"
@@ -38,6 +45,7 @@
           Search
         </button>
         <button
+          id="reset-btn"
           class="reset-button"
           mat-raised-button
           color="primary"
@@ -52,6 +60,7 @@
 
 <div>
   <p-carousel
+    id="item-carousel"
     [value]="items"
     [numVisible]="3"
     [numScroll]="3"
@@ -66,6 +75,7 @@
             <h2>Buying Price: {{ item.buyingPrice }}RSD</h2>
           </div>
           <button
+            id="{{ 'carousel-item-btn' + item.id }}"
             mat-raised-button
             color="primary"
             (click)="openAddItemToMenuDialog(item)"
@@ -85,7 +95,11 @@
         mode="indeterminate"
         *ngIf="isLoading"
       ></mat-progress-bar>
-      <table mat-table [dataSource]="itemInMenuDataSource">
+      <table
+        id="item-in-menu-table"
+        mat-table
+        [dataSource]="itemInMenuDataSource"
+      >
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef class="column-name">
             Menu: {{ selectedMenu.name }}
@@ -135,11 +149,13 @@
     <div class="div-menu-select">
       <mat-label>Select Menu:</mat-label>
       <mat-select
+        id="menu-select"
         [value]="selectedMenu.id"
         (selectionChange)="changeMenu($event.value)"
       >
         <mat-option
           *ngFor="let menu of activeNonExpiredMenus"
+          id="{{ 'menu' + menu.id }}"
           [value]="menu.id"
         >
           {{ menu.name }}
@@ -152,6 +168,7 @@
 <div fxLayout="row">
   <div class="div-create-new-item-and-menu-buttons">
     <button
+      id="create-new-menu-btn"
       mat-raised-button
       color="primary"
       (click)="openCreateNewMenuDialog()"
@@ -159,13 +176,19 @@
       Create New Menu
     </button>
     <button
+      id="create-new-item-btn"
       mat-raised-button
       color="primary"
       (click)="openCreateNewItemDialog()"
     >
       Create New Item
     </button>
-    <button mat-raised-button color="warn" (click)="deleteSelectedMenu()">
+    <button
+      id="delete-selected-menu-btn"
+      mat-raised-button
+      color="warn"
+      (click)="deleteSelectedMenu()"
+    >
       Delete Selected Menu
     </button>
   </div>
@@ -176,16 +199,20 @@
     <mat-form-field class="field-width">
       <mat-label>Selling price</mat-label>
       <input
+        id="selling-price-field"
         type="number"
         min="0"
         matInput
         formControlName="sellingPrice"
         (input)="checkSellingPrice()"
       />
-      <mat-error *ngIf="hasErrorAddItemInMenuForm('sellingPrice', 'required')"
+      <mat-error
+        id="selling-price-field-required-error-msg"
+        *ngIf="hasErrorAddItemInMenuForm('sellingPrice', 'required')"
         >Selling price is required!</mat-error
       >
       <mat-error
+        id="selling-price-field-negative-number-error-msg"
         *ngIf="
           sellingPrice?.invalid &&
           !hasErrorAddItemInMenuForm('sellingPrice', 'required')
@@ -195,6 +222,7 @@
     </mat-form-field>
   </form>
   <button
+    id="add-item-in-menu-btn-dialog"
     (click)="addItemInMenu()"
     [disabled]="addItemInMenuForm.invalid"
     mat-raised-button
@@ -208,23 +236,35 @@
   <form [formGroup]="createNewMenuForm" class="form">
     <mat-form-field class="field-width">
       <mat-label>Name</mat-label>
-      <input type="text" matInput placeholder="Name" formControlName="name" />
-      <mat-error *ngIf="hasErrorCreateNewMenuForm('name', 'required')"
+      <input
+        id="menu-name-field"
+        type="text"
+        matInput
+        placeholder="Name"
+        formControlName="name"
+      />
+      <mat-error
+        id="menu-name-field-required-error-msg"
+        *ngIf="hasErrorCreateNewMenuForm('name', 'required')"
         >Name is required!</mat-error
       >
     </mat-form-field>
     <mat-form-field class="field-width">
       <mat-label>Start date</mat-label>
       <input
+        id="start-date-field"
         type="datetime-local"
         matInput
         formControlName="startDate"
         (input)="checkDate()"
       />
-      <mat-error *ngIf="hasErrorCreateNewMenuForm('startDate', 'required')"
+      <mat-error
+        id="start-date-field-required-error-msg"
+        *ngIf="hasErrorCreateNewMenuForm('startDate', 'required')"
         >Start date is required!</mat-error
       >
       <mat-error
+        id="start-date-field-past-date-error-msg"
         *ngIf="
           startDate?.invalid &&
           !hasErrorCreateNewMenuForm('startDate', 'required')
@@ -235,6 +275,7 @@
     <mat-form-field class="field-width">
       <mat-label>Expiration date</mat-label>
       <input
+        id="expiration-date-field"
         type="datetime-local"
         matInput
         formControlName="expirationDate"
@@ -243,6 +284,7 @@
     </mat-form-field>
   </form>
   <button
+    id="create-new-menu-btn-dialog"
     (click)="createNewMenu()"
     [disabled]="createNewMenuForm.invalid"
     mat-raised-button
@@ -256,13 +298,22 @@
   <form [formGroup]="createNewItemForm" class="form">
     <mat-form-field class="field-width">
       <mat-label>Name</mat-label>
-      <input type="text" matInput placeholder="Name" formControlName="name" />
-      <mat-error *ngIf="hasErrorCreateNewItemForm('name', 'required')"
+      <input
+        id="item-name-field"
+        type="text"
+        matInput
+        placeholder="Name"
+        formControlName="name"
+      />
+      <mat-error
+        id="item-name-field-required-error-msg"
+        *ngIf="hasErrorCreateNewItemForm('name', 'required')"
         >Name is required!</mat-error
       >
     </mat-form-field>
     <mat-radio-group class="radio-group" formControlName="food">
       <mat-radio-button
+        id="food-radio-btn"
         class="radio-button"
         [value]="true"
         [checked]="true"
@@ -270,6 +321,7 @@
         >Food</mat-radio-button
       >
       <mat-radio-button
+        id="drink-radio-btn"
         class="radio-button"
         [value]="false"
         (change)="foodValueChanged($event.value)"
@@ -277,8 +329,12 @@
       >
     </mat-radio-group>
     <mat-form-field class="field-width" *ngIf="foodIsTrue">
-      <mat-select formControlName="type">
-        <mat-option *ngFor="let type of types" [value]="type">
+      <mat-select id="category-select" formControlName="type">
+        <mat-option
+          id="{{ 'category-select-' + type }}"
+          *ngFor="let type of types"
+          [value]="type"
+        >
           {{ type }}
         </mat-option>
       </mat-select>
@@ -286,16 +342,20 @@
     <mat-form-field class="field-width">
       <mat-label>Buying price</mat-label>
       <input
+        id="buying-price-field"
         type="number"
         min="0"
         matInput
         formControlName="buyingPrice"
         (input)="checkBuyingPrice()"
       />
-      <mat-error *ngIf="hasErrorCreateNewItemForm('buyingPrice', 'required')"
+      <mat-error
+        id="buying-price-field-required-error-msg"
+        *ngIf="hasErrorCreateNewItemForm('buyingPrice', 'required')"
         >Selling price is required!</mat-error
       >
       <mat-error
+        id="buying-price-field-negative-number-error-msg"
         *ngIf="
           buyingPrice?.invalid &&
           !hasErrorCreateNewItemForm('buyingPrice', 'required')
@@ -306,16 +366,20 @@
     <mat-form-field class="field-width">
       <mat-label>Description</mat-label>
       <textarea
+        id="description-field"
         class="textarea-size"
         matInput
         formControlName="description"
       ></textarea>
-      <mat-error *ngIf="hasErrorCreateNewItemForm('description', 'required')"
+      <mat-error
+        id="description-field-required-error-msg"
+        *ngIf="hasErrorCreateNewItemForm('description', 'required')"
         >Description is required!</mat-error
       >
     </mat-form-field>
   </form>
   <button
+    id="create-new-item-btn-dialog"
     (click)="createNewItem()"
     [disabled]="createNewItemForm.invalid"
     mat-raised-button

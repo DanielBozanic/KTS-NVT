@@ -117,13 +117,13 @@ export class FoodDrinksManagerComponent implements OnInit {
     });
     this.addItemInMenuForm = new FormGroup({
       id: new FormControl(),
-      sellingPrice: new FormControl(0, Validators.required),
+      sellingPrice: new FormControl(null, Validators.required),
     });
     this.createNewItemForm = new FormGroup({
       name: new FormControl('', Validators.required),
       food: new FormControl(true),
       type: new FormControl('APPETISER'),
-      buyingPrice: new FormControl(0, Validators.required),
+      buyingPrice: new FormControl(null, Validators.required),
       description: new FormControl('', Validators.required),
     });
     this.searchForm = new FormGroup({
