@@ -16,6 +16,7 @@ import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.
 import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
 import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-addItems.component';
 import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.component';
+import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-manager.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.
     CookComponent,
     BartenderComponent,
     WaiterAddItemsComponent,
+    ZonesManagerComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,41 @@
+$background-color-light-blue: #deede6;
+
+%center-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.table-card {
+  @extend %center-content;
+  margin-top: 20px;
+  max-width: 700px;
+  max-height: 700px;
+  background-color: $background-color-light-blue;
+}
+
+.data-table {
+  width: 100%;
+
+  .column-number-of-chairs {
+    width: 20%;
+  }
+
+  .column-edit-button {
+    width: 10%;
+  }
+
+  .column-remove-button {
+    width: 10%;
+  }
+}
+
+th.mat-header-cell {
+  font-size: 13px;
+  font-weight: bold;
+  color: black;
+}
+
+.div-zone-select {
+  margin-top: 20px;
+  font-weight: bold;
+}
