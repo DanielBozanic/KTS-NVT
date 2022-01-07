@@ -69,6 +69,7 @@
             mat-raised-button
             color="primary"
             (click)="addItemToOrder(item)"
+            id="{{ 'carousel-item-btn' + item.id }}"
           >
             Add To Order
           </button>
@@ -143,6 +144,7 @@
       mat-raised-button
       color="primary"
       (click)="addItems()"
+      id="order-creation-button"
     >
       Add items to order
     </button>
@@ -162,10 +164,10 @@
     <h2> Verification </h2>
     <mat-form-field class="example-full-width" appearance="fill">
       <mat-label>Enter code:</mat-label>
-      <input matInput type="number" value="" [formControl]="codeFromDialog" min="0">
+      <input matInput type="number" value="" [formControl]="codeFromDialog" min="0" id="code-verification-input">
     </mat-form-field>
     <br>
-    <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true">Ok</button>
+    <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true" id="code-verification-button">Ok</button>
     <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
   </form>
 </ng-template>

@@ -131,6 +131,8 @@ export class WaiterTablesComponent implements OnInit {
             this.openSnackBar(error.error, this.RESPONSE_ERROR);
           });
 
+      }, (error) => {
+        this.openSnackBar(error.error, this.RESPONSE_ERROR);
       });
       this.paymentTableDialog.closeAll();
     }
@@ -232,12 +234,13 @@ export class WaiterTablesComponent implements OnInit {
     const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
     await dialogRef.afterClosed().toPromise();
 
-    if(this.currentTable.orderId && this.code != 0){
+    if(this.currentTable.orderId && this.code){
       this.service.deleteOrder(this.currentTable.orderId, this.code).subscribe(response =>{
         this.service
         .changeTableState(this.currentTable.id, 'FREE', this.code)
         .subscribe((data) => this.getTables(this.zoneId));
         this.tableOrderDialog.closeAll();
+        this.openSnackBar("Successfully removed order", this.RESPONSE_OK)
       },
       (error) => {
         this.openSnackBar(error.error, this.RESPONSE_ERROR);
@@ -269,6 +272,16 @@ export class WaiterTablesComponent implements OnInit {
     } else {
       return 'blue';
     }
+  }
+
+  removeVisible(){
+    let visible = true;
+    this.currentItems.forEach(item => {
+      if(item.state !== 'NEW'){
+        visible = false;
+      }
+    })
+    return visible;
   }
 
   tableClick(table: Table) {

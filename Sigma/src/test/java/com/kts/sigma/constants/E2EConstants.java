@@ -10,6 +10,10 @@ public class E2EConstants {
 	
 	public static final String TABLES_URL = FRONTEND_URL + "waiterTables";
 	
+	public static final String ORDER_URL = FRONTEND_URL + "waiterOrder";
+	
+	public static final String ADD_ITEMS_URL = FRONTEND_URL + "waiterAddItems";
+	
 	public static final String FOOD_DRINKS_URL = FRONTEND_URL + "foodDrinks";
 	
 	

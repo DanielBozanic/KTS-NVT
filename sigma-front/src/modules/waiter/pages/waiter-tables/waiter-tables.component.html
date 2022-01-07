@@ -41,6 +41,8 @@
         mat-raised-button
         color="primary"
         (click)="removeOrder()"
+        *ngIf="removeVisible()"
+        id="remove-order-button"
       >
           Remove
       </button>
@@ -48,6 +50,7 @@
         class="floatRight"
         mat-raised-button
         color="primary"
+        id="add-items-button"
         (click)="redirectToAddItemsComponent()"
       >
           Add items
@@ -78,14 +81,16 @@
                 mat-raised-button
                 color="primary"
                 *ngIf="element.state === 'NEW'"
-                (click)="removeItem(element.id)">
+                (click)="removeItem(element.id)"
+                id="{{'remove-item-' + element.id}}">
                 Remove
               </button>
               <button
                 mat-raised-button
                 color="primary"
                 *ngIf="element.state === 'TO_DELIVER'"
-                (click)="deliver(element.id)">
+                (click)="deliver(element.id)"
+                id="{{'deliver-item-' + element.id}}">
                 Deliver
               </button>
             </td>
@@ -108,7 +113,7 @@
     <span class="inline">{{currentOrder.totalPrice}}</span>
 
     <div class="action-buttons">
-      <button mat-raised-button color="primary" (click)="pay()">Pay</button>
+      <button mat-raised-button color="primary" (click)="pay()" id="pay-button">Pay</button>
       <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
     </div>
   </ng-template>

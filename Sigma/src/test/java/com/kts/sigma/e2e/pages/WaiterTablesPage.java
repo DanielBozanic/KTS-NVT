@@ -30,6 +30,24 @@ public class WaiterTablesPage {
 	@FindBy(css = "#table-button-2")
 	private WebElement tableButton2;
 	
+	@FindBy(css = "#table-button-3")
+	private WebElement tableButton3;
+	
+	@FindBy(css = "#table-button-4")
+	private WebElement tableButton4;
+	
+	@FindBy(css = "#table-button-5")
+	private WebElement tableButton5;
+	
+	@FindBy(css = "#table-button-6")
+	private WebElement tableButton6;
+	
+	@FindBy(css = "#table-button-7")
+	private WebElement tableButton7;
+	
+	@FindBy(css = "#table-button-8")
+	private WebElement tableButton8;
+	
 	@FindBy(css = "#code-verification-button")
 	private WebElement codeVerificationButton;
 	
@@ -41,6 +59,27 @@ public class WaiterTablesPage {
 	
 	@FindBy(css = "#code-verification-input")
 	private WebElement codeVerificationInput;
+	
+	@FindBy(css = "#pay-button")
+	private WebElement payButton;
+	
+	@FindBy(css = "#remove-order-button")
+	private WebElement removeOrderButton;
+	
+	@FindBy(css = "#add-items-button")
+	private WebElement addItemsButton;
+	
+	@FindBy(css = "#remove-item-1")
+	private WebElement removeItem1;
+	
+	@FindBy(css = "#deliver-item-6")
+	private WebElement deliverItem6;
+	
+	@FindBy(css = "#remove-item-2")
+	private WebElement removeItem2;
+	
+	@FindBy(css = "#deliver-item-7")
+	private WebElement deliverItem7;
 	
 	public WebElement getZoneSelect() {
 		return zoneSelect;
@@ -62,6 +101,30 @@ public class WaiterTablesPage {
 	public WebElement getTableButton2() {
 		return tableButton2;
 	}
+	
+	public WebElement getTableButton3() {
+		return tableButton3;
+	}
+	
+	public WebElement getTableButton4() {
+		return tableButton4;
+	}
+	
+	public WebElement getTableButton5() {
+		return tableButton5;
+	}
+	
+	public WebElement getTableButton6() {
+		return tableButton6;
+	}
+	
+	public WebElement getTableButton7() {
+		return tableButton7;
+	}
+	
+	public WebElement getTableButton8() {
+		return tableButton8;
+	}
 
 	public WebElement getCodeVerificationButton() {
 		return codeVerificationButton;
@@ -79,6 +142,34 @@ public class WaiterTablesPage {
 		return codeVerificationInput;
 	}
 	
+	public WebElement getPayButton() {
+		return payButton;
+	}
+	
+	public WebElement getRemoveOrderButton() {
+		return removeOrderButton;
+	}
+
+	public WebElement getAddItemsButton() {
+		return addItemsButton;
+	}
+
+	public WebElement getRemoveItem1() {
+		return removeItem1;
+	}
+
+	public WebElement getDeliverItem6() {
+		return deliverItem6;
+	}
+	
+	public WebElement getRemoveItem2() {
+		return removeItem2;
+	}
+
+	public WebElement getDeliverItem7() {
+		return deliverItem7;
+	}
+
 	public void setCodeVerificationInput(String code) {
 		codeVerificationInput.clear();
 		codeVerificationInput.sendKeys(code);
@@ -92,7 +183,17 @@ public class WaiterTablesPage {
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("reserve-button")));
     }
 	
+	public void ensureIsDisplayedPaymentForm() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("pay-button")));
+    }
 	
+	public void ensureIsDisplayedTables() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("table-button-1")));
+    }
+	
+	public void ensureIsDisplayedOrderForm() {
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("add-items-button")));
+    }
 	
 	public WebElement getSnackbarMessage() {
         return new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//snack-bar-container/div/div/simple-snack-bar/span")));
