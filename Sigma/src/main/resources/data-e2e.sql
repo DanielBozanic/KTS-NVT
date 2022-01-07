@@ -15,3 +15,13 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOO
 
 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 1, 1, true);
+
+INSERT INTO Zone (name) VALUES ('Ground floor');
+INSERT INTO Zone (name) VALUES ('Garden');
+INSERT INTO zone (name) VALUES ('1st floor');
+
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 1, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (2, 0, 2, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 3, 1);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 4, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 5, 2);

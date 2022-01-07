@@ -8,10 +8,14 @@ public class E2EConstants {
 	
 	public static final String PEOPLE_URL = FRONTEND_URL + "people";
 	
+	public static final String TABLES_URL = FRONTEND_URL + "waiterTables";
+	
 	public static final String FOOD_DRINKS_URL = FRONTEND_URL + "foodDrinks";
 	
 	
 	// Backend Error Messages
+	public static final String INVALID_CODE_ERROR = "Access Forbidden, Invalid Code";
+	
 	public static String getItemInMenuExistsError(String item) {
 		return "Item " + item + " is already part of this menu!";
 	}

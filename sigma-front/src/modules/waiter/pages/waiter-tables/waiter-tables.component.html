@@ -7,8 +7,8 @@
         <h4>Zone:</h4>
         <mat-form-field appearance="fill">
           <mat-label>Choose zone</mat-label>
-          <mat-select #z (selectionChange)="getTables(z.value)" formControlName="zoneSelect">
-            <mat-option *ngFor="let zone of zones" [value]="zone.id">
+          <mat-select id="zone-select" #z (selectionChange)="getTables(z.value)" formControlName="zoneSelect">
+            <mat-option id="{{'zone-select-' + zone.id}}" *ngFor="let zone of zones" [value]="zone.id">
               {{zone.name}}
             </mat-option>
           </mat-select>
@@ -18,17 +18,18 @@
   </mat-card>
 
   <mat-card *ngIf="tables.length !== 0">
-    <div class="tables">
+    <div class="tables" id="tables">
       <div class="inline" *ngFor="let table of tables">
-        <button class="table" mat-raised-button [ngStyle]="{'backgroundColor' : tableColor(table.state)}" (click)="tableClick(table)">
+        <button class="table" mat-raised-button id="{{'table-button-' + table.id}}"
+        [ngStyle]="{'backgroundColor' : tableColor(table.state)}" (click)="tableClick(table)">
           Table {{table.tableNumber}} <br/> {{table.state}}  </button>
       </div>
     </div>
   </mat-card>
 
   <ng-template #freeTableDialog>
-    <button mat-raised-button color="primary" (click)="reserveTable()">Reserve table</button>
-    <button mat-raised-button color="primary" (click)="order()">Order</button>
+    <button mat-raised-button color="primary" (click)="reserveTable()" id="reserve-button">Reserve table</button>
+    <button mat-raised-button color="primary" (click)="order()" id="order-button">Order</button>
   </ng-template>
 
   <ng-template #tableOrderDialog>
@@ -118,10 +119,10 @@
       <h2> Verification </h2>
       <mat-form-field class="example-full-width" appearance="fill">
         <mat-label>Enter code:</mat-label>
-        <input matInput type="number" value="" [formControl]="codeFromDialog" min="0">
+        <input matInput type="number" value="" [formControl]="codeFromDialog" min="0" id="code-verification-input">
       </mat-form-field>
       <br>
-      <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true">Ok</button>
+      <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true" id="code-verification-button">Ok</button>
       <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
     </form>
   </ng-template>
