@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kts.sigma.Exception.ItemExistsException;
@@ -51,7 +53,7 @@ public class ZoneServiceImpl implements ZoneService{
 	public ZoneDTO createNewZone(ZoneDTO newZone) {
 		Zone zoneWithExistingName = zoneRepository.findByName(newZone.getName());
 		if (zoneWithExistingName != null) {
-			throw new ItemExistsException("Zone with this name " + "(" + newZone.getName() + ") " + "already exists!");
+			throw new ItemExistsException("Zone with this name already exists!");
 		}
 		Zone createdZone = zoneRepository.save(Mapper.mapper.map(newZone, Zone.class));
 		return Mapper.mapper.map(createdZone, ZoneDTO.class);
@@ -76,7 +78,7 @@ public class ZoneServiceImpl implements ZoneService{
 	}
 
 	@Override
-	public ArrayList<TableDTO> removeTableFromZone(TableDTO tableDto) {
+	public void removeTableFromZone(TableDTO tableDto) {
 		RestaurantTable tableForRemoval = tableRepository.getTableByIdAndState(tableDto.getId(), tableDto.getState());
 		
 		if (tableForRemoval == null) {
@@ -85,21 +87,8 @@ public class ZoneServiceImpl implements ZoneService{
 			throw new ItemInUseException("This table cannot be removed from this zone, "
 		    		+ "because it is currently being used!");
 		}
-		
-		Zone zone = tableForRemoval.getZone();
-		
 		tableForRemoval.setZone(null);
 		tableRepository.save(tableForRemoval);
-		
-		ArrayList<RestaurantTable> zoneTables = tableRepository.findByZoneId(zone.getId());
-		ArrayList<TableDTO> zoneTablesDTO = new ArrayList<TableDTO>();
-		
-		for (RestaurantTable rt : zoneTables) {
-			TableDTO dto = Mapper.mapper.map(rt, TableDTO.class);
-			zoneTablesDTO.add(dto);
-		}
-		
-		return zoneTablesDTO;
 	}
 
 	@Override
@@ -112,8 +101,9 @@ public class ZoneServiceImpl implements ZoneService{
 		table.setNumberOfChairs(tableDto.getNumberOfChairs());
 		RestaurantTable updatedTable = tableRepository.save(table);
 		return Mapper.mapper.map(updatedTable, TableDTO.class);
-  }
+	}
   
+	@Override
 	public List<TableDTO> getTables(Integer id) {
 		ArrayList<RestaurantTable> zoneTables = tableRepository.findByZoneId(id);
 		
@@ -138,5 +128,38 @@ public class ZoneServiceImpl implements ZoneService{
 		}
 		
 		return tables;
+	}
+	
+	@Override
+	public List<TableDTO> getTablesByCurrentPage(Integer zoneId, Integer currentPage, Integer pageSize) {
+		Pageable page = PageRequest.of(currentPage, pageSize);
+		List<RestaurantTable> zoneTables = tableRepository.findByZoneIdAndCurrentPage(zoneId, page).toList();
+		
+		List<TableDTO> tables = new ArrayList<>();
+		
+		for (RestaurantTable table : zoneTables) {
+			TableDTO dto = Mapper.mapper.map(table, TableDTO.class);
+			
+			if(table.getState().equals(TableState.IN_PROGRESS) || table.getState().equals(TableState.TO_DELIVER)
+					|| table.getState().equals(TableState.DONE)) {
+				List<RestaurantOrder> orders = orderRepository.findByTableId(table.getId());
+				
+				for (RestaurantOrder order : orders) {
+					if(!order.getState().equals(OrderState.CHARGED)) {
+						dto.setOrderId(order.getId());
+						break;
+					}
+				}
+			}
+			
+			tables.add(dto);
+		}
+		
+		return tables;
+	}
+	
+	@Override
+	public Integer getNumberOfTablesForZoneRecords(Integer zoneId) {
+		return tableRepository.getNumberOfTablesForZoneRecords(zoneId);
 	}
 }

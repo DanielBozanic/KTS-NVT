@@ -1,5 +1,4 @@
 package com.kts.sigma.controller;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.service.ZoneService;
@@ -36,6 +36,17 @@ public class ZoneController {
 		return zoneService.getTables(id);
 	}
 	
+	@GetMapping(value = "/getTablesByCurrentPage/{zoneId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<TableDTO>> getTablesByCurrentPage(@PathVariable Integer zoneId, 
+			@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
+		return new ResponseEntity<>(zoneService.getTablesByCurrentPage(zoneId, currentPage, pageSize), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/getNumberOfTablesForZoneRecords/{zoneId}")
+	public ResponseEntity<Integer> getNumberOfTablesForZoneRecords(@PathVariable Integer zoneId) {
+		return new ResponseEntity<>(zoneService.getNumberOfTablesForZoneRecords(zoneId), HttpStatus.OK);
+	}
+	
 	@GetMapping("/{id}")
 	public ZoneDTO getOne(@PathVariable Integer id) {
 		return zoneService.findById(id);
@@ -51,9 +62,9 @@ public class ZoneController {
 		return new ResponseEntity<>(zoneService.updateNumberChairs(tableDto), HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value = "/removeTableFromZone", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<TableDTO>> removeTableFromZone(@RequestBody TableDTO tableDto) {
-		return new ResponseEntity<>(zoneService.removeTableFromZone(tableDto), HttpStatus.OK);
+	@DeleteMapping(value = "/removeTableFromZone")
+	public void removeTableFromZone(@RequestBody TableDTO tableDto) {
+		zoneService.removeTableFromZone(tableDto);
 	}
 	
 	@DeleteMapping("/{id}")

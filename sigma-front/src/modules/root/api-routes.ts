@@ -23,8 +23,7 @@ export const API_CREATE_NEW_MENU = API_BASE + '/menu/addMenu';
 export const API_DELETE_MENU = API_BASE + '/menu/';
 export const API_GET_ITEMS_IN_MENU_BY_CURRENT_PAGE =
   API_BASE + '/menu/getItemsInMenuByCurrentPage/';
-export const API_GET_ITEMS_IN_MENU =
-  API_BASE + '/item-in-menu/getAll/';
+export const API_GET_ITEMS_IN_MENU = API_BASE + '/item-in-menu/getAll/';
 export const API_GET_ITEMS_IN_MENU_BY_SEARCH_TERM =
   API_BASE + '/item-in-menu/getItemsBySearchTerm/';
 export const API_GET_ITEMS_IN_MENU_BY_FOOD_TYPE =
@@ -39,9 +38,19 @@ export const API_GET_ACTIVE_NON_EXPIRED_MENUS =
 export const API_GET_ZONE = API_BASE + '/zones/';
 export const API_GET_ALL_ZONES = API_BASE + '/zones/getAll';
 export const API_GET_TABLES_FOR_ZONE = API_BASE + '/zones/tables/';
+export const API_GET_TABLE_FOR_ZONE_BY_CURRENT_PAGE =
+  API_BASE + '/zones/getTablesByCurrentPage';
+export const API_GET_NUMBER_OF_TABLES_FOR_ZONE_RECORDS =
+  API_BASE + '/zones/getNumberOfTablesForZoneRecords';
+export const API_UPDATE_NUMBER_OF_CHAIRS =
+  API_BASE + '/zones/updateNumberChairs';
+export const API_REMOVE_TABLE_FROM_ZONE =
+  API_BASE + '/zones/removeTableFromZone';
+export const API_CREATE_NEW_ZONE = API_BASE + '/zones/createNewZone';
 export const API_GET_ITEMS_FOR_ORDER = API_BASE + '/orders/items/';
 export const API_GET_DRINKS_FOR_ORDER = API_BASE + '/orders/drinks/';
 export const API_GET_FOODS_FOR_ORDER = API_BASE + '/orders/foods/';
+export const API_ADD_TABLE = API_BASE + '/tables/addTable';
 export const API_CHANGE_TABLE_STATE = API_BASE + '/tables/';
 export const API_CHANGE_ITEM_STATE = API_BASE + '/item-in-order/';
 export const API_GET_ORDER = API_BASE + '/orders/';

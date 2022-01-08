@@ -132,7 +132,7 @@ public class FoodDrinksTest {
 	}
 	
 	@Test
-	public void createNewMenuStartDateBeforeExpirationDate() {
+	public void createNewMenuExpirationDateBeforeStartDate() {
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getCreateNewMenuButton().click();

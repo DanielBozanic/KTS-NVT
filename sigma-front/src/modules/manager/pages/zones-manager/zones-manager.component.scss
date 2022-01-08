@@ -5,32 +5,11 @@ $background-color-light-blue: #deede6;
   margin-right: auto !important;
 }
 
-.add-button {
-  @extend %center-content;
-  margin-left: 10px;
-  margin-top: 10px;
-
-  button {
-    width: 250px;
-    height: 50px;
-  }
-}
-
-.add-employee-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-
-  .field-width {
-    width: 100%;
-  }
-}
-
 .table-card {
   @extend %center-content;
-  max-width: 1000px;
-  margin-top: 10px;
-  margin-left: 10px;
+  margin-top: 20px;
+  max-width: 700px;
+  max-height: 700px;
   background-color: $background-color-light-blue;
 }
 
@@ -38,6 +17,21 @@ th.mat-header-cell {
   font-size: 13px;
   font-weight: bold;
   color: black;
+}
+
+.div-zone-select {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.div-create-new-zone-and-add-table-buttons {
+  @extend %center-content;
+  margin-top: 20px;
+  button {
+    margin-left: 10px;
+    width: 200px;
+    height: 50px;
+  }
 }
 
 .data-table {
@@ -54,29 +48,16 @@ th.mat-header-cell {
   border-collapse: collapse;
   margin: 0px;
 
-  .column-name {
-    width: 10%;
-  }
-
-  .column-payment {
-    width: 5%;
-  }
-
-  .column-job {
-    width: 15%;
-    padding-left: 15px;
-  }
-
-  .column-code {
-    width: 5%;
+  .column-number-of-chairs {
+    width: 20%;
   }
 
   .column-edit-button {
-    width: 5%;
+    width: 10%;
   }
 
-  .column-delete-button {
-    width: 5%;
+  .column-remove-button {
+    width: 10%;
   }
 }
 
@@ -97,7 +78,11 @@ th.mat-header-cell {
   vertical-align: middle;
 }
 
-.div-menu-select {
-  margin-top: 20px;
-  font-weight: bold;
+.form {
+  min-width: 500px;
+  width: 100%;
+
+  .field-width {
+    width: 100%;
+  }
 }
