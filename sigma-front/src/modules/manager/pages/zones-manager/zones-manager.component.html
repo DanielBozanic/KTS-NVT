@@ -1,88 +1,130 @@
-<div>
-  <mat-card class="table-card">
-    <div class="data-table">
-      <mat-progress-bar
-        mode="indeterminate"
-        *ngIf="isLoading"
-      ></mat-progress-bar>
-      <table
-        id="tables-in-zone-table"
-        mat-table
-        [dataSource]="tablesForZoneDataSource"
-      >
-        <ng-container matColumnDef="numberOfChairs">
-          <th mat-header-cell *matHeaderCellDef class="column-number-of-chairs">
-            Zone: {{ selectedZone.name }}
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            class="column-number-of-chairs"
+<mat-card class="table-card">
+  <div class="data-table">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+    <table
+      id="tables-in-zone-table"
+      mat-table
+      [dataSource]="tablesForZoneDataSource"
+    >
+      <ng-container matColumnDef="numberOfChairs">
+        <th mat-header-cell *matHeaderCellDef class="column-number-of-chairs">
+          Zone: {{ selectedZone.name }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="column-number-of-chairs">
+          Number of chairs: {{ element.numberOfChairs }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef class="column-edit-button"></th>
+        <td mat-cell *matCellDef="let element" class="column-edit-button">
+          <button
+            (click)="openEditTableDialog(element)"
+            mat-raised-button
+            color="primary"
           >
-            Number of chairs: {{ element.numberOfChairs }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="edit">
-          <th mat-header-cell *matHeaderCellDef class="column-edit-button"></th>
-          <td mat-cell *matCellDef="let element" class="column-edit-button">
-            <button
-              (click)="editNumberOfChairs(element)"
-              mat-raised-button
-              color="primary"
-            >
-              Edit
-            </button>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="remove">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            class="column-remove-button"
-          ></th>
-          <td mat-cell *matCellDef="let element" class="column-remove-button">
-            <button
-              (click)="removeTableFromZone(element)"
-              mat-raised-button
-              color="warn"
-            >
-              Remove
-            </button>
-          </td>
-        </ng-container>
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumnsTablesForZone"
-        ></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumnsTablesForZone"
-        ></tr>
-      </table>
-      <mat-paginator
-        #paginatorItemsInMenu
-        [pageIndex]="currentPage"
-        [pageSize]="pageSize"
-        [length]="totalRows"
-        showFirstLastButtons
-        (page)="pageChanged($event)"
-      ></mat-paginator>
-    </div>
-    <div class="div-zone-select">
-      <mat-label>Select Zone:</mat-label>
-      <mat-select
-        id="zone-select"
-        [value]="selectedZone.id"
-        (selectionChange)="changeZone($event.value)"
+            Edit
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="remove">
+        <th mat-header-cell *matHeaderCellDef class="column-remove-button"></th>
+        <td mat-cell *matCellDef="let element" class="column-remove-button">
+          <button
+            (click)="removeTableFromZone(element)"
+            mat-raised-button
+            color="warn"
+          >
+            Remove
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsTablesForZone"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnsTablesForZone"
+      ></tr>
+    </table>
+    <mat-paginator
+      #paginatorTablesInZone
+      [pageIndex]="currentPage"
+      [pageSize]="pageSize"
+      [length]="totalRows"
+      showFirstLastButtons
+      (page)="pageChanged($event)"
+    ></mat-paginator>
+  </div>
+  <div class="div-zone-select">
+    <mat-label>Select Zone:</mat-label>
+    <mat-select
+      id="zone-select"
+      [value]="selectedZone.id"
+      (selectionChange)="changeZone($event.value)"
+    >
+      <mat-option
+        *ngFor="let zone of zones"
+        id="{{ 'zone' + zone.id }}"
+        [value]="zone.id"
       >
-        <mat-option
-          *ngFor="let zone of zones"
-          id="{{ 'zone' + zone.id }}"
-          [value]="zone.id"
-        >
-          {{ zone.name }}
-        </mat-option>
-      </mat-select>
-    </div>
-  </mat-card>
+        {{ zone.name }}
+      </mat-option>
+    </mat-select>
+  </div>
+</mat-card>
+
+<div fxLayout="row">
+  <div class="div-create-new-zone-and-add-table-buttons">
+    <button
+      id="create-new-zone-btn"
+      mat-raised-button
+      color="primary"
+      (click)="openCreateNewZoneDialog()"
+    >
+      Create New Zone
+    </button>
+    <button
+      id="add-table-to-selected-zone-btn"
+      mat-raised-button
+      color="primary"
+      (click)="openAddTableDialog()"
+    >
+      Add table to selected zone
+    </button>
+  </div>
 </div>
+
+<ng-template #newZoneDialog>
+  <form [formGroup]="createNewZoneForm" class="form">
+    <mat-form-field class="field-width">
+      <mat-label>Name</mat-label>
+      <input id="name-field" type="text" matInput formControlName="name" />
+      <mat-error
+        id="name-field-required-error-msg"
+        *ngIf="hasErrorCreateNewZoneForm('name', 'required')"
+        >Name is required!</mat-error
+      >
+    </mat-form-field>
+  </form>
+  <button
+    id="create-new-zone-btn-dialog"
+    (click)="createNewZone()"
+    [disabled]="createNewZoneForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    Create New Zone
+  </button>
+</ng-template>
+
+<ng-template #addTableDialog>
+  <app-table-dialog
+    (addOrEditFunction)="addTableToSelectedZone($event)"
+    addOrEditButton="Add table"
+  ></app-table-dialog>
+</ng-template>
+
+<ng-template #editTableDialog>
+  <app-table-dialog
+    (addOrEditFunction)="editNumberOfChairs($event)"
+    addOrEditButton="Save"
+  ></app-table-dialog>
+</ng-template>

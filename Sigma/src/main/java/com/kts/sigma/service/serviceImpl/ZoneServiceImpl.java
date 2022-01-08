@@ -53,7 +53,7 @@ public class ZoneServiceImpl implements ZoneService{
 	public ZoneDTO createNewZone(ZoneDTO newZone) {
 		Zone zoneWithExistingName = zoneRepository.findByName(newZone.getName());
 		if (zoneWithExistingName != null) {
-			throw new ItemExistsException("Zone with this name " + "(" + newZone.getName() + ") " + "already exists!");
+			throw new ItemExistsException("Zone with this name already exists!");
 		}
 		Zone createdZone = zoneRepository.save(Mapper.mapper.map(newZone, Zone.class));
 		return Mapper.mapper.map(createdZone, ZoneDTO.class);
@@ -78,7 +78,7 @@ public class ZoneServiceImpl implements ZoneService{
 	}
 
 	@Override
-	public ArrayList<TableDTO> removeTableFromZone(TableDTO tableDto) {
+	public void removeTableFromZone(TableDTO tableDto) {
 		RestaurantTable tableForRemoval = tableRepository.getTableByIdAndState(tableDto.getId(), tableDto.getState());
 		
 		if (tableForRemoval == null) {
@@ -87,21 +87,8 @@ public class ZoneServiceImpl implements ZoneService{
 			throw new ItemInUseException("This table cannot be removed from this zone, "
 		    		+ "because it is currently being used!");
 		}
-		
-		Zone zone = tableForRemoval.getZone();
-		
 		tableForRemoval.setZone(null);
 		tableRepository.save(tableForRemoval);
-		
-		ArrayList<RestaurantTable> zoneTables = tableRepository.findByZoneId(zone.getId());
-		ArrayList<TableDTO> zoneTablesDTO = new ArrayList<TableDTO>();
-		
-		for (RestaurantTable rt : zoneTables) {
-			TableDTO dto = Mapper.mapper.map(rt, TableDTO.class);
-			zoneTablesDTO.add(dto);
-		}
-		
-		return zoneTablesDTO;
 	}
 
 	@Override

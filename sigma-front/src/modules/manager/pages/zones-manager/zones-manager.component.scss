@@ -13,8 +13,40 @@ $background-color-light-blue: #deede6;
   background-color: $background-color-light-blue;
 }
 
+th.mat-header-cell {
+  font-size: 13px;
+  font-weight: bold;
+  color: black;
+}
+
+.div-zone-select {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.div-create-new-zone-and-add-table-buttons {
+  @extend %center-content;
+  margin-top: 20px;
+  button {
+    margin-left: 10px;
+    width: 200px;
+    height: 50px;
+  }
+}
+
 .data-table {
+  display: block;
   width: 100%;
+  overflow-x: auto;
+}
+
+.mat-table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  display: table;
+  border-collapse: collapse;
+  margin: 0px;
 
   .column-number-of-chairs {
     width: 20%;
@@ -29,13 +61,28 @@ $background-color-light-blue: #deede6;
   }
 }
 
-th.mat-header-cell {
-  font-size: 13px;
-  font-weight: bold;
-  color: black;
+.mat-row,
+.mat-header-row {
+  display: table-row;
 }
 
-.div-zone-select {
-  margin-top: 20px;
-  font-weight: bold;
+.mat-cell,
+.mat-header-cell {
+  word-wrap: initial;
+  display: table-cell;
+  padding: 0px 5px;
+  line-break: unset;
+  width: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.form {
+  min-width: 500px;
+  width: 100%;
+
+  .field-width {
+    width: 100%;
+  }
 }

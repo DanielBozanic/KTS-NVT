@@ -20,7 +20,6 @@ import com.kts.sigma.model.TableState;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -95,16 +94,18 @@ public class ZoneServiceIntegrationTest {
 	@Test
 	@Transactional
 	@Rollback(true)
-	public void removeTableFromZone_ValidState_ReturnsListOfTablesForZone() {
+	public void removeTableFromZone_ValidState_ReturnsNothing() {
 		Integer beforeRemove = zoneService.getTables(ZoneConstants.DB_ZONE_ID_2).size();
 		
 		TableDTO tableForRemoval = new TableDTO();
 		tableForRemoval.setId(TableConstants.DB_TABLE_ID_6);
 		tableForRemoval.setState(TableState.FREE);
 		
-		ArrayList<TableDTO> tables = zoneService.removeTableFromZone(tableForRemoval);
+		zoneService.removeTableFromZone(tableForRemoval);
 		
-		assertEquals(beforeRemove - 1, tables.size());
+		Integer afterRemove = zoneService.getTables(ZoneConstants.DB_ZONE_ID_2).size();
+		
+		assertEquals(beforeRemove - 1, afterRemove.intValue());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)

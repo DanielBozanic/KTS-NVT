@@ -125,21 +125,21 @@ public class ZoneControllerIntegrationTest {
 	}
 	
 	@Test
-	public void removeTableFromZone_ValidState_ReturnsListOfTablesForZone() {
+	public void removeTableFromZone_ValidState_ReturnsNothing() {
 		Integer beforeRemove = tableRepository.findByZoneId(ZoneConstants.DB_ZONE_ID_2).size();
 		
 		TableDTO tableForRemoval = new TableDTO();
 		tableForRemoval.setId(TableConstants.DB_TABLE_ID_6);
 		tableForRemoval.setState(TableState.FREE);
 		
-		ResponseEntity<TableDTO[]> responseEntity = restTemplate.exchange(
+		ResponseEntity<Void> responseEntity = restTemplate.exchange(
 				"/zones/removeTableFromZone", HttpMethod.DELETE, 
-				new HttpEntity<TableDTO>(tableForRemoval), TableDTO[].class);
+				new HttpEntity<TableDTO>(tableForRemoval), Void.class);
 		
-		TableDTO[] tables = responseEntity.getBody();
+		Integer afterRemove = tableRepository.findByZoneId(ZoneConstants.DB_ZONE_ID_2).size();
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(beforeRemove - 1, tables.length);
+		assertEquals(beforeRemove - 1, afterRemove.intValue());
 		
 		RestaurantTable table = tableRepository.findById(TableConstants.DB_TABLE_ID_6).get();
 		table.setZone(zoneRepository.findById(ZoneConstants.DB_ZONE_ID_2).get());

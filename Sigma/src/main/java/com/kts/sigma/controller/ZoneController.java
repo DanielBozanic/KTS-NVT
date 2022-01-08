@@ -1,5 +1,4 @@
 package com.kts.sigma.controller;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +62,9 @@ public class ZoneController {
 		return new ResponseEntity<>(zoneService.updateNumberChairs(tableDto), HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value = "/removeTableFromZone", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<TableDTO>> removeTableFromZone(@RequestBody TableDTO tableDto) {
-		return new ResponseEntity<>(zoneService.removeTableFromZone(tableDto), HttpStatus.OK);
+	@DeleteMapping(value = "/removeTableFromZone")
+	public void removeTableFromZone(@RequestBody TableDTO tableDto) {
+		zoneService.removeTableFromZone(tableDto);
 	}
 	
 	@DeleteMapping("/{id}")

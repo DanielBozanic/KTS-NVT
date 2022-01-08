@@ -1,6 +1,5 @@
 package com.kts.sigma.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.kts.sigma.dto.TableDTO;
@@ -17,7 +16,7 @@ public interface ZoneService {
 	
 	void deleteById(Integer id);
 	
-	ArrayList<TableDTO> removeTableFromZone(TableDTO tableDto);
+	void removeTableFromZone(TableDTO tableDto);
 	
 	List<TableDTO> getTables(Integer id);
 	

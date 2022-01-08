@@ -165,18 +165,9 @@ public class ZoneServiceUnitTest {
 	}
 	
 	@Test
-	public void removeTableFromZone_ValidState_ReturnsListOfTablesForZone() {
+	public void removeTableFromZone_ValidState_ReturnsNothing() {
 		Zone zone = new Zone();
 		zone.setId(ZoneConstants.DB_ZONE_ID_1);
-		
-		ArrayList<RestaurantTable> tablesForZone1 = new ArrayList<RestaurantTable>();
-		
-		RestaurantTable table2 = new RestaurantTable();
-		table2.setId(TableConstants.DB_TABLE_ID_2);
-		table2.setState(TableState.FREE);
-		table2.setZone(zone);
-		
-		tablesForZone1.add(table2);
 		
 		RestaurantTable table = new RestaurantTable();
 		table.setId(TableConstants.DB_TABLE_ID_1);
@@ -190,19 +181,15 @@ public class ZoneServiceUnitTest {
 		
 		given(tableRepositoryMock.getTableByIdAndState(TableConstants.DB_TABLE_ID_1, TableState.FREE)).willReturn(table);
 		given(tableRepositoryMock.save(any(RestaurantTable.class))).willReturn(savedTable);
-		given(tableRepositoryMock.findByZoneId(ZoneConstants.DB_ZONE_ID_1)).willReturn(tablesForZone1);
-		
+	
 		TableDTO tableForRemoval = new TableDTO();
 		tableForRemoval.setId(TableConstants.DB_TABLE_ID_1);
 		tableForRemoval.setState(TableState.FREE);
 		
-		ArrayList<TableDTO> tables = zoneService.removeTableFromZone(tableForRemoval);
+		zoneService.removeTableFromZone(tableForRemoval);
 		
 		verify(tableRepositoryMock, times(1)).getTableByIdAndState(TableConstants.DB_TABLE_ID_1, TableState.FREE);
 		verify(tableRepositoryMock, times(1)).save(any(RestaurantTable.class));
-		verify(tableRepositoryMock, times(1)).findByZoneId(ZoneConstants.DB_ZONE_ID_1);
-		
-		assertEquals(tablesForZone1.size(), tables.size());
 	}
 	
 	@Test(expected = ItemNotFoundException.class)

@@ -17,6 +17,7 @@ import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
 import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-addItems.component';
 import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.component';
 import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-manager.component';
+import { TableDialogComponent } from '../manager/components/table-dialog/table-dialog.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-mana
     BartenderComponent,
     WaiterAddItemsComponent,
     ZonesManagerComponent,
+    TableDialogComponent,
   ],
   imports: [
     BrowserModule,

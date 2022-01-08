@@ -1,0 +1,35 @@
+<form [formGroup]="tableForm" class="form">
+  <mat-form-field class="field-width">
+    <mat-label>Number of chairs</mat-label>
+    <input
+      id="number-of-chairs"
+      type="number"
+      min="0"
+      matInput
+      formControlName="numberOfChairs"
+      (input)="checkNumberOfChairs()"
+    />
+    <mat-error
+      id="number-of-chairs-field-required-error-msg"
+      *ngIf="hasErrorTableForm('numberOfChairs', 'required')"
+      >Number of chairs is required!</mat-error
+    >
+    <mat-error
+      id="number-of-chairs-field-negative-number-error-msg"
+      *ngIf="
+        numberOfChairs?.invalid &&
+        !hasErrorTableForm('numberOfChairs', 'required')
+      "
+      >Number of chairs must be a positive number!</mat-error
+    >
+  </mat-form-field>
+  <button
+    id="table-btn-dialog"
+    (click)="addOrEditFunctionDialog()"
+    [disabled]="tableForm.invalid"
+    mat-raised-button
+    color="primary"
+  >
+    {{ addOrEditButton }}
+  </button>
+</form>
