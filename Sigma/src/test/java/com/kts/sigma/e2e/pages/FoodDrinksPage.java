@@ -112,6 +112,9 @@ public class FoodDrinksPage {
 	@FindBy(css = "#delete-selected-menu-btn")
 	private WebElement deleteSelectedMenuButton;
 	
+	@FindBy(xpath = "//*[@id='item-carousel']/div/div/div/button[2]")
+	private WebElement rightCarouselNavigationButton;
+	
 	public WebElement getCategoryFilterSelect() {
 		return categoryFilterSelect;
 	}
@@ -337,6 +340,9 @@ public class FoodDrinksPage {
 	public boolean isItemPresent(String name) {
 		String xpath = String.format("//*[@id='item-carousel']/div/div/div/div/div/div/mat-card/div/div/h2[contains(text(),'%s')]", name);
 		try {
+			if (rightCarouselNavigationButton.isEnabled()) {
+				rightCarouselNavigationButton.click();
+			}
 			return driver.findElement(By.xpath(xpath)).isDisplayed();
 		} catch (NoSuchElementException e) {
 			return false;
