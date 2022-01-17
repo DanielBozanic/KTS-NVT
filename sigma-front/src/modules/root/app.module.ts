@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -18,6 +18,8 @@ import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-
 import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.component';
 import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-manager.component';
 import { TableDialogComponent } from '../manager/components/table-dialog/table-dialog.component';
+import { HeaderComponent } from '../navigation/header/header.component';
+import { SidenavListComponent } from '../navigation/sidenav-list/sidenav-list.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { TableDialogComponent } from '../manager/components/table-dialog/table-d
     WaiterAddItemsComponent,
     ZonesManagerComponent,
     TableDialogComponent,
+    HeaderComponent,
+    SidenavListComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,7 +47,8 @@ import { TableDialogComponent } from '../manager/components/table-dialog/table-d
     CarouselModule,
     FlexLayoutModule,
   ],
-  providers: [],
+  providers: [HeaderComponent],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

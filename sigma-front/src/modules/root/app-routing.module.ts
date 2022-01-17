@@ -18,6 +18,8 @@ const routes: Routes = [
   { path: 'cook', component: CookComponent },
   { path: 'bartender', component: BartenderComponent },
   { path: 'waiterAddItems', component: WaiterAddItemsComponent },
+  // { path: 'login', component: undefined },
+  { path: '', redirectTo: '/waiterTables', pathMatch: 'full' },
 ];
 
 @NgModule({
