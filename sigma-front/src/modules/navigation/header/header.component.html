@@ -1,6 +1,17 @@
 <mat-toolbar>
     <div fxFlex fxLayout fxLayoutAlign="start" fxHide.xs>
-        <ul fxLayout fxLayoutGap="15px" class="navigation-items">
+        <ul fxLayout fxLayoutGap="15px" class="navigation-items" *ngIf = "(showView) == 'administrator'">
+            <li>
+                <a routerLink="/waiterTables">Admin</a>
+            </li>
+            <li>
+                <a routerLink="#">Admin</a>
+            </li>
+            <li>
+                <a routerLink="#">Admin</a>
+            </li>
+        </ul>
+        <ul fxLayout fxLayoutGap="15px" class="navigation-items" *ngIf = "(showView) == 'notregister'">
             <li>
                 <a routerLink="/waiterTables">Waiter</a>
             </li>
