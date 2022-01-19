@@ -45,7 +45,7 @@ export class WaiterOrderComponent implements OnInit {
   totalPrice: number;
   validatingForm: FormGroup;
   code!: number;
-  // webSocketOrderCreation: WebSocketAPI;
+  webSocketOrderCreation: WebSocketAPI;
 
   constructor(
     private foodDrinksService: WaiterOrderService,
@@ -74,8 +74,8 @@ export class WaiterOrderComponent implements OnInit {
     this.verticalPosition = 'top';
     this.foodIsTrue = true;
     this.totalPrice = 0;
-    // this.webSocketOrderCreation = new WebSocketAPI('notification', 'order', function(order: any){console.log(order.id)})
-    // this.webSocketOrderCreation._connect();
+    this.webSocketOrderCreation = new WebSocketAPI('order', function(order: any){console.log(order.id)})
+    this.webSocketOrderCreation._connect();
   }
 
   @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
@@ -202,14 +202,14 @@ export class WaiterOrderComponent implements OnInit {
       let order = new Order();
       order.items = this.itemsInOrderData;
       order.tableId = this.table.id;
-      // this.webSocketOrderCreation._send('app/notification', order, this.code);
-      this.foodDrinksService.createOrder(order, this.code).subscribe(
-        response => {
-          this.cancel();
-          this.openSnackBar('Successfully created order', this.RESPONSE_OK);
-        }, error =>{
-          this.openSnackBar(error.error, this.RESPONSE_ERROR);
-        })
+      this.webSocketOrderCreation._send('order-creation/' + this.code, order);
+      // this.foodDrinksService.createOrder(order, this.code).subscribe(
+      //   response => {
+      //     this.cancel();
+      //     this.openSnackBar('Successfully created order', this.RESPONSE_OK);
+      //   }, error =>{
+      //     this.openSnackBar(error.error, this.RESPONSE_ERROR);
+      //   })
     }
   }
 
