@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -15,6 +15,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
+import { NotificationDTO } from 'src/modules/root/models/notification';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
 import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
@@ -25,7 +26,7 @@ import { WaiterOrderService } from '../../services/waiter-order.service';
   templateUrl: './waiter-order.component.html',
   styleUrls: ['./waiter-order.component.scss'],
 })
-export class WaiterOrderComponent implements OnInit {
+export class WaiterOrderComponent implements OnInit, OnDestroy {
   displayedColumnsItemsInOrder: string[];
   items: Array<Item>;
   activeNonExpiredMenus: Array<Menu>;
@@ -45,14 +46,14 @@ export class WaiterOrderComponent implements OnInit {
   totalPrice: number;
   validatingForm: FormGroup;
   code!: number;
-  webSocketOrderCreation: WebSocketAPI;
+  sentRequestEarlier: boolean = false;
 
   constructor(
     private foodDrinksService: WaiterOrderService,
     private snackBar: MatSnackBar,
     private codeVerificationDialog: MatDialog,
-    private router: Router
-  ) {
+    private router: Router,
+    private webSocketOrderCreation: WebSocketAPI) {
     this.items = [];
     this.activeNonExpiredMenus = [];
     this.displayedColumnsItemsInOrder = ['name', 'quantity', 'sellingPrice', 'delete'];
@@ -74,8 +75,6 @@ export class WaiterOrderComponent implements OnInit {
     this.verticalPosition = 'top';
     this.foodIsTrue = true;
     this.totalPrice = 0;
-    this.webSocketOrderCreation = new WebSocketAPI('order', function(order: any){console.log(order.id)})
-    this.webSocketOrderCreation._connect();
   }
 
   @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
@@ -84,6 +83,12 @@ export class WaiterOrderComponent implements OnInit {
     this.table = history.state.data;
     this.initializeForms();
     this.getActiveNonExpiredMenus();
+    this.webSocketOrderCreation = new WebSocketAPI('order', this.handleOrderCreation)
+    this.webSocketOrderCreation._connect();
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketOrderCreation._disconnect();
   }
 
   initializeForms(): void {
@@ -203,6 +208,7 @@ export class WaiterOrderComponent implements OnInit {
       order.items = this.itemsInOrderData;
       order.tableId = this.table.id;
       this.webSocketOrderCreation._send('order-creation/' + this.code, order);
+      this.sentRequestEarlier = true;
       // this.foodDrinksService.createOrder(order, this.code).subscribe(
       //   response => {
       //     this.cancel();
@@ -221,6 +227,20 @@ export class WaiterOrderComponent implements OnInit {
     let total = 0;
     this.itemsInOrderData.forEach(item => total += item.sellingPrice  * item.quantity);
     this.totalPrice = total;
+  }
+
+  handleOrderCreation = (notification: NotificationDTO) => {
+      if(notification.success){
+        this.router.navigate(['/waiterTables']);
+        if(this.sentRequestEarlier){
+          this.openSnackBar('Successfully created order', this.RESPONSE_OK);
+        }
+      }else{
+        if(this.sentRequestEarlier){
+          this.openSnackBar('Access Forbidden, Invalid Code', this.RESPONSE_ERROR);
+        }
+      }
+      this.sentRequestEarlier = false;
   }
 
   openSnackBar(msg: string, responseCode: number) {

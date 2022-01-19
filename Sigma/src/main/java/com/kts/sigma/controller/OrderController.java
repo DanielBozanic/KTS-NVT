@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.dto.ItemInOrderDTO;
+import com.kts.sigma.dto.NotificationDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.OrderState;
@@ -68,8 +69,16 @@ public class OrderController {
 	
 	@MessageMapping({"/order-creation/{code}"})
 	@SendTo("/restaurant/order")
-	RestaurantOrder postNotification(@RequestBody OrderDTO newEntity, @DestinationVariable Integer code) {
-	  return orderService.save(newEntity, code);
+	NotificationDTO postNotification(@RequestBody OrderDTO newEntity, @DestinationVariable Integer code) {
+	  RestaurantOrder order = orderService.save(newEntity, code);
+	  
+	  NotificationDTO dto = new NotificationDTO();
+	  dto.setCode("200");
+	  dto.setId(order.getId());
+	  dto.setSuccess(true);
+	  dto.setMessage("New order for table" + order.getTable().getId());
+	  
+	  return dto;
 	}
 	
 	

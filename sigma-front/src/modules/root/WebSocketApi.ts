@@ -26,7 +26,7 @@ export class WebSocketAPI {
         this.stompClient.connect({}, () => {
             this.stompClient.subscribe(this.frontendEndpoint, (data : any) => {
                 console.log("Message Recieved from Server :: " + data);
-                this.handleNotification(data);
+                this.handleNotification(JSON.parse(data.body));
             },
             (error : any) =>{
                 console.log('Subscribe: error:' + error)
@@ -55,7 +55,7 @@ export class WebSocketAPI {
   * @param {*} func
   */
     _send(endpoint: string, obj: any) {
-        this.stompClient.send('app/' + endpoint, {}, JSON.stringify(obj));
+        this.stompClient.send('/app/' + endpoint, {}, JSON.stringify(obj));
     }
     
 }
