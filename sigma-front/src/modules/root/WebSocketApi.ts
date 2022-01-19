@@ -31,6 +31,7 @@ export class WebSocketAPI {
         const _this = this;
         _this.stompClient.connect({}, function (frame: any) {
             _this.stompClient.subscribe(_this.frontendEndpoint, function (sdkEvent: any) {
+                console.log("Message Recieved from Server :: " + sdkEvent);
                 _this.handleNotification(sdkEvent);
             });
             //_this.stompClient.reconnect_delay = 2000;
@@ -56,7 +57,7 @@ export class WebSocketAPI {
   * Send message to sever via web socket
   * @param {*} func
   */
-    _send(endpoint: string, func: Function) {
-        this.stompClient.send(endpoint, {}, func);
+    _send(endpoint: string, obj: any, code: number) {
+        this.stompClient.send(endpoint, {}, obj, code);
     }
 }

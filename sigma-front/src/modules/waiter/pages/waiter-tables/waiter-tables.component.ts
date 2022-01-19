@@ -8,7 +8,6 @@ import { Item } from 'src/modules/root/models/item';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
 import { Zone } from 'src/modules/root/models/zone';
-import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
 import { WaiterTablesService } from '../../services/waiter-tables.service';
 
 @Component({
@@ -31,7 +30,6 @@ export class WaiterTablesComponent implements OnInit {
   currentOrder: Order = new Order();
   zoneId!: number;
   verticalPosition: MatSnackBarVerticalPosition;
-  webSocketOrderCreation: WebSocketAPI;
 
   constructor(
     private service: WaiterTablesService,
@@ -52,8 +50,6 @@ export class WaiterTablesComponent implements OnInit {
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
     this.verticalPosition = 'top';
-    this.webSocketOrderCreation = new WebSocketAPI('notification', 'order', function(order: any){console.log(order)})
-    this.webSocketOrderCreation._connect();
   }
 
   @ViewChild('freeTableDialog') freeDialog!: TemplateRef<any>;

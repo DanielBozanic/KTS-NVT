@@ -17,6 +17,7 @@ import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
+import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
 import { WaiterOrderService } from '../../services/waiter-order.service';
 
 @Component({
@@ -44,6 +45,7 @@ export class WaiterOrderComponent implements OnInit {
   totalPrice: number;
   validatingForm: FormGroup;
   code!: number;
+  // webSocketOrderCreation: WebSocketAPI;
 
   constructor(
     private foodDrinksService: WaiterOrderService,
@@ -72,6 +74,8 @@ export class WaiterOrderComponent implements OnInit {
     this.verticalPosition = 'top';
     this.foodIsTrue = true;
     this.totalPrice = 0;
+    // this.webSocketOrderCreation = new WebSocketAPI('notification', 'order', function(order: any){console.log(order.id)})
+    // this.webSocketOrderCreation._connect();
   }
 
   @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
@@ -198,6 +202,7 @@ export class WaiterOrderComponent implements OnInit {
       let order = new Order();
       order.items = this.itemsInOrderData;
       order.tableId = this.table.id;
+      // this.webSocketOrderCreation._send('app/notification', order, this.code);
       this.foodDrinksService.createOrder(order, this.code).subscribe(
         response => {
           this.cancel();
