@@ -11,7 +11,7 @@ export class RoleGuardService implements CanActivate {
     public auth: AuthService,
     public router: Router,
     private tokenStorage: TokenStorageService
-  ) {}
+  ) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const token = this.tokenStorage.getToken();
