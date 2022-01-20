@@ -18,8 +18,16 @@ const routes: Routes = [
     component: PeopleManagerComponent,
     canActivate: [RoleGuardService],
   },
-  { path: 'foodDrinks', component: FoodDrinksManagerComponent },
-  { path: 'zones', component: ZonesManagerComponent },
+  {
+    path: 'foodDrinks',
+    component: FoodDrinksManagerComponent,
+    canActivate: [RoleGuardService],
+  },
+  {
+    path: 'zones',
+    component: ZonesManagerComponent,
+    canActivate: [RoleGuardService],
+  },
   { path: 'waiterTables', component: WaiterTablesComponent },
   { path: 'waiterOrder', component: WaiterOrderComponent },
   { path: 'cook', component: CookComponent },
