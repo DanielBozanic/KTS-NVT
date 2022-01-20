@@ -1,4 +1,4 @@
 export class Response {
-  jwttoken: string;
+  token: string;
   username: string;
 }

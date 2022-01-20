@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { TokenStorageService } from '../token-storage.service';
 import { Router } from '@angular/router';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -9,10 +10,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  form: any = {
-    username: null,
-    password: null,
-  };
+  form: FormGroup = new FormGroup({
+    username: new FormControl(''),
+    password: new FormControl(''),
+  });
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
@@ -32,17 +33,16 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const { username, password } = this.form;
-
+    const { username, password } = this.form.value;
     this.authService.login(username, password).subscribe(
       (data) => {
-        this.tokenStorage.saveToken(data.jwttoken);
+        this.tokenStorage.saveToken(data.token);
         this.tokenStorage.saveUser(data);
 
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.role = 'admin';
-        this.router.navigate(['administrator']); //do admin main page
+        this.router.navigate(['profile']); //do admin main page
         this.reloadPage();
       },
       (err) => {
@@ -50,6 +50,12 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = true;
       }
     );
+  }
+
+  signOut(): void {
+    this.tokenStorage.signOut();
+    this.isLoggedIn = false;
+    this.role = 'guest';
   }
 
   reloadPage(): void {

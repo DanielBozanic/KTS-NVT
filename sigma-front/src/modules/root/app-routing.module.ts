@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from '../authentication/login/login.component';
+import { ProfileComponent } from '../authentication/profile/profile/profile.component';
 import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.component';
 import { CookComponent } from '../cook&bartender/pages/cook/cook.component';
 import { FoodDrinksManagerComponent } from '../manager/pages/food-drinks-manager/food-drinks-manager.component';
@@ -18,7 +20,8 @@ const routes: Routes = [
   { path: 'cook', component: CookComponent },
   { path: 'bartender', component: BartenderComponent },
   { path: 'waiterAddItems', component: WaiterAddItemsComponent },
-  // { path: 'login', component: undefined },
+  { path: 'login', component: LoginComponent },
+  { path: 'profile', component: ProfileComponent },
   { path: '', redirectTo: '/waiterTables', pathMatch: 'full' },
 ];
 

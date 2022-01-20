@@ -20,6 +20,8 @@ import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-mana
 import { TableDialogComponent } from '../manager/components/table-dialog/table-dialog.component';
 import { HeaderComponent } from '../navigation/header/header.component';
 import { SidenavListComponent } from '../navigation/sidenav-list/sidenav-list.component';
+import { LoginComponent } from '../authentication/login/login.component';
+import { ProfileComponent } from '../authentication/profile/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { SidenavListComponent } from '../navigation/sidenav-list/sidenav-list.co
     ZonesManagerComponent,
     TableDialogComponent,
     HeaderComponent,
+    LoginComponent,
+    ProfileComponent,
     SidenavListComponent,
   ],
   imports: [

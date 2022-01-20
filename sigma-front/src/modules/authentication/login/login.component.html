@@ -5,40 +5,31 @@
         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
       /> 
-  <mat-card-content>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoggedIn" #f="ngForm"
-    novalidate>
+  <button (click)="signOut()" mat-raised-button color="primary" *ngIf="isLoggedIn">Log Out</button>
+  <mat-card-content *ngIf="!isLoggedIn">
+    <form [formGroup]="form" (submit)="onSubmit()">
     <p>
       <mat-form-field>
-        <input type="text" matInput placeholder="Username" formControlName="username"
-        [(ngModel)]="form.username"
-        required
-        #username="ngModel">
+        <input type="text" matInput placeholder="Username" formControlName="username">
       </mat-form-field>
     </p>
 
     <p>
       <mat-form-field>
-        <input type="password" matInput placeholder="Password" formControlName="password"
-        name="password"
-            [(ngModel)]="form.password"
-            required
-            #password="ngModel">
+        <input type="password" matInput placeholder="Password" formControlName="password">
       </mat-form-field>
     </p>
 
     <p *ngIf="isLoginFailed" class="error">
-      {{ error }}
+      Error
     </p>
 
-    <div class="button" >
-      <button type="submit" mat-button>Login</button>
-    </div>
+      <button type="submit" mat-raised-button color="primary">Login</button>
 
       <p *ngIf="isLoggedIn" class="success">
-      {{ success }}
+      Success
     </p>
-    </form>
+    </form> 
     </mat-card-content>
 </mat-card>
 

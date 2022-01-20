@@ -16,13 +16,24 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     if (this.tokenStorage.getToken()) {
-      this.router.navigate(['administrator']);
+      this.administratorView();
+      this.router.navigate(['profile']);
     }
   }
 
   public onToggleSidenav = () => {
     this.sidenavToggle.emit();
   };
+
+  signOut(): void {
+    this.tokenStorage.signOut();
+    this.showView = 'notregister';
+    this.reloadPage(); //change later
+  }
+
+  reloadPage(): void {
+    window.location.reload();
+  }
 
   administratorView() {
     this.showView = 'administrator';
