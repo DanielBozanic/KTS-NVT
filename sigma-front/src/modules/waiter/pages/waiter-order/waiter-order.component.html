@@ -63,6 +63,15 @@
           <div>
             <h2>{{ item.name }}</h2>
             <h2>{{ item.description }}</h2>
+            <img
+              mat-card-lg-image
+              src="{{
+                item.image == '' || item.image == null
+                  ? 'assets/placeholder.jpg'
+                  : item.image
+              }}"
+              alt=""
+            />
             <h2>Price: {{ item.sellingPrice }}RSD</h2>
           </div>
           <button
@@ -81,7 +90,7 @@
 
 <div>
   <mat-card class="table-card">
-    <mat-card-title>Table {{table.tableNumber}}</mat-card-title>
+    <mat-card-title>Table {{ table.tableNumber }}</mat-card-title>
     <div class="data-table">
       <mat-progress-bar
         mode="indeterminate"
@@ -89,11 +98,9 @@
       ></mat-progress-bar>
       <table mat-table [dataSource]="itemInOrderDataSource">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef class="column-name">
-            Item
-          </th>
+          <th mat-header-cell *matHeaderCellDef class="column-name">Item</th>
           <td mat-cell *matCellDef="let element" class="column-name">
-            {{element.name}}
+            {{ element.name }}
           </td>
         </ng-container>
         <ng-container matColumnDef="quantity">
@@ -101,9 +108,21 @@
             Quantity
           </th>
           <td mat-cell *matCellDef="let element" class="column-selling-price">
-            <button mat-icon-button class="plusMinus" (click)="decrease(element.itemId)"> - </button>
-            {{element.quantity}}
-            <button mat-icon-button class="plusMinus" (click)="increase(element.itemId)"> + </button>
+            <button
+              mat-icon-button
+              class="plusMinus"
+              (click)="decrease(element.itemId)"
+            >
+              -
+            </button>
+            {{ element.quantity }}
+            <button
+              mat-icon-button
+              class="plusMinus"
+              (click)="increase(element.itemId)"
+            >
+              +
+            </button>
           </td>
         </ng-container>
         <ng-container matColumnDef="sellingPrice">
@@ -115,8 +134,11 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef class="column-remove-button">
-          </th>
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="column-remove-button"
+          ></th>
           <td mat-cell *matCellDef="let element" class="column-remove-button">
             <button
               mat-raised-button
@@ -134,7 +156,9 @@
         ></tr>
       </table>
     </div>
-    <mat-card-footer class="total">Total Price : {{totalPrice}}</mat-card-footer>
+    <mat-card-footer class="total"
+      >Total Price : {{ totalPrice }}</mat-card-footer
+    >
   </mat-card>
 </div>
 
@@ -148,26 +172,41 @@
     >
       Order
     </button>
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="cancel()"
-    >
-      Cancel
-    </button>
+    <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
   </div>
 </div>
 
 <ng-template #codeVerificationDialog>
-
   <form class="example-form">
-    <h2> Verification </h2>
+    <h2>Verification</h2>
     <mat-form-field class="example-full-width" appearance="fill">
       <mat-label>Enter code:</mat-label>
-      <input matInput type="number" value="" [formControl]="codeFromDialog" min="0" id="code-verification-input">
+      <input
+        matInput
+        type="number"
+        value=""
+        [formControl]="codeFromDialog"
+        min="0"
+        id="code-verification-input"
+      />
     </mat-form-field>
-    <br>
-    <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true" id="code-verification-button">Ok</button>
-    <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
+    <br />
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="checkCode()"
+      [mat-dialog-close]="true"
+      id="code-verification-button"
+    >
+      Ok
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [ngStyle]="{ float: 'right' }"
+      [mat-dialog-close]="true"
+    >
+      Cancel
+    </button>
   </form>
 </ng-template>

@@ -109,105 +109,16 @@
       </div>
     </mat-card>
   </div>
-  <ng-template #addEmployeeDialog>
-    <form [formGroup]="addEmployeeForm" class="add-employee-form">
-      <mat-form-field class="field-width">
-        <mat-label>Name</mat-label>
-        <input
-          id="add-employee-name-field"
-          type="text"
-          matInput
-          placeholder="Name"
-          formControlName="name"
-        />
-        <mat-error
-          id="add-employee-name-field-error-msg"
-          *ngIf="hasError('name', 'required')"
-          >Name is required!</mat-error
-        >
-      </mat-form-field>
-      <mat-form-field class="field-width">
-        <mat-label>Payment</mat-label>
-        <input
-          id="add-employee-payment-field"
-          type="number"
-          min="0"
-          matInput
-          placeholder="Payment"
-          formControlName="paymentBigDecimal"
-          (input)="checkPayment()"
-        />
-        <mat-error
-          id="add-employee-payment-field-required-error-msg"
-          *ngIf="hasError('paymentBigDecimal', 'required')"
-          >Payment is required!</mat-error
-        >
-        <mat-error
-          id="add-employee-payment-field-negative-number-error-msg"
-          *ngIf="
-            paymentBigDecimalAddForm?.invalid &&
-            !hasError('paymentBigDecimal', 'required')
-          "
-          >Payment must be a postive number!</mat-error
-        >
-      </mat-form-field>
-      <mat-form-field class="field-width">
-        <mat-label>Job</mat-label>
-        <mat-select id="job-field" formControlName="type">
-          <mat-option [id]="job" *ngFor="let job of jobs" [value]="job">{{
-            job
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </form>
-    <button
-      id="add-employee-btn-dialog"
-      (click)="addEmployee()"
-      [disabled]="addEmployeeForm.invalid"
-      mat-raised-button
-      color="primary"
-    >
-      Add new worker
-    </button>
-  </ng-template>
-  <ng-template #editEmployeeDialog>
-    <form [formGroup]="editEmployeeForm" class="add-employee-form">
-      <mat-form-field class="field-width">
-        <mat-label>Name</mat-label>
-        <input
-          id="edit-employee-name-field"
-          type="text"
-          matInput
-          placeholder="Name"
-          formControlName="name"
-        />
-      </mat-form-field>
-      <mat-form-field class="field-width">
-        <mat-label>Payment</mat-label>
-        <input
-          id="edit-employee-payment-field"
-          type="number"
-          min="0"
-          matInput
-          placeholder="Payment"
-          formControlName="paymentBigDecimal"
-          (input)="checkPayment()"
-        />
-        <mat-error
-          id="edit-employee-payment-field-negative-number-error-msg"
-          *ngIf="paymentBigDecimalEditForm?.invalid"
-          >Payment must be a postive number!</mat-error
-        >
-      </mat-form-field>
-    </form>
-    <button
-      id="edit-employee-btn-dialog"
-      mat-raised-button
-      color="primary"
-      (click)="editEmployee()"
-      [disabled]="editEmployeeForm.invalid"
-    >
-      Save
-    </button>
-  </ng-template>
 </div>
+
+<ng-template #addEmployeeDialog>
+  <app-add-employee-dialog
+    (parentAddEmployee)="addEmployee($event)"
+  ></app-add-employee-dialog>
+</ng-template>
+
+<ng-template #editEmployeeDialog>
+  <app-edit-employee-dialog
+    (parentEditEmployee)="editEmployee($event)"
+  ></app-edit-employee-dialog>
+</ng-template>

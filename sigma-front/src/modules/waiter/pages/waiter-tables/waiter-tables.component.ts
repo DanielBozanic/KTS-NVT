@@ -4,10 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { NotifierService } from 'angular-notifier';
 import { Item } from 'src/modules/root/models/item';
+import { NotificationDTO } from 'src/modules/root/models/notification';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
 import { Zone } from 'src/modules/root/models/zone';
+import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
 import { WaiterTablesService } from '../../services/waiter-tables.service';
 
 @Component({
@@ -30,6 +33,7 @@ export class WaiterTablesComponent implements OnInit {
   currentOrder: Order = new Order();
   zoneId!: number;
   verticalPosition: MatSnackBarVerticalPosition;
+  sentRequestEarlier: boolean = false;
 
   constructor(
     private service: WaiterTablesService,
@@ -39,6 +43,8 @@ export class WaiterTablesComponent implements OnInit {
     private router: Router,
     private codeVerificationDialog: MatDialog,
     private snackBar: MatSnackBar,
+    private webSocketItemChange: WebSocketAPI,
+    private notifier: NotifierService,
   ) {
     this.displayedColumnsItemsInOrder = ['name', 'sellingPrice', 'delete'];
     this.itemInOrderDataSource = new MatTableDataSource<Item>(
@@ -64,6 +70,8 @@ export class WaiterTablesComponent implements OnInit {
     this.zonesForm = new FormGroup({
       zoneSelect: new FormControl()
     })
+    this.webSocketItemChange = new WebSocketAPI()
+    this.webSocketItemChange._connect('item', this.handleItemChange);
     this.service.getAllZones().subscribe((data) => {
       this.zones = data;
       this.zoneId = this.zones[0].id;
@@ -284,6 +292,22 @@ export class WaiterTablesComponent implements OnInit {
     return visible;
   }
 
+  handleItemChange = (notification: NotificationDTO) => {
+    if(notification.success){
+      if(this.sentRequestEarlier){
+        this.openSnackBar('Successfully delivered item', this.RESPONSE_OK);
+      }else{
+        this.notifier.notify('info', notification.message);
+      }
+      this.getTables(this.zoneId);
+    }else{
+      if(this.sentRequestEarlier){
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
+    }
+    this.sentRequestEarlier = false;
+  }
+
   tableClick(table: Table) {
     this.currentTable = table;
     switch (table.state) {
@@ -313,6 +337,7 @@ export class WaiterTablesComponent implements OnInit {
             .getItemsForOrder(table.orderId)
             .subscribe((data) => {
               this.currentItems = data;
+              this.itemInOrderDataSource.data = data;
               const dialogref = this.tableOrderDialog.open(this.orderDialog, {width: '45em'});
             });
         }

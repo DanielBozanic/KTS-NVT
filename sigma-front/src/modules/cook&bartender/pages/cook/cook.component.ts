@@ -16,6 +16,9 @@ import { Menu } from 'src/modules/root/models/menu';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
 import { CookBartenderService } from '../../services/cook&bartender.service';
+import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
+import { NotificationDTO } from 'src/modules/root/models/notification';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-cook',
@@ -34,10 +37,15 @@ export class CookComponent implements OnInit {
   RESPONSE_ERROR: number;
   verticalPosition: MatSnackBarVerticalPosition;
   ItemsOfWorker: Map<number, string>;
+  sentRequestEarlier: boolean = false;
+
   constructor(
     private service: CookBartenderService,
     private snackBar: MatSnackBar,
     private codeVerificationDialog: MatDialog,
+    private webSocketItemChange: WebSocketAPI,
+    private webSocketOrderCreation: WebSocketAPI,
+    private notifier: NotifierService,
   ) {
     this.items = [];
     this.newOrders = [];
@@ -60,6 +68,10 @@ export class CookComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllOrders();
+    this.webSocketItemChange = new WebSocketAPI()
+    this.webSocketItemChange._connect('item', this.handleItemChange);
+    this.webSocketOrderCreation = new WebSocketAPI()
+    this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
   }
 
   closeCodeDialog(): void {
@@ -149,11 +161,8 @@ export class CookComponent implements OnInit {
     await dialogRef.afterClosed().toPromise();
 
     if (this.code != 0) {
-      this.service.setItemState(itemId, "IN_PROGRESS", this.code).subscribe(data => {
-        this.getAllOrders();
-      },
-        error => { this.openSnackBar("Invalid Code!", -1); }
-      );
+      this.sentRequestEarlier = true;
+      await this.webSocketItemChange._send(`item-change/${itemId}/IN_PROGRESS/${this.code}`, {});
       this.code = 0;
     }
   }
@@ -162,24 +171,32 @@ export class CookComponent implements OnInit {
     await dialogRef.afterClosed().toPromise();
 
     if (this.code != 0) {
-      this.service.setItemState(itemId, "TO_DELIVER", this.code).subscribe(data => {
-        let allDone = true;
-        order.items.forEach(item => {
-          if (itemId != item.id && item.state != "TO_DELIVER") {
-            allDone = false;
-          }
-        });
-        if (allDone) {
-          this.openSnackBar("All items of the order are done!", 0);
-          this.setOrderToDone(order.id);
-        }
-        else {
-          this.getAllOrders();
-        }
-      },
-        error => { this.openSnackBar("Invalid Code!", -1); }
-      );
+      this.sentRequestEarlier = true;
+      await this.webSocketItemChange._send(`item-change/${itemId}/TO_DELIVER/${this.code}`, {});
       this.code = 0;
+    }
+  }
+
+  handleItemChange = (notification: NotificationDTO) => {
+    if(notification.success){
+      if(this.sentRequestEarlier){
+        this.openSnackBar(notification.message, this.RESPONSE_OK);
+      }else{
+        this.notifier.notify('info', notification.message);
+      }
+      this.getAllOrders();
+    }else{
+      if(this.sentRequestEarlier){
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
+    }
+    this.sentRequestEarlier = false;
+  }
+
+  handleOrderCreation = (notification: NotificationDTO) => {
+    if(notification.success){
+      this.getAllOrders();
+      this.notifier.notify('info', notification.message);
     }
   }
 

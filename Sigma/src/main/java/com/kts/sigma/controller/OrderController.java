@@ -1,6 +1,8 @@
 package com.kts.sigma.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.dto.ItemInOrderDTO;
+import com.kts.sigma.dto.NotificationDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.OrderState;
@@ -61,10 +64,32 @@ public class OrderController {
 	}
 	
 	@PostMapping("/{code}")
-	@MessageMapping("/notification")
-	@SendTo("/restaurant/order")
 	RestaurantOrder post(@RequestBody OrderDTO newEntity, @PathVariable Integer code) {
 	  return orderService.save(newEntity, code);
+	}
+	
+	@MessageMapping({"/order-creation/{code}"})
+	@SendTo("/restaurant/order")
+	NotificationDTO postNotification(@RequestBody OrderDTO newEntity, @DestinationVariable Integer code) {
+	  RestaurantOrder order = orderService.save(newEntity, code);
+	  
+	  NotificationDTO dto = new NotificationDTO();
+	  dto.setCode("200");
+	  dto.setId(order.getId());
+	  dto.setSuccess(true);
+	  dto.setMessage("New order for table" + order.getTable().getId());
+	  
+	  return dto;
+	}
+	
+	 @MessageExceptionHandler
+	 @SendTo("/restaurant/order")
+	 NotificationDTO handleException(RuntimeException exception) {
+	  NotificationDTO dto = new NotificationDTO();
+	  dto.setCode("400");
+	  dto.setSuccess(false);
+	  dto.setMessage(exception.getLocalizedMessage());
+	  return dto;
 	}
 	
 	@PutMapping("/{orderId}/{code}")

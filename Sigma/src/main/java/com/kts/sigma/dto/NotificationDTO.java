@@ -2,39 +2,33 @@ package com.kts.sigma.dto;
 
 public class NotificationDTO {
 
-	private String idRecipient, nameRecipient, typeRecipient, description;
-
-	public String getIdRecipient() {
-		return idRecipient;
-	}
-
-	public void setIdRecipient(String idRecipient) {
-		this.idRecipient = idRecipient;
-	}
-
-	public String getNameRecipient() {
-		return nameRecipient;
-	}
-
-	public void setNameRecipient(String nameRecipient) {
-		this.nameRecipient = nameRecipient;
-	}
-
-	public String getTypeRecipient() {
-		return typeRecipient;
-	}
-
-	public void setTypeRecipient(String typeRecipient) {
-		this.typeRecipient = typeRecipient;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	private String message, code;
+	private int id;
+	private boolean success;
 	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public boolean isSuccess() {
+		return success;
+	}
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
 	
 }

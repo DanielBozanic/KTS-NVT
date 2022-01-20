@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularMaterialModule } from './angular-material.module';
+import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { CarouselModule } from 'primeng/carousel';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tables.component';
@@ -22,6 +23,49 @@ import { HeaderComponent } from '../navigation/header/header.component';
 import { SidenavListComponent } from '../navigation/sidenav-list/sidenav-list.component';
 import { LoginComponent } from '../authentication/login/login.component';
 import { ProfileComponent } from '../authentication/profile/profile/profile.component';
+import { AddEmployeeDialogComponent } from '../manager/components/add-employee-dialog/add-employee-dialog.component';
+import { EditEmployeeDialogComponent } from '../manager/components/edit-employee-dialog/edit-employee-dialog.component';
+
+const customNotifierOptions: NotifierOptions = {
+  position: {
+    horizontal: {
+      position: 'left',
+      distance: 12,
+    },
+    vertical: {
+      position: 'bottom',
+      distance: 12,
+      gap: 10,
+    },
+  },
+  theme: 'material',
+  behaviour: {
+    autoHide: 5000,
+    onClick: 'hide',
+    onMouseover: 'pauseAutoHide',
+    showDismissButton: true,
+    stacking: 4,
+  },
+  animations: {
+    enabled: true,
+    show: {
+      preset: 'slide',
+      speed: 300,
+      easing: 'ease',
+    },
+    hide: {
+      preset: 'fade',
+      speed: 300,
+      easing: 'ease',
+      offset: 50,
+    },
+    shift: {
+      speed: 300,
+      easing: 'ease',
+    },
+    overlap: 150,
+  },
+};
 
 @NgModule({
   declarations: [
@@ -39,6 +83,8 @@ import { ProfileComponent } from '../authentication/profile/profile/profile.comp
     LoginComponent,
     ProfileComponent,
     SidenavListComponent,
+    AddEmployeeDialogComponent,
+    EditEmployeeDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,6 +96,7 @@ import { ProfileComponent } from '../authentication/profile/profile/profile.comp
     ReactiveFormsModule,
     CarouselModule,
     FlexLayoutModule,
+    NotifierModule.withConfig(customNotifierOptions),
   ],
   providers: [HeaderComponent],
   bootstrap: [AppComponent],

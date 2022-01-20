@@ -11,9 +11,10 @@ body {
 
 /* Importing Bootstrap SCSS file. */
 @import "~bootstrap/scss/bootstrap";
+@import "~angular-notifier/styles";
 
 .background {
-  background-image: url(./modules/root/pictures/back.jpeg);
+  background-image: url(/assets/back.jpeg);
   background-size: cover;
 }
 

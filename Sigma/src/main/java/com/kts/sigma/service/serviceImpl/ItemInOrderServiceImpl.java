@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.Order;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,14 @@ import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
 import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
+import com.kts.sigma.model.RestaurantTable;
+import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.User;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInMenuRepository;
 import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.repository.OrderRepository;
+import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.ItemInOrderService;
 import com.kts.sigma.service.ItemService;
@@ -51,6 +55,9 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	
 	@Autowired
 	private ItemService iService;
+	
+	@Autowired
+	private TableRepository tablesRepo;
 	
 	
 	@Override
@@ -231,6 +238,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 	}
 
 	@Override
+	@Transactional
 	public ItemInOrderDTO changeState(Integer id, ItemInOrderState state, Integer employeeCode) {
 		
 		Employee employee = employeeRepository.findByCode(employeeCode);
@@ -247,7 +255,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		
 		boolean allAreDone = true;
 		for (ItemInOrder i : item.getOrder().items) {
-			if(i.getState() != ItemInOrderState.TO_DELIVER)
+			if(i.getState() != ItemInOrderState.TO_DELIVER && i.getId() != id)
 			{
 				allAreDone = false;
 			}
@@ -257,6 +265,12 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		{
 			item.getOrder().setState(OrderState.DONE);
 			oRepository.save(item.getOrder());
+			
+			RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
+			if(table != null && table.getState().equals(TableState.IN_PROGRESS)) {
+				table.setState(TableState.TO_DELIVER);
+				tablesRepo.save(table);
+			}
 		}
 
 		if(state == ItemInOrderState.IN_PROGRESS)
@@ -278,7 +292,11 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		item.setState(state);
 		ItemInOrder returnItem = itemInOrderRepository.save(item);
 		
-		return Mapper.mapper.map(returnItem, ItemInOrderDTO.class);
+		ItemInOrderDTO dto =  Mapper.mapper.map(returnItem, ItemInOrderDTO.class);
+		dto.setName(returnItem.getItem().getItem().getName());
+		dto.setDescription(returnItem.getOrder().getTable().getTableNumber().toString());
+		dto.setOrderId(returnItem.getOrder().getId());
+		return dto;
 	}
 
 	@Override
