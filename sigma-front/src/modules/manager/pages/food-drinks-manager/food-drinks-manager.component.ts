@@ -340,8 +340,9 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.fileReader.onload = (event: any) => {
       if (!event.target.result.startsWith('data:image')) {
         this.openSnackBar('Image files only allowed!', this.RESPONSE_ERROR);
+      } else {
+        this.selectedFile = event.target.result;
       }
-      this.selectedFile = event.target.result;
     };
     this.fileReader.onerror = () => {
       this.selectedFile = null;
