@@ -8,4 +8,5 @@ export class Item {
   quantity!: number;
   itemId: number | undefined;
   employeeId: number | undefined;
+  image!: string;
 }

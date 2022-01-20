@@ -45,6 +45,8 @@ export class FoodDrinksManagerComponent implements OnInit {
   RESPONSE_OK: number;
   RESPONSE_ERROR: number;
   verticalPosition: MatSnackBarVerticalPosition;
+  fileReader: FileReader;
+  selectedFile: string | null;
 
   constructor(
     private foodDrinksService: FoodDrinksManagerService,
@@ -72,6 +74,8 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.RESPONSE_ERROR = -1;
     this.verticalPosition = 'top';
     this.foodIsTrue = true;
+    this.fileReader = new FileReader();
+    this.selectedFile = null;
   }
 
   ngOnInit(): void {
@@ -125,6 +129,7 @@ export class FoodDrinksManagerComponent implements OnInit {
       type: new FormControl('APPETISER'),
       buyingPrice: new FormControl(null, Validators.required),
       description: new FormControl('', Validators.required),
+      image: new FormControl(''),
     });
     this.searchForm = new FormGroup({
       searchTerm: new FormControl(''),
@@ -149,6 +154,7 @@ export class FoodDrinksManagerComponent implements OnInit {
 
   getAllItems(): void {
     this.foodDrinksService.getAllItems().subscribe((data) => {
+      console.log(data);
       this.items = data;
       this.originalItemData = data;
     });
@@ -248,6 +254,8 @@ export class FoodDrinksManagerComponent implements OnInit {
   }
 
   createNewItem(): void {
+    console.log(this.selectedFile);
+    this.createNewItemForm.patchValue({ image: this.selectedFile });
     this.foodDrinksService
       .createNewItem(this.createNewItemForm.value)
       .subscribe(
@@ -326,6 +334,19 @@ export class FoodDrinksManagerComponent implements OnInit {
 
   foodValueChanged(value: boolean): void {
     this.foodIsTrue = value;
+  }
+
+  changeFile(event: any): void {
+    this.fileReader.onload = (event: any) => {
+      if (!event.target.result.startsWith('data:image')) {
+        this.openSnackBar('Image files only allowed!', this.RESPONSE_ERROR);
+      }
+      this.selectedFile = event.target.result;
+    };
+    this.fileReader.onerror = () => {
+      this.selectedFile = null;
+    };
+    this.fileReader.readAsDataURL(event.target.files[0]);
   }
 
   hasErrorCreateNewMenuForm = (controlName: string, errorName: string) => {
