@@ -17,7 +17,7 @@ export class SidenavListComponent implements OnInit {
 
   ngOnInit() {
     if (this.tokenStorage.getToken()) {
-      this.router.navigate(['profile']);
+      this.administratorView();
     }
     return true;
   }

@@ -3,7 +3,10 @@ import { AuthService } from '../auth.service';
 import { TokenStorageService } from '../token-storage.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import {
+  MatSnackBar,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +30,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private tokenStorage: TokenStorageService,
     private router: Router,
-    private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar
   ) {
     this.verticalPosition = 'top';
     this.RESPONSE_OK = 0;
@@ -51,14 +54,16 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.role = 'admin';
-        this.router.navigate(['/profile']); //do admin main page
-        this.reloadPage();
-        this.openSnackBar('Succesfully logged in', this.RESPONSE_OK)
+        this.openSnackBar('Succesfully logged in', this.RESPONSE_OK);
+        this.router.navigate(['profile']);
       },
       (err) => {
         this.errorMessage = err.error.message;
         this.isLoginFailed = true;
-        this.openSnackBar('Username and/or password wrong', this.RESPONSE_ERROR)
+        this.openSnackBar(
+          'Username and/or password wrong',
+          this.RESPONSE_ERROR
+        );
       }
     );
   }

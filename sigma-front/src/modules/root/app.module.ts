@@ -25,6 +25,7 @@ import { LoginComponent } from '../authentication/login/login.component';
 import { ProfileComponent } from '../authentication/profile/profile/profile.component';
 import { AddEmployeeDialogComponent } from '../manager/components/add-employee-dialog/add-employee-dialog.component';
 import { EditEmployeeDialogComponent } from '../manager/components/edit-employee-dialog/edit-employee-dialog.component';
+import { RoleGuardService } from '../authentication/guard-url';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -98,7 +99,7 @@ const customNotifierOptions: NotifierOptions = {
     FlexLayoutModule,
     NotifierModule.withConfig(customNotifierOptions),
   ],
-  providers: [HeaderComponent],
+  providers: [HeaderComponent, RoleGuardService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
