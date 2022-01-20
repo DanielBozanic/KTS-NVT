@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -29,6 +30,7 @@ public class Item {
     
     private BigDecimal buyingPrice;
     
+    @Lob
     private String image;
 
 	public Item(Integer id, String name, String description, BigDecimal buyingPrice) {

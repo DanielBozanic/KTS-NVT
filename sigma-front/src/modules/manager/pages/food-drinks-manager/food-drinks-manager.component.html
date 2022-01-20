@@ -72,6 +72,15 @@
           <div>
             <h2>{{ item.name }}</h2>
             <h2>{{ item.description }}</h2>
+            <img
+              mat-card-lg-image
+              src="{{
+                item.image == '' || item.image == null
+                  ? 'assets/placeholder.jpg'
+                  : item.image
+              }}"
+              alt=""
+            />
             <h2>Buying Price: {{ item.buyingPrice }}RSD</h2>
           </div>
           <button
@@ -377,6 +386,21 @@
         >Description is required!</mat-error
       >
     </mat-form-field>
+    <button
+      style="margin-bottom: 10px"
+      color="primary"
+      mat-raised-button
+      (click)="fileInput.click()"
+    >
+      Choose Image
+    </button>
+    <input
+      hidden
+      type="file"
+      accept="image/*"
+      (change)="changeFile($event)"
+      #fileInput
+    />
   </form>
   <button
     id="create-new-item-btn-dialog"
