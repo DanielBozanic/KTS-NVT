@@ -14,12 +14,11 @@ export class RoleGuardService implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const expectedRole = route.data.expectedRole;
     const token = this.tokenStorage.getToken();
 
     if (!token) {
-      window.alert('You have to log in!');
-      this.router.navigate(['']); //TODO
+      window.alert('Ulogujte se!');
+      return false;
     }
 
     return true;
