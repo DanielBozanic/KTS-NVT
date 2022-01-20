@@ -151,9 +151,9 @@ export class WaiterOrderComponent implements OnInit, OnDestroy {
     this.searchForm.patchValue({ searchTerm: '' });
   }
 
-  addItemToOrder(item : Item){
+  addItemToOrder(item: Item) {
     let i = this.itemsInOrderData.find(food => food.itemId === item.id);
-    if(i){
+    if (i) {
       i.quantity++;
       this.itemInOrderDataSource.data = this.itemsInOrderData;
       this.calculateTotal()
@@ -170,32 +170,32 @@ export class WaiterOrderComponent implements OnInit, OnDestroy {
     this.calculateTotal()
   }
 
-  increase(id : number){
+  increase(id: number) {
     let item = this.itemsInOrderData.find(i => i.itemId === id);
-    if(item){
+    if (item) {
       item.quantity++;
       this.itemInOrderDataSource.data = this.itemsInOrderData;
       this.calculateTotal()
     }
   }
 
-  decrease(id : number){
+  decrease(id: number) {
     let item = this.itemsInOrderData.find(i => i.itemId === id);
-    if(item && item.quantity !== 1){
+    if (item && item.quantity !== 1) {
       item.quantity--;
       this.itemInOrderDataSource.data = this.itemsInOrderData;
       this.calculateTotal()
     }
   }
 
-  removeItemFromOrder(id : number){
-    this.itemsInOrderData  = this.itemsInOrderData.filter(item => item.itemId !== id)
+  removeItemFromOrder(id: number) {
+    this.itemsInOrderData = this.itemsInOrderData.filter(item => item.itemId !== id)
     this.itemInOrderDataSource.data = this.itemsInOrderData;
     this.calculateTotal()
   }
 
-  async createOrder(){
-    if(this.itemsInOrderData.length === 0){
+  async createOrder() {
+    if (this.itemsInOrderData.length === 0) {
       this.openSnackBar('Order has to have at least 1 item', this.RESPONSE_ERROR);
       return;
     }
@@ -203,38 +203,38 @@ export class WaiterOrderComponent implements OnInit, OnDestroy {
     const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
     await dialogRef.afterClosed().toPromise();
 
-    if(this.code){
+    if (this.code) {
       let order = new Order();
       order.items = this.itemsInOrderData;
       order.tableId = this.table.id;
-      this.webSocketOrderCreation._send('order-creation/' + this.code, order);
       this.sentRequestEarlier = true;
+      await this.webSocketOrderCreation._send('order-creation/' + this.code, order);
       this.code = 0;
     }
   }
 
-  cancel(){
+  cancel() {
     this.router.navigate(['/waiterTables']);
   }
 
-  calculateTotal(){
+  calculateTotal() {
     let total = 0;
-    this.itemsInOrderData.forEach(item => total += item.sellingPrice  * item.quantity);
+    this.itemsInOrderData.forEach(item => total += item.sellingPrice * item.quantity);
     this.totalPrice = total;
   }
 
   handleOrderCreation = (notification: NotificationDTO) => {
-      if(notification.success){
-        this.router.navigate(['/waiterTables']);
-        if(this.sentRequestEarlier){
-          this.openSnackBar('Successfully created order', this.RESPONSE_OK);
-        }
-      }else{
-        if(this.sentRequestEarlier){
-          this.openSnackBar(notification.message, this.RESPONSE_ERROR);
-        }
+    if (notification.success) {
+      this.router.navigate(['/waiterTables']);
+      if (this.sentRequestEarlier) {
+        this.openSnackBar('Successfully created order', this.RESPONSE_OK);
       }
-      this.sentRequestEarlier = false;
+    } else {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
+    }
+    this.sentRequestEarlier = false;
   }
 
   openSnackBar(msg: string, responseCode: number) {

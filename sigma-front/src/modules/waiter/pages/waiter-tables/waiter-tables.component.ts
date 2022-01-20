@@ -34,6 +34,7 @@ export class WaiterTablesComponent implements OnInit {
   zoneId!: number;
   verticalPosition: MatSnackBarVerticalPosition;
   sentRequestEarlier: boolean = false;
+  notificationNum: number = 0;
 
   constructor(
     private service: WaiterTablesService,
@@ -298,6 +299,7 @@ export class WaiterTablesComponent implements OnInit {
         this.openSnackBar('Successfully delivered item', this.RESPONSE_OK);
       }else{
         this.notifier.notify('info', notification.message);
+        this.notificationNum++;
       }
       this.getTables(this.zoneId);
     }else{
@@ -352,6 +354,10 @@ export class WaiterTablesComponent implements OnInit {
         }
         break;
     }
+  }
+
+  pageClick(){
+    this.notificationNum = 0;
   }
 
   openSnackBar(msg: string, responseCode: number) {
