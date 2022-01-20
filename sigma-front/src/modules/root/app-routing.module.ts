@@ -10,9 +10,14 @@ import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-mana
 import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-addItems.component';
 import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.component';
 import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tables.component';
+import { RoleGuardService } from '../authentication/guard-url';
 
 const routes: Routes = [
-  { path: 'people', component: PeopleManagerComponent },
+  {
+    path: 'people',
+    component: PeopleManagerComponent,
+    canActivate: [RoleGuardService],
+  },
   { path: 'foodDrinks', component: FoodDrinksManagerComponent },
   { path: 'zones', component: ZonesManagerComponent },
   { path: 'waiterTables', component: WaiterTablesComponent },
