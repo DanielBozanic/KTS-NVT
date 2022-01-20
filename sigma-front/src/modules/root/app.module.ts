@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -19,6 +19,10 @@ import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-
 import { BartenderComponent } from '../cook&bartender/pages/bartender/bartender.component';
 import { ZonesManagerComponent } from '../manager/pages/zones-manager/zones-manager.component';
 import { TableDialogComponent } from '../manager/components/table-dialog/table-dialog.component';
+import { HeaderComponent } from '../navigation/header/header.component';
+import { SidenavListComponent } from '../navigation/sidenav-list/sidenav-list.component';
+import { LoginComponent } from '../authentication/login/login.component';
+import { ProfileComponent } from '../authentication/profile/profile/profile.component';
 import { AddEmployeeDialogComponent } from '../manager/components/add-employee-dialog/add-employee-dialog.component';
 import { EditEmployeeDialogComponent } from '../manager/components/edit-employee-dialog/edit-employee-dialog.component';
 
@@ -75,6 +79,10 @@ const customNotifierOptions: NotifierOptions = {
     WaiterAddItemsComponent,
     ZonesManagerComponent,
     TableDialogComponent,
+    HeaderComponent,
+    LoginComponent,
+    ProfileComponent,
+    SidenavListComponent,
     AddEmployeeDialogComponent,
     EditEmployeeDialogComponent,
   ],
@@ -90,7 +98,8 @@ const customNotifierOptions: NotifierOptions = {
     FlexLayoutModule,
     NotifierModule.withConfig(customNotifierOptions),
   ],
-  providers: [],
+  providers: [HeaderComponent],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

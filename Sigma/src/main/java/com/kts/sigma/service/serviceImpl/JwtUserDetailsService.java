@@ -2,6 +2,8 @@ package com.kts.sigma.service.serviceImpl;
 
 import java.util.ArrayList;
 
+import com.kts.sigma.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,0 +1,12 @@
+<mat-card>
+  <mat-card-title *ngIf="!currentUser">You're not logged in!</mat-card-title>
+  <mat-card-content *ngIf="currentUser">
+    <mat-card-title >Welcome admin</mat-card-title>
+    <img
+        id="profile-img"
+        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+        class="profile-img-card"
+      /> 
+  </mat-card-content>
+</mat-card>
+

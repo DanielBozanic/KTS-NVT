@@ -1,0 +1,37 @@
+<mat-toolbar>
+    <div fxFlex fxLayout fxLayoutAlign="start" fxHide.xs>
+        <ul fxLayout fxLayoutGap="15px" class="navigation-items" *ngIf = "(showView) == 'administrator'">
+            <li>
+                <a routerLink="/waiterTables">Admin</a>
+            </li>
+            <li>
+                <a routerLink="#">Admin</a>
+            </li>
+            <li>
+                <a routerLink="#">Admin</a>
+            </li>
+            <li>
+                <button (click)="signOut()" mat-raised-button color="primary">Log Out</button>
+            </li>
+        </ul>
+        <ul fxLayout fxLayoutGap="15px" class="navigation-items" *ngIf = "(showView) == 'notregister'">
+            <li>
+                <a routerLink="/waiterTables">Waiter</a>
+            </li>
+            <li>
+                <a routerLink="#">Cook</a>
+            </li>
+            <li>
+                <a routerLink="#">Bartender</a>
+            </li>
+            <li>
+                <a routerLink="/login">Log in</a>
+            </li>
+        </ul>
+    </div> 
+    <div fxHide.gt-xs>
+        <button mat-icon-button (click)="onToggleSidenav()">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+</mat-toolbar>
