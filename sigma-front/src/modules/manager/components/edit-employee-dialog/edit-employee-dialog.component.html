@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<form [formGroup]="editEmployeeForm" class="add-employee-form">
+  <mat-form-field class="field-width">
+    <mat-label>Name</mat-label>
+    <input
+      id="edit-employee-name-field"
+      type="text"
+      matInput
+      placeholder="Name"
+      formControlName="name"
+    />
+  </mat-form-field>
+  <mat-form-field class="field-width">
+    <mat-label>Payment</mat-label>
+    <input
+      id="edit-employee-payment-field"
+      type="number"
+      min="0"
+      matInput
+      placeholder="Payment"
+      formControlName="paymentBigDecimal"
+      (input)="checkPayment()"
+    />
+    <mat-error
+      id="edit-employee-payment-field-negative-number-error-msg"
+      *ngIf="paymentBigDecimalEditForm?.invalid"
+      >Payment must be a postive number!</mat-error
+    >
+  </mat-form-field>
+</form>
+<button
+  id="edit-employee-btn-dialog"
+  mat-raised-button
+  color="primary"
+  (click)="editEmployee()"
+  [disabled]="editEmployeeForm.invalid"
+>
+  Save
+</button>
