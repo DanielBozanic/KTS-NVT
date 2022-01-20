@@ -69,7 +69,7 @@ export class CookComponent implements OnInit {
   ngOnInit(): void {
     this.getAllOrders();
     this.webSocketItemChange = new WebSocketAPI()
-    this.webSocketItemChange._connect('item-change', this.handleItemChange);
+    this.webSocketItemChange._connect('item', this.handleItemChange);
     this.webSocketOrderCreation = new WebSocketAPI()
     this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
   }
@@ -161,11 +161,8 @@ export class CookComponent implements OnInit {
     await dialogRef.afterClosed().toPromise();
 
     if (this.code != 0) {
-      this.service.setItemState(itemId, "IN_PROGRESS", this.code).subscribe(data => {
-        this.getAllOrders();
-      },
-        error => { this.openSnackBar("Invalid Code!", -1); }
-      );
+      this.sentRequestEarlier = true;
+      await this.webSocketItemChange._send(`item-change/${itemId}/IN_PROGRESS/${this.code}`, {});
       this.code = 0;
     }
   }
@@ -174,23 +171,8 @@ export class CookComponent implements OnInit {
     await dialogRef.afterClosed().toPromise();
 
     if (this.code != 0) {
-      this.service.setItemState(itemId, "TO_DELIVER", this.code).subscribe(data => {
-        let allDone = true;
-        order.items.forEach(item => {
-          if (itemId != item.id && item.state != "TO_DELIVER") {
-            allDone = false;
-          }
-        });
-        if (allDone) {
-          this.openSnackBar("All items of the order are done!", 0);
-          this.setOrderToDone(order.id);
-        }
-        else {
-          this.getAllOrders();
-        }
-      },
-        error => { this.openSnackBar("Invalid Code!", -1); }
-      );
+      this.sentRequestEarlier = true;
+      await this.webSocketItemChange._send(`item-change/${itemId}/TO_DELIVER/${this.code}`, {});
       this.code = 0;
     }
   }
@@ -198,19 +180,24 @@ export class CookComponent implements OnInit {
   handleItemChange = (notification: NotificationDTO) => {
     if(notification.success){
       if(this.sentRequestEarlier){
-        this.openSnackBar('Successfully finished item', this.RESPONSE_OK);
+        this.openSnackBar(notification.message, this.RESPONSE_OK);
+      }else{
+        this.notifier.notify('info', notification.message);
       }
+      this.getAllOrders();
     }else{
       if(this.sentRequestEarlier){
-        this.openSnackBar('Access Forbidden, Invalid Code', this.RESPONSE_ERROR);
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
       }
     }
     this.sentRequestEarlier = false;
   }
 
   handleOrderCreation = (notification: NotificationDTO) => {
-    this.notifier.notify('info', notification.message);
-    console.log(notification.message + '  ' + notification.id)
+    if(notification.success){
+      this.getAllOrders();
+      this.notifier.notify('info', notification.message);
+    }
   }
 
   openSnackBar(msg: string, responseCode: number) {

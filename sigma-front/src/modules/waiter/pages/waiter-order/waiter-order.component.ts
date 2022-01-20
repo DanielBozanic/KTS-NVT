@@ -209,13 +209,7 @@ export class WaiterOrderComponent implements OnInit, OnDestroy {
       order.tableId = this.table.id;
       this.webSocketOrderCreation._send('order-creation/' + this.code, order);
       this.sentRequestEarlier = true;
-      // this.foodDrinksService.createOrder(order, this.code).subscribe(
-      //   response => {
-      //     this.cancel();
-      //     this.openSnackBar('Successfully created order', this.RESPONSE_OK);
-      //   }, error =>{
-      //     this.openSnackBar(error.error, this.RESPONSE_ERROR);
-      //   })
+      this.code = 0;
     }
   }
 
@@ -237,7 +231,7 @@ export class WaiterOrderComponent implements OnInit, OnDestroy {
         }
       }else{
         if(this.sentRequestEarlier){
-          this.openSnackBar('Access Forbidden, Invalid Code', this.RESPONSE_ERROR);
+          this.openSnackBar(notification.message, this.RESPONSE_ERROR);
         }
       }
       this.sentRequestEarlier = false;

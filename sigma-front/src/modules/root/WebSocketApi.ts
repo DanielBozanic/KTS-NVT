@@ -12,10 +12,6 @@ export class WebSocketAPI {
     // component: Component;
     private handleNotification: Function = () => {};
 
-    // initialize(backend : string, frontend : string, handler : Function){
-        
-    // }
-
     _connect(frontend : string, handler : Function) {
         this.frontendEndpoint += frontend;
         this.handleNotification = handler;
@@ -41,14 +37,6 @@ export class WebSocketAPI {
         }
         console.log("Disconnected");
     }
-
-    // on error, schedule a reconnection attempt
-    // errorCallBack(error: string) {
-    //     console.log("errorCallBack -> " + error)
-    //     setTimeout(() => {
-    //         this._connect();
-    //     }, 5000);
-    // }
 
  /**
   * Send message to sever via web socket

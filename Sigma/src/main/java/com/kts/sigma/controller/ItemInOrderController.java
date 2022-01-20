@@ -1,6 +1,8 @@
 package com.kts.sigma.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,8 +47,8 @@ public class ItemInOrderController {
 	}
 	
 	@MessageMapping({"/item-creation/{code}"})
-	@SendTo("/restaurant/item-creation")
-	public NotificationDTO putNotification(@RequestBody ItemInOrderDTO item, @PathVariable Integer code) {
+	@SendTo("/restaurant/item")
+	public NotificationDTO putNotification(@RequestBody ItemInOrderDTO item, @DestinationVariable Integer code) {
 		itemInOrderService.put(item, code);
 		
 		NotificationDTO dto = new NotificationDTO();
@@ -64,17 +66,27 @@ public class ItemInOrderController {
 	}
 	
 	@MessageMapping({"/item-change/{id}/{state}/{code}"})
-	@SendTo("/restaurant/item-change")
-	public NotificationDTO changeStateNotification(@PathVariable Integer id, @PathVariable ItemInOrderState state, @PathVariable Integer code) {
+	@SendTo("/restaurant/item")
+	public NotificationDTO changeStateNotification(@DestinationVariable Integer id, @DestinationVariable ItemInOrderState state, @DestinationVariable Integer code) {
 		ItemInOrderDTO item = itemInOrderService.changeState(id, state, code);
 		
 		NotificationDTO dto = new NotificationDTO();
 		dto.setCode("200");
-		dto.setId(item.getId());
+		dto.setId(item.getOrderId());
 		dto.setSuccess(true);
-		dto.setMessage(item.getName() + " has changed to " + state.toString() + ".");
+		dto.setMessage(item.getName() + " for table " + item.getDescription() + ", has changed to " + state.toString() + ".");
 		
 		return dto;
+	}
+	
+	 @MessageExceptionHandler
+	 @SendTo("/restaurant/item")
+	 NotificationDTO handleExceptionChangeState(RuntimeException exception) {
+	  NotificationDTO dto = new NotificationDTO();
+	  dto.setCode("400");
+	  dto.setSuccess(false);
+	  dto.setMessage(exception.getLocalizedMessage());
+	  return dto;
 	}
 	
 	@DeleteMapping("/{id}")
