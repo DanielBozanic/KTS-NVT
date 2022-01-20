@@ -16,6 +16,9 @@ import { Menu } from 'src/modules/root/models/menu';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
 import { CookBartenderService } from '../../services/cook&bartender.service';
+import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
+import { NotificationDTO } from 'src/modules/root/models/notification';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-cook',
@@ -34,10 +37,15 @@ export class CookComponent implements OnInit {
   RESPONSE_ERROR: number;
   verticalPosition: MatSnackBarVerticalPosition;
   ItemsOfWorker: Map<number, string>;
+  sentRequestEarlier: boolean = false;
+
   constructor(
     private service: CookBartenderService,
     private snackBar: MatSnackBar,
     private codeVerificationDialog: MatDialog,
+    private webSocketItemChange: WebSocketAPI,
+    private webSocketOrderCreation: WebSocketAPI,
+    private notifier: NotifierService,
   ) {
     this.items = [];
     this.newOrders = [];
@@ -60,6 +68,10 @@ export class CookComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllOrders();
+    this.webSocketItemChange = new WebSocketAPI()
+    this.webSocketItemChange._connect('item-change', this.handleItemChange);
+    this.webSocketOrderCreation = new WebSocketAPI()
+    this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
   }
 
   closeCodeDialog(): void {
@@ -181,6 +193,24 @@ export class CookComponent implements OnInit {
       );
       this.code = 0;
     }
+  }
+
+  handleItemChange = (notification: NotificationDTO) => {
+    if(notification.success){
+      if(this.sentRequestEarlier){
+        this.openSnackBar('Successfully finished item', this.RESPONSE_OK);
+      }
+    }else{
+      if(this.sentRequestEarlier){
+        this.openSnackBar('Access Forbidden, Invalid Code', this.RESPONSE_ERROR);
+      }
+    }
+    this.sentRequestEarlier = false;
+  }
+
+  handleOrderCreation = (notification: NotificationDTO) => {
+    this.notifier.notify('info', notification.message);
+    console.log(notification.message + '  ' + notification.id)
   }
 
   openSnackBar(msg: string, responseCode: number) {

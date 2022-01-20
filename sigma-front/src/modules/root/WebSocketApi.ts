@@ -1,25 +1,25 @@
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class WebSocketAPI {
     private webSocketEndPoint: string = 'http://localhost:8080/app/notification';
     private frontendEndpoint: string = '/restaurant/';
     private stompClient: any;
     // component: Component;
-    private handleNotification: Function;
-
-
-    constructor(frontend : string, handler : Function){
-        this.frontendEndpoint += frontend;
-        this.handleNotification = handler;
-    }
+    private handleNotification: Function = () => {};
 
     // initialize(backend : string, frontend : string, handler : Function){
         
     // }
 
-    _connect() {
+    _connect(frontend : string, handler : Function) {
+        this.frontendEndpoint += frontend;
+        this.handleNotification = handler;
+
         console.log("Initialize WebSocket Connection");
         let ws = new SockJS(this.webSocketEndPoint);
         this.stompClient = Stomp.over(ws);

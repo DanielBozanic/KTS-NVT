@@ -83,8 +83,8 @@ export class WaiterOrderComponent implements OnInit, OnDestroy {
     this.table = history.state.data;
     this.initializeForms();
     this.getActiveNonExpiredMenus();
-    this.webSocketOrderCreation = new WebSocketAPI('order', this.handleOrderCreation)
-    this.webSocketOrderCreation._connect();
+    this.webSocketOrderCreation = new WebSocketAPI()
+    this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
   }
 
   ngOnDestroy(): void {
