@@ -17,7 +17,6 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     if (this.tokenStorage.getToken()) {
       this.administratorView();
-      this.router.navigate(['profile']);
     }
   }
 

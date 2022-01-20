@@ -42,8 +42,7 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.role = 'admin';
-        this.router.navigate(['profile']); //do admin main page
-        this.reloadPage();
+        this.router.navigate(['profile']);
       },
       (err) => {
         this.errorMessage = err.error.message;
