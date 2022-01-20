@@ -76,6 +76,11 @@ export class BartenderComponent implements OnInit {
     this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
   }
 
+  ngOnDestroy(): void {
+    this.webSocketOrderCreation._disconnect();
+    this.webSocketItemChange._disconnect();
+  }
+
   closeCodeDialog(): void {
     this.codeVerificationDialog.closeAll();
   }
@@ -200,7 +205,12 @@ export class BartenderComponent implements OnInit {
     if (notification.success) {
       this.getAllOrders();
       this.notifier.notify('info', notification.message);
+      this.globals.bartenderNotifications++;
     }
+  }
+
+  pageClick() {
+    this.globals.bartenderNotifications = 0;
   }
 
   openSnackBar(msg: string, responseCode: number) {

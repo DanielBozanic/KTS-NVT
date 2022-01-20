@@ -19,6 +19,7 @@ import { CookBartenderService } from '../../services/cook&bartender.service';
 import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
 import { NotificationDTO } from 'src/modules/root/models/notification';
 import { NotifierService } from 'angular-notifier';
+import { Globals } from 'src/modules/root/globals';
 
 @Component({
   selector: 'app-cook',
@@ -46,6 +47,7 @@ export class CookComponent implements OnInit {
     private webSocketItemChange: WebSocketAPI,
     private webSocketOrderCreation: WebSocketAPI,
     private notifier: NotifierService,
+    private globals: Globals,
   ) {
     this.items = [];
     this.newOrders = [];
@@ -72,6 +74,11 @@ export class CookComponent implements OnInit {
     this.webSocketItemChange._connect('item', this.handleItemChange);
     this.webSocketOrderCreation = new WebSocketAPI()
     this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketOrderCreation._disconnect();
+    this.webSocketItemChange._disconnect();
   }
 
   closeCodeDialog(): void {
@@ -178,15 +185,16 @@ export class CookComponent implements OnInit {
   }
 
   handleItemChange = (notification: NotificationDTO) => {
-    if(notification.success){
-      if(this.sentRequestEarlier){
+    if (notification.success) {
+      if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_OK);
-      }else{
+      } else {
         this.notifier.notify('info', notification.message);
+        this.globals.cookNotifications++;
       }
       this.getAllOrders();
-    }else{
-      if(this.sentRequestEarlier){
+    } else {
+      if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_ERROR);
       }
     }
@@ -194,10 +202,15 @@ export class CookComponent implements OnInit {
   }
 
   handleOrderCreation = (notification: NotificationDTO) => {
-    if(notification.success){
+    if (notification.success) {
       this.getAllOrders();
       this.notifier.notify('info', notification.message);
+      this.globals.cookNotifications++;
     }
+  }
+
+  pageClick() {
+    this.globals.cookNotifications = 0;
   }
 
   openSnackBar(msg: string, responseCode: number) {
