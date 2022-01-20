@@ -19,13 +19,16 @@
         </ul>
         <ul fxLayout fxLayoutGap="15px" class="navigation-items" *ngIf="(showView) == 'notregister'">
             <li>
-                <a routerLink="/waiterTables">Waiter</a>
+                <a routerLink="/waiterTables" matBadge="{{globals.waiterNotifications}}" matBadgeOverlap="false"
+                    matBadgeColor="warn" [matBadgeHidden]="globals.waiterNotifications <= 0">Waiter</a>
             </li>
             <li>
-                <a routerLink="/cook">Cook</a>
+                <a routerLink="/cook" matBadge="{{globals.cookNotifications}}" matBadgeOverlap="false"
+                    matBadgeColor="warn" [matBadgeHidden]="globals.cookNotifications <= 0">Cook</a>
             </li>
             <li>
-                <a routerLink="/bartender">Bartender</a>
+                <a routerLink="/bartender" matBadge="{{globals.bartenderNotifications}}" matBadgeOverlap="false"
+                    matBadgeColor="warn" [matBadgeHidden]="globals.bartenderNotifications <= 0">Bartender</a>
             </li>
             <li id="login">
                 <a routerLink="/login">Log in</a>

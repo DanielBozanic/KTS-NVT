@@ -18,6 +18,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatGridListModule,
     MatProgressBarModule,
     MatExpansionModule,
+    MatBadgeModule,
   ],
   exports: [
     MatButtonModule,
@@ -61,6 +63,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatGridListModule,
     MatProgressBarModule,
     MatExpansionModule,
+    MatBadgeModule,
   ],
 })
 export class AngularMaterialModule { }

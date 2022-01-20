@@ -19,6 +19,7 @@ import { CookBartenderService } from '../../services/cook&bartender.service';
 import { NotificationDTO } from 'src/modules/root/models/notification';
 import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
 import { NotifierService } from 'angular-notifier';
+import { Globals } from 'src/modules/root/globals';
 
 @Component({
   selector: 'app-bartender',
@@ -46,6 +47,7 @@ export class BartenderComponent implements OnInit {
     private webSocketItemChange: WebSocketAPI,
     private webSocketOrderCreation: WebSocketAPI,
     private notifier: NotifierService,
+    private globals: Globals,
   ) {
     this.items = [];
     this.newOrders = [];
@@ -178,15 +180,16 @@ export class BartenderComponent implements OnInit {
   }
 
   handleItemChange = (notification: NotificationDTO) => {
-    if(notification.success){
-      if(this.sentRequestEarlier){
+    if (notification.success) {
+      if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_OK);
-      }else{
+      } else {
         this.notifier.notify('info', notification.message);
+        this.globals.bartenderNotifications++;
       }
       this.getAllOrders();
-    }else{
-      if(this.sentRequestEarlier){
+    } else {
+      if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_ERROR);
       }
     }
@@ -194,7 +197,7 @@ export class BartenderComponent implements OnInit {
   }
 
   handleOrderCreation = (notification: NotificationDTO) => {
-    if(notification.success){
+    if (notification.success) {
       this.getAllOrders();
       this.notifier.notify('info', notification.message);
     }
