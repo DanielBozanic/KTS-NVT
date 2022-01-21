@@ -1,7 +1,6 @@
 <mat-card>
   <mat-card-title>Login</mat-card-title>
   <img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
-  <button (click)="signOut()" mat-raised-button color="primary" *ngIf="isLoggedIn">Log Out</button>
   <mat-card-content *ngIf="!isLoggedIn">
     <form [formGroup]="form" (submit)="onSubmit()">
       <p>
