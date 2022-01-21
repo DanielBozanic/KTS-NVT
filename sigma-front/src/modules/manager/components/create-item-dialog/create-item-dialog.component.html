@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<form [formGroup]="createNewItemForm" class="form">
+  <mat-form-field class="field-width">
+    <mat-label>Name</mat-label>
+    <input
+      id="item-name-field"
+      type="text"
+      matInput
+      placeholder="Name"
+      formControlName="name"
+    />
+    <mat-error
+      id="item-name-field-required-error-msg"
+      *ngIf="hasErrorCreateNewItemForm('name', 'required')"
+      >Name is required!</mat-error
+    >
+  </mat-form-field>
+  <mat-radio-group class="radio-group" formControlName="food">
+    <mat-radio-button
+      id="food-radio-btn"
+      class="radio-button"
+      [value]="true"
+      [checked]="true"
+      (change)="foodValueChanged($event.value)"
+      >Food</mat-radio-button
+    >
+    <mat-radio-button
+      id="drink-radio-btn"
+      class="radio-button"
+      [value]="false"
+      (change)="foodValueChanged($event.value)"
+      >Drink</mat-radio-button
+    >
+  </mat-radio-group>
+  <mat-form-field class="field-width" *ngIf="foodIsTrue">
+    <mat-select id="category-select" formControlName="type">
+      <mat-option
+        id="{{ 'category-select-' + type }}"
+        *ngFor="let type of types"
+        [value]="type"
+      >
+        {{ type }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="field-width">
+    <mat-label>Buying price</mat-label>
+    <input
+      id="buying-price-field"
+      type="number"
+      min="0"
+      matInput
+      formControlName="buyingPrice"
+      (input)="checkBuyingPrice()"
+    />
+    <mat-error
+      id="buying-price-field-required-error-msg"
+      *ngIf="hasErrorCreateNewItemForm('buyingPrice', 'required')"
+      >Selling price is required!</mat-error
+    >
+    <mat-error
+      id="buying-price-field-negative-number-error-msg"
+      *ngIf="
+        buyingPrice?.invalid &&
+        !hasErrorCreateNewItemForm('buyingPrice', 'required')
+      "
+      >Buying price must be a positive number!</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field class="field-width">
+    <mat-label>Description</mat-label>
+    <textarea
+      id="description-field"
+      class="textarea-size"
+      matInput
+      formControlName="description"
+    ></textarea>
+    <mat-error
+      id="description-field-required-error-msg"
+      *ngIf="hasErrorCreateNewItemForm('description', 'required')"
+      >Description is required!</mat-error
+    >
+  </mat-form-field>
+  <button
+    style="margin-bottom: 10px"
+    color="primary"
+    mat-raised-button
+    (click)="fileInput.click()"
+  >
+    Choose Image
+  </button>
+  <input
+    hidden
+    type="file"
+    accept="image/*"
+    (change)="changeFile($event)"
+    #fileInput
+  />
+</form>
+<button
+  id="create-new-item-btn-dialog"
+  (click)="createNewItem()"
+  [disabled]="createNewItemForm.invalid"
+  mat-raised-button
+  color="primary"
+>
+  Create New Item
+</button>

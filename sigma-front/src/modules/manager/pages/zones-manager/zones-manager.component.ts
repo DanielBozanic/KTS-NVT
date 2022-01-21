@@ -1,5 +1,4 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import {
@@ -27,7 +26,6 @@ export class ZonesManagerComponent implements OnInit {
   isLoading: boolean;
   selectedZone: Zone;
   selectedTable: Table;
-  createNewZoneForm!: FormGroup;
   RESPONSE_OK: number;
   RESPONSE_ERROR: number;
   verticalPosition: MatSnackBarVerticalPosition;
@@ -57,7 +55,6 @@ export class ZonesManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initializeForms();
     this.getZones();
   }
 
@@ -73,12 +70,6 @@ export class ZonesManagerComponent implements OnInit {
   @ViewChild('addTableDialog') addTableDialog!: TemplateRef<any>;
 
   @ViewChild('editTableDialog') editTableDialog!: TemplateRef<any>;
-
-  initializeForms(): void {
-    this.createNewZoneForm = new FormGroup({
-      name: new FormControl(null, Validators.required),
-    });
-  }
 
   getZones(): void {
     this.zonesManagerService.getZones().subscribe((data) => {
@@ -137,25 +128,20 @@ export class ZonesManagerComponent implements OnInit {
   }
 
   openCreateNewZoneDialog(): void {
-    let dialogRef = this.createNewZoneDialog.open(this.newZoneDialog);
-    dialogRef.afterClosed().subscribe(() => {
-      this.createNewZoneForm.reset();
-    });
+    this.createNewZoneDialog.open(this.newZoneDialog);
   }
 
-  createNewZone(): void {
-    this.zonesManagerService
-      .createNewZone(this.createNewZoneForm.value)
-      .subscribe(
-        (resp) => {
-          console.log(resp);
-          this.createNewZoneDialog.closeAll();
-          this.getZones();
-        },
-        (err) => {
-          this.openSnackBar(err.error, this.RESPONSE_ERROR);
-        }
-      );
+  createNewZone(zone: Zone): void {
+    this.zonesManagerService.createNewZone(zone).subscribe(
+      (resp) => {
+        console.log(resp);
+        this.createNewZoneDialog.closeAll();
+        this.getZones();
+      },
+      (err) => {
+        this.openSnackBar(err.error, this.RESPONSE_ERROR);
+      }
+    );
   }
 
   openAddTableDialog(): void {
@@ -216,10 +202,6 @@ export class ZonesManagerComponent implements OnInit {
     this.currentPage = event.pageIndex;
     this.getTablesForZoneByCurrentPage(this.selectedZone.id, false);
   }
-
-  hasErrorCreateNewZoneForm = (controlName: string, errorName: string) => {
-    return this.createNewZoneForm.controls[controlName].hasError(errorName);
-  };
 
   openSnackBar(msg: string, responseCode: number) {
     this.snackBar.open(msg, 'x', {

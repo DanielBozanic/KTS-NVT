@@ -26,6 +26,10 @@ import { ProfileComponent } from '../authentication/profile/profile/profile.comp
 import { AddEmployeeDialogComponent } from '../manager/components/add-employee-dialog/add-employee-dialog.component';
 import { EditEmployeeDialogComponent } from '../manager/components/edit-employee-dialog/edit-employee-dialog.component';
 import { RoleGuardService } from '../authentication/guard-url';
+import { CreateMenuDialogComponent } from '../manager/components/create-menu-dialog/create-menu-dialog.component';
+import { AddItemInMenuDialogComponent } from '../manager/components/add-item-in-menu-dialog/add-item-in-menu-dialog.component';
+import { CreateItemDialogComponent } from '../manager/components/create-item-dialog/create-item-dialog.component';
+import { CreateZoneDialogComponent } from '../manager/components/create-zone-dialog/create-zone-dialog.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -86,6 +90,10 @@ const customNotifierOptions: NotifierOptions = {
     SidenavListComponent,
     AddEmployeeDialogComponent,
     EditEmployeeDialogComponent,
+    CreateMenuDialogComponent,
+    CreateItemDialogComponent,
+    AddItemInMenuDialogComponent,
+    CreateZoneDialogComponent,
   ],
   imports: [
     BrowserModule,
