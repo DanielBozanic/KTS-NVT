@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService{
 		tableRepo.save(table);
 				
 		
-		return orderRepository.save(order);
+		return o;
 	}
 	
 	@Override

@@ -7,7 +7,8 @@ a {
 	&:active {
 		color: lightgray;
 	}
-	margin: 1em;
+	margin: 0.3em;
+	display: inline-block;
 }
 .navigation-items {
 	list-style-type: none;

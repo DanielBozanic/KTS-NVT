@@ -188,7 +188,7 @@ export class BartenderComponent implements OnInit {
     if (notification.success) {
       if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_OK);
-      } else {
+      } else if (notification.code === 'drink') {
         this.notifier.notify('info', notification.message);
         this.globals.bartenderNotifications++;
       }
@@ -204,8 +204,13 @@ export class BartenderComponent implements OnInit {
   handleOrderCreation = (notification: NotificationDTO) => {
     if (notification.success) {
       this.getAllOrders();
-      this.notifier.notify('info', notification.message);
-      this.globals.bartenderNotifications++;
+      this.service.getAllDrinkOrders().subscribe((data) => {
+        const exists = data.find(order => order.id === notification.id)
+        if (exists) {
+          this.notifier.notify('info', notification.message);
+          this.globals.bartenderNotifications++;
+        }
+      })
     }
   }
 

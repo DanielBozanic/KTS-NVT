@@ -296,6 +296,13 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		dto.setName(returnItem.getItem().getItem().getName());
 		dto.setDescription(returnItem.getOrder().getTable().getTableNumber().toString());
 		dto.setOrderId(returnItem.getOrder().getId());
+		
+		if(returnItem.getItem().getItem() instanceof Food) {
+			dto.setFood(true);
+		}else {
+			dto.setFood(false);
+		}
+		
 		return dto;
 	}
 

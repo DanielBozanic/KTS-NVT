@@ -188,7 +188,7 @@ export class CookComponent implements OnInit {
     if (notification.success) {
       if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_OK);
-      } else {
+      } else if (notification.code === 'food') {
         this.notifier.notify('info', notification.message);
         this.globals.cookNotifications++;
       }
@@ -204,8 +204,13 @@ export class CookComponent implements OnInit {
   handleOrderCreation = (notification: NotificationDTO) => {
     if (notification.success) {
       this.getAllOrders();
-      this.notifier.notify('info', notification.message);
-      this.globals.cookNotifications++;
+      this.service.getAllFoodOrders().subscribe((data) => {
+        const exists = data.find(order => order.id === notification.id)
+        if (exists) {
+          this.notifier.notify('info', notification.message);
+          this.globals.cookNotifications++;
+        }
+      })
     }
   }
 

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.NotificationDTO;
 import com.kts.sigma.dto.OrderDTO;
-import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.service.OrderService;

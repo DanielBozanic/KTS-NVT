@@ -71,10 +71,14 @@ public class ItemInOrderController {
 		ItemInOrderDTO item = itemInOrderService.changeState(id, state, code);
 		
 		NotificationDTO dto = new NotificationDTO();
-		dto.setCode("200");
-		dto.setId(item.getOrderId());
+		dto.setId(id);
 		dto.setSuccess(true);
 		dto.setMessage(item.getName() + " for table " + item.getDescription() + ", has changed to " + state.toString() + ".");
+		if(item.isFood()) {
+			dto.setCode("food");
+		}else {
+			dto.setCode("drink");
+		}
 		
 		return dto;
 	}
