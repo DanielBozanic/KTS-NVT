@@ -216,6 +216,7 @@ export class BartenderComponent implements OnInit {
 
   pageClick() {
     this.globals.bartenderNotifications = 0;
+    this.notifier.hideAll();
   }
 
   openSnackBar(msg: string, responseCode: number) {

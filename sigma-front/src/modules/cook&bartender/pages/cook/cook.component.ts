@@ -216,6 +216,7 @@ export class CookComponent implements OnInit {
 
   pageClick() {
     this.globals.cookNotifications = 0;
+    this.notifier.hideAll();
   }
 
   openSnackBar(msg: string, responseCode: number) {

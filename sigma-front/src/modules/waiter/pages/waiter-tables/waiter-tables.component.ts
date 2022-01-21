@@ -364,6 +364,7 @@ export class WaiterTablesComponent implements OnInit {
 
   pageClick() {
     this.globals.waiterNotifications = 0;
+    this.notifier.hideAll();
   }
 
   openSnackBar(msg: string, responseCode: number) {
