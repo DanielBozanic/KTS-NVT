@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
     if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
       this.role = 'admin';
+      this.router.navigate(['profile']);
     }
   }
 
@@ -55,7 +56,7 @@ export class LoginComponent implements OnInit {
         this.isLoggedIn = true;
         this.role = 'admin';
         this.openSnackBar('Succesfully logged in', this.RESPONSE_OK);
-        this.router.navigate(['profile']);
+        this.reloadPage();
       },
       (err) => {
         this.errorMessage = err.error.message;
