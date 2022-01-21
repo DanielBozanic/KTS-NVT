@@ -21,8 +21,8 @@
     <div class="tables" id="tables">
       <div class="inline" *ngFor="let table of tables">
         <button class="table" mat-raised-button id="{{'table-button-' + table.id}}"
-        [ngStyle]="{'backgroundColor' : tableColor(table.state)}" (click)="tableClick(table)">
-          Table {{table.tableNumber}} <br/> {{table.state}}  </button>
+          [ngStyle]="{'backgroundColor' : tableColor(table.state)}" (click)="tableClick(table)">
+          Table {{table.tableNumber}} <br /> {{table.state}} </button>
       </div>
     </div>
   </mat-card>
@@ -35,27 +35,16 @@
   </ng-template>
 
   <ng-template #tableOrderDialog>
-    
+
     <mat-card class="table-card">
       <mat-card-title class="inline">Table {{currentTable.tableNumber}}</mat-card-title>
-      <button
-        class="floatRight"
-        mat-raised-button
-        color="primary"
-        (click)="removeOrder()"
-        *ngIf="removeVisible()"
-        id="remove-order-button"
-      >
-          Remove
+      <button class="floatRight" mat-raised-button color="primary" (click)="removeOrder()" *ngIf="removeVisible()"
+        id="remove-order-button">
+        Remove
       </button>
-      <button
-        class="floatRight"
-        mat-raised-button
-        color="primary"
-        id="add-items-button"
-        (click)="redirectToAddItemsComponent()"
-      >
-          Add items
+      <button class="floatRight" mat-raised-button color="primary" id="add-items-button"
+        (click)="redirectToAddItemsComponent()">
+        Add items
       </button>
       <div class="data-table">
         <table mat-table [dataSource]="itemInOrderDataSource">
@@ -79,30 +68,19 @@
             <th mat-header-cell *matHeaderCellDef class="column-remove-button">
             </th>
             <td mat-cell *matCellDef="let element" class="column-remove-button">
-              <button
-                mat-raised-button
-                color="primary"
-                *ngIf="element.state === 'NEW'"
-                (click)="removeItem(element.id)"
+              <button mat-raised-button color="primary" *ngIf="element.state === 'NEW'" (click)="removeItem(element.id)"
                 id="{{'remove-item-' + element.id}}">
                 Remove
               </button>
-              <button
-                mat-raised-button
-                color="primary"
-                *ngIf="element.state === 'TO_DELIVER'"
-                (click)="deliver(element.id)"
-                id="{{'deliver-item-' + element.id}}">
+              <button mat-raised-button color="primary" *ngIf="element.state === 'TO_DELIVER'"
+                (click)="deliver(element.id)" id="{{'deliver-item-' + element.id}}">
                 Deliver
               </button>
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumnsItemsInOrder"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumnsItemsInOrder"
-            [ngStyle]="{'backgroundColor' : itemColor(row.state)}"
-          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsItemsInOrder"
+            [ngStyle]="{'backgroundColor' : itemColor(row.state)}"></tr>
         </table>
       </div>
     </mat-card>
@@ -129,7 +107,8 @@
         <input matInput type="number" value="" [formControl]="codeFromDialog" min="0" id="code-verification-input">
       </mat-form-field>
       <br>
-      <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true" id="code-verification-button">Ok</button>
+      <button mat-raised-button color="primary" (click)="checkCode()" [mat-dialog-close]="true"
+        id="code-verification-button">Ok</button>
       <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
     </form>
   </ng-template>

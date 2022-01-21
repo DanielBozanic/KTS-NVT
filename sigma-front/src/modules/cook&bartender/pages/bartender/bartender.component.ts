@@ -203,14 +203,31 @@ export class BartenderComponent implements OnInit {
 
   handleOrderCreation = (notification: NotificationDTO) => {
     if (notification.success) {
-      this.getAllOrders();
-      this.service.getAllDrinkOrders().subscribe((data) => {
-        const exists = data.find(order => order.id === notification.id)
-        if (exists) {
+      if (notification.message.includes('removed')) {
+
+        const exists1 = this.newOrders.find(order => order.id === notification.id)
+        const exists2 = this.ordersInProgress.find(order => order.id === notification.id)
+        if ((exists1 || exists2) && notification.code !== 'food') {
           this.notifier.notify('info', notification.message);
           this.globals.bartenderNotifications++;
         }
-      })
+
+      } else {
+
+        this.service.getAllDrinkOrders().subscribe((data) => {
+          const exists = data.find(order => order.id === notification.id)
+          if ((exists) && notification.code !== 'food') {
+            this.notifier.notify('info', notification.message);
+            this.globals.bartenderNotifications++;
+          }
+        })
+
+      }
+      this.getAllOrders();
+    } else {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
     }
   }
 

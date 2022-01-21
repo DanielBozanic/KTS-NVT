@@ -203,14 +203,32 @@ export class CookComponent implements OnInit {
 
   handleOrderCreation = (notification: NotificationDTO) => {
     if (notification.success) {
-      this.getAllOrders();
-      this.service.getAllFoodOrders().subscribe((data) => {
-        const exists = data.find(order => order.id === notification.id)
-        if (exists) {
+      if (notification.message.includes('removed')) {
+
+        const exists1 = this.newOrders.find(order => order.id === notification.id)
+        const exists2 = this.ordersInProgress.find(order => order.id === notification.id)
+        if ((exists1 || exists2) && notification.code !== 'drink') {
           this.notifier.notify('info', notification.message);
           this.globals.cookNotifications++;
         }
-      })
+
+      }
+      else {
+
+        this.service.getAllFoodOrders().subscribe((data) => {
+          const exists = data.find(order => order.id === notification.id)
+          if (exists && notification.code !== 'drink') {
+            this.notifier.notify('info', notification.message);
+            this.globals.cookNotifications++;
+          }
+        })
+
+      }
+      this.getAllOrders();
+    } else {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
     }
   }
 

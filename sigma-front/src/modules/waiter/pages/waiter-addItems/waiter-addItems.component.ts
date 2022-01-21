@@ -15,8 +15,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
+import { NotificationDTO } from 'src/modules/root/models/notification';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
+import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
 import { WaiterOrderService } from '../../services/waiter-order.service';
 
 @Component({
@@ -44,12 +46,14 @@ export class WaiterAddItemsComponent implements OnInit {
   totalPrice: number;
   validatingForm: FormGroup;
   code!: number;
+  sentRequestEarlier: boolean = false;
 
   constructor(
     private foodDrinksService: WaiterOrderService,
     private snackBar: MatSnackBar,
     private codeVerificationDialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private webSocketOrderCreation: WebSocketAPI,
   ) {
     this.items = [];
     this.activeNonExpiredMenus = [];
@@ -80,6 +84,12 @@ export class WaiterAddItemsComponent implements OnInit {
     this.table = history.state.data;
     this.initializeForms();
     this.getActiveNonExpiredMenus();
+    this.webSocketOrderCreation = new WebSocketAPI()
+    this.webSocketOrderCreation._connect('order', this.handleOrderCreation);
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketOrderCreation._disconnect();
   }
 
   initializeForms(): void {
@@ -142,9 +152,9 @@ export class WaiterAddItemsComponent implements OnInit {
     this.searchForm.patchValue({ searchTerm: '' });
   }
 
-  addItemToOrder(item : Item){
+  addItemToOrder(item: Item) {
     let i = this.itemsInOrderData.find(food => food.itemId === item.id);
-    if(i){
+    if (i) {
       i.quantity++;
       this.itemInOrderDataSource.data = this.itemsInOrderData;
       this.calculateTotal()
@@ -161,32 +171,32 @@ export class WaiterAddItemsComponent implements OnInit {
     this.calculateTotal()
   }
 
-  increase(id : number){
+  increase(id: number) {
     let item = this.itemsInOrderData.find(i => i.itemId === id);
-    if(item){
+    if (item) {
       item.quantity++;
       this.itemInOrderDataSource.data = this.itemsInOrderData;
       this.calculateTotal()
     }
   }
 
-  decrease(id : number){
+  decrease(id: number) {
     let item = this.itemsInOrderData.find(i => i.itemId === id);
-    if(item && item.quantity !== 1){
+    if (item && item.quantity !== 1) {
       item.quantity--;
       this.itemInOrderDataSource.data = this.itemsInOrderData;
       this.calculateTotal()
     }
   }
 
-  removeItemFromOrder(id : number){
-    this.itemsInOrderData  = this.itemsInOrderData.filter(item => item.itemId !== id)
+  removeItemFromOrder(id: number) {
+    this.itemsInOrderData = this.itemsInOrderData.filter(item => item.itemId !== id)
     this.itemInOrderDataSource.data = this.itemsInOrderData;
     this.calculateTotal()
   }
 
-  async addItems(){
-    if(this.itemsInOrderData.length === 0){
+  async addItems() {
+    if (this.itemsInOrderData.length === 0) {
       this.openSnackBar('You could have just clicked cancel...', this.RESPONSE_ERROR);
       return;
     }
@@ -194,28 +204,40 @@ export class WaiterAddItemsComponent implements OnInit {
     const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
     await dialogRef.afterClosed().toPromise();
 
-    if(this.code){
-      this.itemsInOrderData.forEach(item => {
-        if(this.table.orderId){
-          this.foodDrinksService.addItemToOrder(item, this.table.orderId, this.code).subscribe(response =>{
-            this.openSnackBar('Successfully added items to order', this.RESPONSE_OK);
-            this.cancel();
-          }, error =>{
-            this.openSnackBar(error.error, this.RESPONSE_ERROR);
-          });
+    if (this.code) {
+      this.itemsInOrderData.forEach(async item => {
+        if (this.table.orderId) {
+          this.sentRequestEarlier = true;
+          await this.webSocketOrderCreation._send(`add-to-order/${this.table.orderId}/${this.code}`, item);
+          this.code = 0;
+          console.log(item)
         }
       })
     }
   }
 
-  cancel(){
+  cancel() {
     this.router.navigate(['/waiterTables']);
   }
 
-  calculateTotal(){
+  calculateTotal() {
     let total = 0;
-    this.itemsInOrderData.forEach(item => total += item.sellingPrice  * item.quantity);
+    this.itemsInOrderData.forEach(item => total += item.sellingPrice * item.quantity);
     this.totalPrice = total;
+  }
+
+  handleOrderCreation = (notification: NotificationDTO) => {
+    if (notification.success) {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar('Successfully added items to order', this.RESPONSE_OK);
+        this.router.navigate(['/waiterTables']);
+      }
+    } else {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
+    }
+    this.sentRequestEarlier = false;
   }
 
   openSnackBar(msg: string, responseCode: number) {

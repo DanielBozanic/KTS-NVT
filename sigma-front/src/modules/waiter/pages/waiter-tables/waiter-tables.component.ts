@@ -46,6 +46,7 @@ export class WaiterTablesComponent implements OnInit {
     private codeVerificationDialog: MatDialog,
     private snackBar: MatSnackBar,
     private webSocketItemChange: WebSocketAPI,
+    private webSocketOrders: WebSocketAPI,
     private notifier: NotifierService,
     private globals: Globals,
   ) {
@@ -75,6 +76,8 @@ export class WaiterTablesComponent implements OnInit {
     })
     this.webSocketItemChange = new WebSocketAPI()
     this.webSocketItemChange._connect('item', this.handleItemChange);
+    this.webSocketOrders = new WebSocketAPI()
+    this.webSocketOrders._connect('order', this.handleOrderChange);
     this.service.getAllZones().subscribe((data) => {
       this.zones = data;
       this.zoneId = this.zones[0].id;
@@ -85,6 +88,7 @@ export class WaiterTablesComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.webSocketItemChange._disconnect();
+    this.webSocketOrders._disconnect();
   }
 
   getTables(id: number): void {
@@ -204,30 +208,9 @@ export class WaiterTablesComponent implements OnInit {
     await dialogRef.afterClosed().toPromise();
 
     if (this.currentTable.orderId && this.code) {
-      this.service.removeItemFromOrder(this.currentTable.orderId, this.code, id).subscribe(response => {
-        this.currentItems = this.currentItems.filter(item => item.id !== id)
-        this.itemInOrderDataSource.data = this.currentItems;
-        const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
-        if (delivered === this.currentItems.length) {
-
-          this.service
-            .changeTableState(this.currentTable.id, 'DONE', this.code)
-            .subscribe((data) => {
-              this.getTables(this.zoneId)
-              this.closeOrderView();
-            });
-        }
-        this.openSnackBar("Successfully removed item from order", this.RESPONSE_OK)
-      }, (error) => {
-        this.openSnackBar(error.error, this.RESPONSE_ERROR);
-      })
-
-      const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
-      if (delivered === this.currentItems.length) {
-        this.service
-          .changeTableState(this.currentTable.id, 'DONE', this.code)
-          .subscribe((data) => this.getTables(this.zoneId));
-      }
+      this.sentRequestEarlier = true;
+      await this.webSocketOrders._send(`remove-item/${this.currentTable.orderId}/${id}/${this.code}`, {});
+      this.code = 0;
     }
   }
 
@@ -250,16 +233,9 @@ export class WaiterTablesComponent implements OnInit {
     await dialogRef.afterClosed().toPromise();
 
     if (this.currentTable.orderId && this.code) {
-      this.service.deleteOrder(this.currentTable.orderId, this.code).subscribe(response => {
-        this.service
-          .changeTableState(this.currentTable.id, 'FREE', this.code)
-          .subscribe((data) => this.getTables(this.zoneId));
-        this.tableOrderDialog.closeAll();
-        this.openSnackBar("Successfully removed order", this.RESPONSE_OK)
-      },
-        (error) => {
-          this.openSnackBar(error.error, this.RESPONSE_ERROR);
-        })
+      this.sentRequestEarlier = true;
+      await this.webSocketOrders._send(`remove-order/${this.currentTable.orderId}/${this.code}`, {});
+      this.code = 0;
     }
   }
 
@@ -302,7 +278,25 @@ export class WaiterTablesComponent implements OnInit {
   handleItemChange = (notification: NotificationDTO) => {
     if (notification.success) {
       if (this.sentRequestEarlier) {
-        this.openSnackBar('Successfully delivered item', this.RESPONSE_OK);
+        this.openSnackBar(notification.message, this.RESPONSE_OK);
+      } else {
+        this.notifier.notify('info', notification.message);
+        this.globals.waiterNotifications++;
+      }
+      this.getTables(this.zoneId);
+    } else {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
+    }
+    this.sentRequestEarlier = false;
+  }
+
+  handleOrderChange = (notification: NotificationDTO) => {
+    if (notification.success) {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_OK);
+        this.tableOrderDialog.closeAll();
       } else {
         this.notifier.notify('info', notification.message);
         this.globals.waiterNotifications++;
