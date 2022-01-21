@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<form [formGroup]="createNewZoneForm" class="form">
+  <mat-form-field class="field-width">
+    <mat-label>Name</mat-label>
+    <input id="name-field" type="text" matInput formControlName="name" />
+    <mat-error
+      id="name-field-required-error-msg"
+      *ngIf="hasErrorCreateNewZoneForm('name', 'required')"
+      >Name is required!</mat-error
+    >
+  </mat-form-field>
+</form>
+<button
+  id="create-new-zone-btn-dialog"
+  (click)="createNewZone()"
+  [disabled]="createNewZoneForm.invalid"
+  mat-raised-button
+  color="primary"
+>
+  Create New Zone
+</button>
