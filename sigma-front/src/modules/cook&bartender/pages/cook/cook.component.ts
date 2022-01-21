@@ -150,11 +150,9 @@ export class CookComponent implements OnInit {
     });
   }
 
-  setOrderToInProgress(itemId: number) {
-    this.service.setOrderState(itemId, "IN_PROGRESS").subscribe(data => {
-      this.openSnackBar("Order moved to current orders", 0);
-      this.getAllOrders();
-    });
+  async setOrderToInProgress(itemId: number) {
+    this.sentRequestEarlier = true;
+    await this.webSocketOrderCreation._send(`/order-change/${itemId}/IN_PROGRESS`, {});
   }
 
   setOrderToDone(itemId: number) {
@@ -203,7 +201,10 @@ export class CookComponent implements OnInit {
 
   handleOrderCreation = (notification: NotificationDTO) => {
     if (notification.success) {
-      if (notification.message.includes('removed')) {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_OK);
+      }
+      else if (notification.message.includes('removed')) {
 
         const exists1 = this.newOrders.find(order => order.id === notification.id)
         const exists2 = this.ordersInProgress.find(order => order.id === notification.id)
@@ -230,6 +231,7 @@ export class CookComponent implements OnInit {
         this.openSnackBar(notification.message, this.RESPONSE_ERROR);
       }
     }
+    this.sentRequestEarlier = false;
   }
 
   pageClick() {

@@ -119,16 +119,16 @@ public class OrderController {
 	  orderService.changeState(state, code, orderId);
 	}
 	
-	@MessageMapping({"/order-change/{orderId}/{state}/{code}"})
+	@MessageMapping({"/order-change/{orderId}/{state}"})
 	@SendTo("/restaurant/order")
-	public NotificationDTO changeOrderNotification(@DestinationVariable OrderState state, @DestinationVariable Integer code, @DestinationVariable Integer orderId) {
-		orderService.changeState(state, code, orderId);
+	public NotificationDTO changeOrderWithoutCodeNotification(@DestinationVariable OrderState state, @DestinationVariable Integer orderId) {
+		orderService.changeStateWithoutCode(state, orderId);
 		
 		NotificationDTO dto = new NotificationDTO();
 		dto.setCode("200");
 		dto.setId(orderId);
 		dto.setSuccess(true);
-		dto.setMessage("Order changed to" + state.toString());
+		dto.setMessage("Order changed to " + state.toString());
 		
 		return dto;
 	}
