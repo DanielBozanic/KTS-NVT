@@ -16,7 +16,7 @@ export class RoleGuardService implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const token = this.tokenStorage.getToken();
     if (!token) {
-      window.alert('Ulogujte se!');
+      window.alert('You are not logged in!');
       return false;
     }
 
