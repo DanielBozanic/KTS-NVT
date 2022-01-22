@@ -105,7 +105,9 @@ table {
 }
 
 .div-menu-select {
-  margin-top: 20px;
+  .mat-select {
+    margin-top: 5px;
+  }
   font-weight: bold;
 }
 
@@ -133,7 +135,7 @@ table {
   }
 }
 
-.total{
+.total {
   margin: 0.3rem;
 }
 
