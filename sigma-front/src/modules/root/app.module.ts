@@ -30,6 +30,10 @@ import { CreateMenuDialogComponent } from '../manager/components/create-menu-dia
 import { AddItemInMenuDialogComponent } from '../manager/components/add-item-in-menu-dialog/add-item-in-menu-dialog.component';
 import { CreateItemDialogComponent } from '../manager/components/create-item-dialog/create-item-dialog.component';
 import { CreateZoneDialogComponent } from '../manager/components/create-zone-dialog/create-zone-dialog.component';
+import { CodeVerificationDialogComponent } from '../waiter/components/code-verification-dialog/code-verification-dialog.component';
+import { TableItemsDialogComponent } from '../waiter/components/table-items-dialog/table-items-dialog.component';
+import { ItemSearchformComponent } from '../waiter/components/item-searchform/item-searchform.component';
+import { ItemAdditionComponent } from '../waiter/components/item-addition/item-addition.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -94,6 +98,10 @@ const customNotifierOptions: NotifierOptions = {
     CreateItemDialogComponent,
     AddItemInMenuDialogComponent,
     CreateZoneDialogComponent,
+    CodeVerificationDialogComponent,
+    TableItemsDialogComponent,
+    ItemSearchformComponent,
+    ItemAdditionComponent,
   ],
   imports: [
     BrowserModule,

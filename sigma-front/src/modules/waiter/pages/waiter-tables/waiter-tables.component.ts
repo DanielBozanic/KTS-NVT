@@ -22,20 +22,17 @@ import { WaiterTablesService } from '../../services/waiter-tables.service';
 export class WaiterTablesComponent implements OnInit {
   RESPONSE_OK: number;
   RESPONSE_ERROR: number;
-  validatingForm: FormGroup;
   zonesForm!: FormGroup;
   zones: Zone[] = [];
   tables: Table[] = [];
   currentItems: Item[] = [];
   currentTable!: Table;
   code!: number;
-  displayedColumnsItemsInOrder: string[];
   itemInOrderDataSource: MatTableDataSource<Item>;
   currentOrder: Order = new Order();
   zoneId!: number;
   verticalPosition: MatSnackBarVerticalPosition;
   sentRequestEarlier: boolean = false;
-  notificationNum: number = 0;
 
   constructor(
     private service: WaiterTablesService,
@@ -50,13 +47,9 @@ export class WaiterTablesComponent implements OnInit {
     private notifier: NotifierService,
     private globals: Globals,
   ) {
-    this.displayedColumnsItemsInOrder = ['name', 'sellingPrice', 'delete'];
     this.itemInOrderDataSource = new MatTableDataSource<Item>(
       this.currentItems
     );
-    this.validatingForm = new FormGroup({
-      code: new FormControl('', Validators.required)
-    });
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
     this.verticalPosition = 'top';
@@ -98,13 +91,8 @@ export class WaiterTablesComponent implements OnInit {
     });
   }
 
-  get codeFromDialog() {
-    return this.validatingForm.get('code') as FormControl;
-  }
-
-  checkCode(): void {
-    this.code = this.validatingForm.get('code')?.value;
-    this.validatingForm.reset();
+  checkCode(code: number): void {
+    this.code = code;
   }
 
   closeOrderView() {
@@ -214,20 +202,6 @@ export class WaiterTablesComponent implements OnInit {
     }
   }
 
-  async addItem(item: Item) {
-    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
-    await dialogRef.afterClosed().toPromise();
-
-    if (this.currentTable.orderId && this.code) {
-      this.service.addItemToOrder(this.currentTable.orderId, this.code, item).subscribe(response => {
-        this.openSnackBar("Successfully added item to order", this.RESPONSE_OK)
-      },
-        (error) => {
-          this.openSnackBar(error.error, this.RESPONSE_ERROR);
-        })
-    }
-  }
-
   async removeOrder() {
     const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
     await dialogRef.afterClosed().toPromise();
@@ -236,18 +210,6 @@ export class WaiterTablesComponent implements OnInit {
       this.sentRequestEarlier = true;
       await this.webSocketOrders._send(`remove-order/${this.currentTable.orderId}/${this.code}`, {});
       this.code = 0;
-    }
-  }
-
-  itemColor(state: string) {
-    if (state === 'NEW') {
-      return 'lightgray';
-    } else if (state === 'IN_PROGRESS') {
-      return 'orange';
-    } else if (state === 'TO_DELIVER') {
-      return 'red';
-    } else {
-      return 'blue';
     }
   }
 
@@ -263,16 +225,6 @@ export class WaiterTablesComponent implements OnInit {
     } else {
       return 'blue';
     }
-  }
-
-  removeVisible() {
-    let visible = true;
-    this.currentItems.forEach(item => {
-      if (item.state !== 'NEW') {
-        visible = false;
-      }
-    })
-    return visible;
   }
 
   handleItemChange = (notification: NotificationDTO) => {
