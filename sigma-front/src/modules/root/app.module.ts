@@ -34,6 +34,7 @@ import { CodeVerificationDialogComponent } from '../waiter/components/code-verif
 import { TableItemsDialogComponent } from '../waiter/components/table-items-dialog/table-items-dialog.component';
 import { ItemSearchformComponent } from '../waiter/components/item-searchform/item-searchform.component';
 import { ItemAdditionComponent } from '../waiter/components/item-addition/item-addition.component';
+import { WaiterTableComponent } from '../waiter/components/waiter-table/waiter-table.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -102,6 +103,7 @@ const customNotifierOptions: NotifierOptions = {
     TableItemsDialogComponent,
     ItemSearchformComponent,
     ItemAdditionComponent,
+    WaiterTableComponent,
   ],
   imports: [
     BrowserModule,

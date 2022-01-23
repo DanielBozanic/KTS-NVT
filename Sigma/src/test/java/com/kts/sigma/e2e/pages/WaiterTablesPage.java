@@ -91,7 +91,7 @@ public class WaiterTablesPage {
 	}
 	
 	public int getNumberOfTables() {
-		return new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//*[@id='tables']/div/button"))).size();
+		return new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//*[@id='tables']/div/app-waiter-table"))).size();
 	}
 
 	public WebElement getTableButton1() {

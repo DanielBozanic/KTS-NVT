@@ -20,40 +20,13 @@
   <mat-card *ngIf="tables.length !== 0">
     <div class="tables" id="tables">
       <div class="inline" *ngFor="let table of tables">
-        <button class="table" mat-raised-button id="{{'table-button-' + table.id}}"
-          [ngStyle]="{'backgroundColor' : tableColor(table.state)}" (click)="tableClick(table)">
-          Table {{table.tableNumber}} <br /> {{table.state}} </button>
+        <app-waiter-table [table]="table" [webSocketItemChange]=" webSocketItemChange"
+          [webSocketOrders]="webSocketOrders" (sentEarlier)="sentEarlier()" (getTables)="getTables($event)">
+        </app-waiter-table>
       </div>
     </div>
   </mat-card>
 
   <notifier-container></notifier-container>
-
-  <ng-template #freeTableDialog>
-    <button mat-raised-button color="primary" (click)="reserveTable()" id="reserve-button">Reserve table</button>
-    <button mat-raised-button color="primary" (click)="order()" id="order-button">Order</button>
-  </ng-template>
-
-  <ng-template #tableOrderDialog>
-    <app-table-items-dialog [currentTable]="currentTable" [itemInOrderDataSource]="itemInOrderDataSource"
-      (removeOrder)="removeOrder()" (removeItem)="removeItem($event)" (deliver)="deliver($event)"
-      (redirectToAddItemsComponent)="redirectToAddItemsComponent()">
-    </app-table-items-dialog>
-  </ng-template>
-
-  <ng-template #paymentTableDialog>
-    <h2> Charge order </h2>
-    <h3 class="inline">Amount that needs to be payed: </h3>
-    <span class="inline">{{currentOrder.totalPrice}}</span>
-
-    <div class="action-buttons">
-      <button mat-raised-button color="primary" (click)="pay()" id="pay-button">Pay</button>
-      <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" [mat-dialog-close]="true">Cancel</button>
-    </div>
-  </ng-template>
-
-  <ng-template #codeVerificationDialog>
-    <app-code-verification-dialog (parentCheckCode)="checkCode($event)"></app-code-verification-dialog>
-  </ng-template>
 
 </div>

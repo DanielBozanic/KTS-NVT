@@ -1,14 +1,10 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { NotifierService } from 'angular-notifier';
 import { Globals } from 'src/modules/root/globals';
-import { Item } from 'src/modules/root/models/item';
 import { NotificationDTO } from 'src/modules/root/models/notification';
-import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
 import { Zone } from 'src/modules/root/models/zone';
 import { WebSocketAPI } from 'src/modules/root/WebSocketApi';
@@ -25,31 +21,19 @@ export class WaiterTablesComponent implements OnInit {
   zonesForm!: FormGroup;
   zones: Zone[] = [];
   tables: Table[] = [];
-  currentItems: Item[] = [];
-  currentTable!: Table;
-  code!: number;
-  itemInOrderDataSource: MatTableDataSource<Item>;
-  currentOrder: Order = new Order();
   zoneId!: number;
   verticalPosition: MatSnackBarVerticalPosition;
   sentRequestEarlier: boolean = false;
 
   constructor(
     private service: WaiterTablesService,
-    private freeTableDialog: MatDialog,
     private tableOrderDialog: MatDialog,
-    private paymentTableDialog: MatDialog,
-    private router: Router,
-    private codeVerificationDialog: MatDialog,
     private snackBar: MatSnackBar,
-    private webSocketItemChange: WebSocketAPI,
-    private webSocketOrders: WebSocketAPI,
+    public webSocketItemChange: WebSocketAPI,
+    public webSocketOrders: WebSocketAPI,
     private notifier: NotifierService,
     private globals: Globals,
   ) {
-    this.itemInOrderDataSource = new MatTableDataSource<Item>(
-      this.currentItems
-    );
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
     this.verticalPosition = 'top';
@@ -68,7 +52,7 @@ export class WaiterTablesComponent implements OnInit {
       zoneSelect: new FormControl()
     })
     this.webSocketItemChange = new WebSocketAPI()
-    this.webSocketItemChange._connect('item', this.handleItemChange);
+    this.webSocketItemChange._connect('item', this.handleOrderChange);
     this.webSocketOrders = new WebSocketAPI()
     this.webSocketOrders._connect('order', this.handleOrderChange);
     this.service.getAllZones().subscribe((data) => {
@@ -91,158 +75,26 @@ export class WaiterTablesComponent implements OnInit {
     });
   }
 
-  checkCode(code: number): void {
-    this.code = code;
+  sentEarlier(): void {
+    this.sentRequestEarlier = true;
   }
 
-  closeOrderView() {
-    this.tableOrderDialog.closeAll();
-  }
-
-  async reserveTable() {
-    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
-    await dialogRef.afterClosed().toPromise();
-
-    if (this.code) {
-      this.service
-        .changeTableState(this.currentTable.id, 'RESERVED', this.code)
-        .subscribe((data) => {
-          this.getTables(this.zoneId);
-          this.openSnackBar("Successfully reserved table", this.RESPONSE_OK)
-        }, (error) => {
-          this.openSnackBar(error.error, this.RESPONSE_ERROR);
-        });
-      this.freeTableDialog.closeAll();
-    }
-  }
-
-  order() {
-    this.freeTableDialog.closeAll();
-    this.redirectToOrderComponent();
-  }
-
-  async pay() {
-    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
-    await dialogRef.afterClosed().toPromise();
-
-    if (this.code) {
-      this.service
-        .changeTableState(this.currentTable.id, 'FREE', this.code)
-        .subscribe((data) => {
-          this.getTables(this.zoneId);
-
-          if (this.currentTable.orderId)
-            this.service.changeOrderState(this.currentTable.orderId, 'CHARGED', this.code).subscribe((response) => {
-              this.openSnackBar("Successfully charged order", this.RESPONSE_OK);
-            }, (error) => {
-              this.openSnackBar(error.error, this.RESPONSE_ERROR);
-            });
-
-        }, (error) => {
-          this.openSnackBar(error.error, this.RESPONSE_ERROR);
-        });
-      this.paymentTableDialog.closeAll();
-    }
-  }
-
-  async deliver(id: number) {
-    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
-    await dialogRef.afterClosed().toPromise();
-
-    if (this.code) {
-      this.service
-        .changeItemState(id, 'DONE', this.code)
-        .subscribe((data) => {
-
-          this.getTables(this.zoneId);
-          if (this.currentTable.orderId)
-            this.service
-              .getItemsForOrder(this.currentTable.orderId)
-              .subscribe((data) => {
-                this.currentItems = data;
-                this.itemInOrderDataSource.data = data;
-
-                const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
-                if (delivered === this.currentItems.length) {
-
-                  this.service
-                    .changeTableState(this.currentTable.id, 'DONE', this.code)
-                    .subscribe((data) => {
-                      this.getTables(this.zoneId)
-                      this.closeOrderView();
-                    });
-                }
-
-              });
-          this.openSnackBar("Successfully delivered item", this.RESPONSE_OK)
-
-        }, (error) => {
-          this.openSnackBar(error.error, this.RESPONSE_ERROR);
-        });
-    }
-  }
-
-  redirectToOrderComponent() {
-    this.router.navigate(['/waiterOrder'], { state: { data: this.currentTable } });
-  }
-
-  redirectToAddItemsComponent() {
-    this.closeOrderView();
-    this.router.navigate(['/waiterAddItems'], { state: { data: this.currentTable } });
-  }
-
-  async removeItem(id: number) {
-    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
-    await dialogRef.afterClosed().toPromise();
-
-    if (this.currentTable.orderId && this.code) {
-      this.sentRequestEarlier = true;
-      await this.webSocketOrders._send(`remove-item/${this.currentTable.orderId}/${id}/${this.code}`, {});
-      this.code = 0;
-    }
-  }
-
-  async removeOrder() {
-    const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
-    await dialogRef.afterClosed().toPromise();
-
-    if (this.currentTable.orderId && this.code) {
-      this.sentRequestEarlier = true;
-      await this.webSocketOrders._send(`remove-order/${this.currentTable.orderId}/${this.code}`, {});
-      this.code = 0;
-    }
-  }
-
-  tableColor(state: string) {
-    if (state === 'RESERVED') {
-      return 'lightgray';
-    } else if (state === 'IN_PROGRESS') {
-      return 'orange';
-    } else if (state === 'TO_DELIVER') {
-      return 'red';
-    } else if (state === 'FREE') {
-      return 'green'
-    } else {
-      return 'blue';
-    }
-  }
-
-  handleItemChange = (notification: NotificationDTO) => {
-    if (notification.success) {
-      if (this.sentRequestEarlier) {
-        this.openSnackBar(notification.message, this.RESPONSE_OK);
-      } else {
-        this.notifier.notify('info', notification.message);
-        this.globals.waiterNotifications++;
-      }
-      this.getTables(this.zoneId);
-    } else {
-      if (this.sentRequestEarlier) {
-        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
-      }
-    }
-    this.sentRequestEarlier = false;
-  }
+  // handleItemChange = (notification: NotificationDTO) => {
+  //   if (notification.success) {
+  //     if (this.sentRequestEarlier) {
+  //       this.openSnackBar(notification.message, this.RESPONSE_OK);
+  //     } else {
+  //       this.notifier.notify('info', notification.message);
+  //       this.globals.waiterNotifications++;
+  //     }
+  //     this.getTables(this.zoneId);
+  //   } else {
+  //     if (this.sentRequestEarlier) {
+  //       this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+  //     }
+  //   }
+  //   this.sentRequestEarlier = false;
+  // }
 
   handleOrderChange = (notification: NotificationDTO) => {
     if (notification.success) {
@@ -260,52 +112,6 @@ export class WaiterTablesComponent implements OnInit {
       }
     }
     this.sentRequestEarlier = false;
-  }
-
-  tableClick(table: Table) {
-    this.currentTable = table;
-    switch (table.state) {
-      case 'FREE':
-        const dialogRef = this.freeTableDialog.open(this.freeDialog);
-        break;
-
-      case 'RESERVED':
-        this.redirectToOrderComponent();
-        break;
-
-      case 'IN_PROGRESS':
-        if (table.orderId) {
-          this.service
-            .getItemsForOrder(table.orderId)
-            .subscribe((data) => {
-              this.currentItems = data;
-              this.itemInOrderDataSource.data = data;
-              const dialogref = this.tableOrderDialog.open(this.orderDialog, { width: '45em' });
-            });
-        }
-        break;
-
-      case 'TO_DELIVER':
-        if (table.orderId) {
-          this.service
-            .getItemsForOrder(table.orderId)
-            .subscribe((data) => {
-              this.currentItems = data;
-              this.itemInOrderDataSource.data = data;
-              const dialogref = this.tableOrderDialog.open(this.orderDialog, { width: '45em' });
-            });
-        }
-        break;
-
-      case 'DONE':
-        if (table.orderId) {
-          this.service.getOrder(table.orderId).subscribe((data) => {
-            this.currentOrder = data;
-            const dialogref = this.paymentTableDialog.open(this.paymentDialog);
-          });
-        }
-        break;
-    }
   }
 
   pageClick() {
