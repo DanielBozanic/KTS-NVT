@@ -25,7 +25,8 @@ import { LoginComponent } from '../authentication/login/login.component';
 import { ProfileComponent } from '../authentication/profile/profile/profile.component';
 import { AddEmployeeDialogComponent } from '../manager/components/add-employee-dialog/add-employee-dialog.component';
 import { EditEmployeeDialogComponent } from '../manager/components/edit-employee-dialog/edit-employee-dialog.component';
-import { RoleGuardService } from '../authentication/guard-url';
+import { ReportsComponent } from '../manager/pages/reports/reports.component';
+import { ChartsModule } from 'ng2-charts';
 import { CreateMenuDialogComponent } from '../manager/components/create-menu-dialog/create-menu-dialog.component';
 import { AddItemInMenuDialogComponent } from '../manager/components/add-item-in-menu-dialog/add-item-in-menu-dialog.component';
 import { CreateItemDialogComponent } from '../manager/components/create-item-dialog/create-item-dialog.component';
@@ -95,6 +96,7 @@ const customNotifierOptions: NotifierOptions = {
     SidenavListComponent,
     AddEmployeeDialogComponent,
     EditEmployeeDialogComponent,
+    ReportsComponent,
     CreateMenuDialogComponent,
     CreateItemDialogComponent,
     AddItemInMenuDialogComponent,
@@ -116,6 +118,7 @@ const customNotifierOptions: NotifierOptions = {
     CarouselModule,
     FlexLayoutModule,
     NotifierModule.withConfig(customNotifierOptions),
+    ChartsModule,
   ],
   providers: [HeaderComponent, RoleGuardService],
   bootstrap: [AppComponent],

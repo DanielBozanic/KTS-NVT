@@ -19,6 +19,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   imports: [
@@ -42,6 +43,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatProgressBarModule,
     MatExpansionModule,
     MatBadgeModule,
+    MatNativeDateModule,
   ],
   exports: [
     MatButtonModule,
@@ -64,6 +66,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatProgressBarModule,
     MatExpansionModule,
     MatBadgeModule,
+    MatNativeDateModule,
   ],
 })
-export class AngularMaterialModule { }
+export class AngularMaterialModule {}
