@@ -1,32 +1,67 @@
 <!DOCTYPE html>
-<button class="table" mat-raised-button id="{{'table-button-' + table.id}}"
-    [ngStyle]="{'backgroundColor' : tableColor()}" (click)="tableClick()">
-    Table {{table.tableNumber}} <br /> {{table.state}} </button>
+<button
+  class="table"
+  mat-raised-button
+  id="{{ 'table-button-' + table.id }}"
+  [ngStyle]="{
+    backgroundColor: tableColor(),
+    'left.px': table.x,
+    'top.px': table.y
+  }"
+  (click)="tableClick()"
+>
+  Table {{ table.tableNumber }} <br />
+  {{ table.state }}
+</button>
 
 <ng-template #freeTableDialog>
-    <button mat-raised-button color="primary" (click)="reserveTable()" id="reserve-button">Reserve table</button>
-    <button mat-raised-button color="primary" (click)="order()" id="order-button">Order</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="reserveTable()"
+    id="reserve-button"
+  >
+    Reserve table
+  </button>
+  <button mat-raised-button color="primary" (click)="order()" id="order-button">
+    Order
+  </button>
 </ng-template>
 
 <ng-template #tableOrderDialog>
-    <app-table-items-dialog [currentTable]="table" [itemInOrderDataSource]="itemInOrderDataSource"
-        (removeOrder)="removeOrder()" (removeItem)="removeItem($event)" (deliver)="deliver($event)"
-        (redirectToAddItemsComponent)="redirectToAddItemsComponent()">
-    </app-table-items-dialog>
+  <app-table-items-dialog
+    [currentTable]="table"
+    [itemInOrderDataSource]="itemInOrderDataSource"
+    (removeOrder)="removeOrder()"
+    (removeItem)="removeItem($event)"
+    (deliver)="deliver($event)"
+    (redirectToAddItemsComponent)="redirectToAddItemsComponent()"
+  >
+  </app-table-items-dialog>
 </ng-template>
 
 <ng-template #paymentTableDialog>
-    <h2> Charge order </h2>
-    <h3 class="inline">Amount that needs to be payed: </h3>
-    <span class="inline">{{currentOrder.totalPrice}}</span>
+  <h2>Charge order</h2>
+  <h3 class="inline">Amount that needs to be payed:</h3>
+  <span class="inline">{{ currentOrder.totalPrice }}</span>
 
-    <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="pay()" id="pay-button">Pay</button>
-        <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}"
-            [mat-dialog-close]="true">Cancel</button>
-    </div>
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" (click)="pay()" id="pay-button">
+      Pay
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      [ngStyle]="{ float: 'right' }"
+      [mat-dialog-close]="true"
+    >
+      Cancel
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #codeVerificationDialog>
-    <app-code-verification-dialog (parentCheckCode)="checkCode($event)"></app-code-verification-dialog>
+  <app-code-verification-dialog
+    (parentCheckCode)="checkCode($event)"
+  ></app-code-verification-dialog>
 </ng-template>
