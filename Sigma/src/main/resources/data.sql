@@ -28,7 +28,6 @@ INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, wai
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 1800, 2, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 1200, 3, 2);
 
-INSERT INTO Restaurant_Order (state, total_price, table_id, waiter_id) VALUES (0, 800, 1, 3);
 
 
 

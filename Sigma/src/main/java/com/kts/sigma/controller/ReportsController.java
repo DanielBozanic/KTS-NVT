@@ -1,6 +1,7 @@
 package com.kts.sigma.controller;
 
 import com.kts.sigma.dto.ReportRequestDTO;
+import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.Report;
 import com.kts.sigma.service.ReportsService;
 import org.springframework.beans.factory.annotation.Autowired;

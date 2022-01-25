@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @Service
@@ -30,13 +32,32 @@ public class ReportsServiceImpl implements ReportsService {
         this.orderService = orderService;
     }
 
+    Date localDateTimeToDate(LocalDateTime temp){
+        ZonedDateTime zdt = temp.atZone(ZoneId.systemDefault());
+        Date output = Date.from(zdt.toInstant());
+        return output;
+    }
+
+    boolean isWithinRange(LocalDateTime startDate, LocalDateTime endDate, LocalDateTime testDate) {
+        Date start = localDateTimeToDate(startDate);
+        Date end = localDateTimeToDate(endDate);
+        Date test = localDateTimeToDate(testDate);
+        return !(test.before(start) || test.after(end));
+    }
+
+    LocalDateTime getCorrectDate(LocalDateTime temp){
+        int hour = temp.getHour();
+        return temp.plusHours(24 - hour);
+    }
+
     @Override
     public Report getReports(ReportRequestDTO request) {
         List<EmployeeDTO> allUsers = (List<EmployeeDTO>) userService.getAllEmployees();
         List<OrderDTO> restaurantOrders = (List<OrderDTO>) orderService.getAll();
 
-        LocalDateTime startDate = request.startMonth;
-        LocalDateTime endDate = request.endMonth;
+
+        LocalDateTime startDate = getCorrectDate(request.startMonth);
+        LocalDateTime endDate = getCorrectDate(request.endMonth);
 
         if(startDate == null){
             throw new DateNotValidException(request.startMonth);
@@ -62,16 +83,20 @@ public class ReportsServiceImpl implements ReportsService {
         BigDecimal totalPayEmployees = BigDecimal.ZERO; //total for one month
         for (EmployeeDTO employee : allUsers){
             if(employee.isActive()){
-                totalPayEmployees.add(employee.getPaymentBigDecimal());
+                totalPayEmployees = totalPayEmployees.add(employee.getPaymentBigDecimal());
             }
         }
 
         for(int i = startMonth.intValue(); i <= endMonth.intValue(); i++){
             expenses.add(totalPayEmployees); //added pay expenses
+            sales.add(BigDecimal.ZERO);
         }
 
         for (OrderDTO order: restaurantOrders){
             Integer month = order.getOrderDateTime().getMonthValue();
+            if(!isWithinRange(startDate,endDate,order.getOrderDateTime())){
+                continue;
+            }
             int index = month - startMonth;
             BigDecimal value = sales.get(index);
             sales.set(index, value.add(order.getTotalPrice()));
@@ -80,7 +105,8 @@ public class ReportsServiceImpl implements ReportsService {
 
         report.setExpensesPerMonth(expenses);
         report.setSalesPerMonth(sales);
-
+        report.setStartMonth(startDate);
+        report.setEndMonth(endDate);
         return report;
     }
 }

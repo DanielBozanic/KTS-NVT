@@ -11,6 +11,7 @@ import { WaiterAddItemsComponent } from '../waiter/pages/waiter-addItems/waiter-
 import { WaiterOrderComponent } from '../waiter/pages/waiter-order/waiter-order.component';
 import { WaiterTablesComponent } from '../waiter/pages/waiter-tables/waiter-tables.component';
 import { RoleGuardService } from '../authentication/guard-url';
+import { ReportsComponent } from '../manager/pages/reports/reports.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,11 @@ const routes: Routes = [
   { path: 'waiterAddItems', component: WaiterAddItemsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'profile', component: ProfileComponent },
+  {
+    path: 'reports',
+    component: ReportsComponent,
+    canActivate: [RoleGuardService],
+  },
   { path: '', redirectTo: '/waiterTables', pathMatch: 'full' },
 ];
 
@@ -42,4 +48,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
