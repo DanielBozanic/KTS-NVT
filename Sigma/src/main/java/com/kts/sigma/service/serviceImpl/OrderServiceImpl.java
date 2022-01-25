@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService{
 		tableRepo.save(table);
 				
 		
-		return orderRepository.save(order);
+		return o;
 	}
 	
 	@Override
@@ -188,6 +188,10 @@ public class OrderServiceImpl implements OrderService{
 		{
 			throw new AccessForbiddenException();
 		}
+		
+		RestaurantTable table = order.getTable();
+		table.setState(TableState.FREE);
+		tableRepo.save(table);
 		
 		orderRepository.deleteById(id);
 	}
@@ -303,8 +307,14 @@ public class OrderServiceImpl implements OrderService{
 		for(int i = 0; i < item.getQuantity(); i++) {
 			item.setOrderId(order.getId());
 			item.setState(ItemInOrderState.NEW);
-			iioService.saveWithoutCode(item);
+			ItemInOrder iio = iioService.saveWithoutCode(item);
 			price = price.add(item.getSellingPrice());
+			
+			if(iio.getItem().getItem() instanceof Food) {
+				item.setFood(true);
+			}else {
+				item.setFood(false);
+			}
 		}
 		
 		order.setTotalPrice(order.getTotalPrice().add(price));
@@ -314,7 +324,8 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public void removeItemFromOrder(Integer itemId, Integer code, Integer orderId) {
+	@Transactional
+	public ItemInOrder removeItemFromOrder(Integer itemId, Integer code, Integer orderId) {
 		RestaurantOrder order = orderRepository.findById(orderId).orElse(null);
 		if(order == null)
 		{
@@ -336,8 +347,18 @@ public class OrderServiceImpl implements OrderService{
 				items.remove(item);
 				order.setItems(items);
 				order.setTotalPrice(order.getTotalPrice().subtract(item.getItem().getSellingPrice()));
+				
+				if(items.size() == 0) {
+					RestaurantTable table = order.getTable();
+					table.setState(TableState.FREE);
+					tableRepo.save(table);
+					order.setTable(table);
+					order.setState(OrderState.CHARGED);
+					order.setTotalPrice(BigDecimal.ZERO);
+				}
+				
 				orderRepository.save(order);
-				return;
+				return  item;
 			}
 		}
 		

@@ -142,26 +142,3 @@ th.mat-header-cell {
     height: 50px;
   }
 }
-
-.form {
-  min-width: 500px;
-  width: 100%;
-
-  .field-width {
-    width: 100%;
-
-    .textarea-size {
-      max-height: 100px;
-    }
-  }
-}
-
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  margin: 10px 0;
-
-  .radio-button {
-    margin: 5px;
-  }
-}

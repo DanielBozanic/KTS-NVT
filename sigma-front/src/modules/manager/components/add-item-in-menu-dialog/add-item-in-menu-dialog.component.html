@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<form [formGroup]="addItemInMenuForm" class="form">
+  <mat-form-field class="field-width">
+    <mat-label>Selling price</mat-label>
+    <input
+      id="selling-price-field"
+      type="number"
+      min="0"
+      matInput
+      formControlName="sellingPrice"
+      (input)="checkSellingPrice()"
+    />
+    <mat-error
+      id="selling-price-field-required-error-msg"
+      *ngIf="hasErrorAddItemInMenuForm('sellingPrice', 'required')"
+      >Selling price is required!</mat-error
+    >
+    <mat-error
+      id="selling-price-field-negative-number-error-msg"
+      *ngIf="
+        sellingPrice?.invalid &&
+        !hasErrorAddItemInMenuForm('sellingPrice', 'required')
+      "
+      >Selling price must be a positive number!</mat-error
+    >
+  </mat-form-field>
+</form>
+<button
+  id="add-item-in-menu-btn-dialog"
+  (click)="addItemInMenu()"
+  [disabled]="addItemInMenuForm.invalid"
+  mat-raised-button
+  color="primary"
+>
+  Add item to menu
+</button>

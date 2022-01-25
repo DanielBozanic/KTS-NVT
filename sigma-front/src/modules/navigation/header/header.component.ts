@@ -33,8 +33,7 @@ export class HeaderComponent implements OnInit {
   signOut(): void {
     this.tokenStorage.signOut();
     this.showView = 'notregister';
-    this.router.navigate(['login']);
-    this.reloadPage(); //change later
+    this.router.navigate(['/login']).then(done => this.reloadPage()); //change later
   }
 
   reloadPage(): void {

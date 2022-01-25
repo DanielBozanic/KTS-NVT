@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<mat-card class="table-card">
+    <mat-card-title class="inline">Table {{currentTable.tableNumber}}</mat-card-title>
+    <button class="floatRight" mat-raised-button color="primary" (click)="removeOrder.emit()" *ngIf="removeVisible()"
+        id="remove-order-button">
+        Remove
+    </button>
+    <button class="floatRight" mat-raised-button color="primary" id="add-items-button"
+        (click)="redirectToAddItemsComponent.emit()">
+        Add items
+    </button>
+    <div class="data-table">
+        <table mat-table [dataSource]="itemInOrderDataSource">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="column-name">
+                    Item
+                </th>
+                <td mat-cell *matCellDef="let element" class="column-name">
+                    {{element.name}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="sellingPrice">
+                <th mat-header-cell *matHeaderCellDef class="column-selling-price">
+                    Price
+                </th>
+                <td mat-cell *matCellDef="let element" class="column-selling-price">
+                    {{ element.sellingPrice }}RSD
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef class="column-remove-button">
+                </th>
+                <td mat-cell *matCellDef="let element" class="column-remove-button">
+                    <button mat-raised-button color="primary" *ngIf="element.state === 'NEW'"
+                        (click)="removeItem.emit(element.id)" id="{{'remove-item-' + element.id}}">
+                        Remove
+                    </button>
+                    <button mat-raised-button color="primary" *ngIf="element.state === 'TO_DELIVER'"
+                        (click)="deliver.emit(element.id)" id="{{'deliver-item-' + element.id}}">
+                        Deliver
+                    </button>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsItemsInOrder"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsItemsInOrder"
+                [ngStyle]="{'backgroundColor' : itemColor(row.state)}"></tr>
+        </table>
+    </div>
+</mat-card>

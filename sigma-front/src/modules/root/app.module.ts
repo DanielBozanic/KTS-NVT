@@ -25,9 +25,17 @@ import { LoginComponent } from '../authentication/login/login.component';
 import { ProfileComponent } from '../authentication/profile/profile/profile.component';
 import { AddEmployeeDialogComponent } from '../manager/components/add-employee-dialog/add-employee-dialog.component';
 import { EditEmployeeDialogComponent } from '../manager/components/edit-employee-dialog/edit-employee-dialog.component';
-import { RoleGuardService } from '../authentication/guard-url';
 import { ReportsComponent } from '../manager/pages/reports/reports.component';
 import { ChartsModule } from 'ng2-charts';
+import { CreateMenuDialogComponent } from '../manager/components/create-menu-dialog/create-menu-dialog.component';
+import { AddItemInMenuDialogComponent } from '../manager/components/add-item-in-menu-dialog/add-item-in-menu-dialog.component';
+import { CreateItemDialogComponent } from '../manager/components/create-item-dialog/create-item-dialog.component';
+import { CreateZoneDialogComponent } from '../manager/components/create-zone-dialog/create-zone-dialog.component';
+import { CodeVerificationDialogComponent } from '../waiter/components/code-verification-dialog/code-verification-dialog.component';
+import { TableItemsDialogComponent } from '../waiter/components/table-items-dialog/table-items-dialog.component';
+import { ItemSearchformComponent } from '../waiter/components/item-searchform/item-searchform.component';
+import { ItemAdditionComponent } from '../waiter/components/item-addition/item-addition.component';
+import { WaiterTableComponent } from '../waiter/components/waiter-table/waiter-table.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -43,11 +51,11 @@ const customNotifierOptions: NotifierOptions = {
   },
   theme: 'material',
   behaviour: {
-    autoHide: 5000,
+    autoHide: false,
     onClick: 'hide',
     onMouseover: 'pauseAutoHide',
     showDismissButton: true,
-    stacking: 4,
+    stacking: 10,
   },
   animations: {
     enabled: true,
@@ -89,6 +97,15 @@ const customNotifierOptions: NotifierOptions = {
     AddEmployeeDialogComponent,
     EditEmployeeDialogComponent,
     ReportsComponent,
+    CreateMenuDialogComponent,
+    CreateItemDialogComponent,
+    AddItemInMenuDialogComponent,
+    CreateZoneDialogComponent,
+    CodeVerificationDialogComponent,
+    TableItemsDialogComponent,
+    ItemSearchformComponent,
+    ItemAdditionComponent,
+    WaiterTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,4 +124,4 @@ const customNotifierOptions: NotifierOptions = {
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule {}
+export class AppModule { }

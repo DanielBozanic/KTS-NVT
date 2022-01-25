@@ -1,6 +1,6 @@
-export class NotificationDTO{
+export class NotificationDTO {
     code!: string;
-    message!:string;
-    success!:boolean;
-    id!:number;
+    message!: string;
+    success!: boolean;
+    id!: number;
 }

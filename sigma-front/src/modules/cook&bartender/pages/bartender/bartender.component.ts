@@ -150,11 +150,9 @@ export class BartenderComponent implements OnInit {
     });
   }
 
-  setOrderToInProgress(itemId: number) {
-    this.service.setOrderState(itemId, "IN_PROGRESS").subscribe(data => {
-      this.openSnackBar("Order moved to current orders", 0);
-      this.getAllOrders();
-    });
+  async setOrderToInProgress(itemId: number) {
+    this.sentRequestEarlier = true;
+    await this.webSocketOrderCreation._send(`/order-change/${itemId}/IN_PROGRESS`, {});
   }
 
   setOrderToDone(itemId: number) {
@@ -188,7 +186,7 @@ export class BartenderComponent implements OnInit {
     if (notification.success) {
       if (this.sentRequestEarlier) {
         this.openSnackBar(notification.message, this.RESPONSE_OK);
-      } else {
+      } else if (notification.code === 'drink') {
         this.notifier.notify('info', notification.message);
         this.globals.bartenderNotifications++;
       }
@@ -203,14 +201,41 @@ export class BartenderComponent implements OnInit {
 
   handleOrderCreation = (notification: NotificationDTO) => {
     if (notification.success) {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_OK);
+      }
+      else if (notification.message.includes('removed')) {
+
+        const exists1 = this.newOrders.find(order => order.id === notification.id)
+        const exists2 = this.ordersInProgress.find(order => order.id === notification.id)
+        if ((exists1 || exists2) && notification.code !== 'food') {
+          this.notifier.notify('info', notification.message);
+          this.globals.bartenderNotifications++;
+        }
+
+      } else {
+
+        this.service.getAllDrinkOrders().subscribe((data) => {
+          const exists = data.find(order => order.id === notification.id)
+          if ((exists) && notification.code !== 'food') {
+            this.notifier.notify('info', notification.message);
+            this.globals.bartenderNotifications++;
+          }
+        })
+
+      }
       this.getAllOrders();
-      this.notifier.notify('info', notification.message);
-      this.globals.bartenderNotifications++;
+    } else {
+      if (this.sentRequestEarlier) {
+        this.openSnackBar(notification.message, this.RESPONSE_ERROR);
+      }
     }
+    this.sentRequestEarlier = false;
   }
 
   pageClick() {
     this.globals.bartenderNotifications = 0;
+    this.notifier.hideAll();
   }
 
   openSnackBar(msg: string, responseCode: number) {

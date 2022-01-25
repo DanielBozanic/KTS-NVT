@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<div>
+  <mat-card class="search-card">
+    <div fxLayout="row">
+      <div class="div-category-select">
+        <mat-label>Select Category:</mat-label>
+        <mat-select
+          [value]="categories[0]"
+          class="category-select"
+          (selectionChange)="filterByCategory($event.value)"
+        >
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="div-search-bar">
+        <form [formGroup]="searchForm">
+          <mat-form-field
+            ><input
+              type="text"
+              matInput
+              placeholder="Search"
+              formControlName="searchTerm"
+            />
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
+    <div fxLayout="row">
+      <div class="button-group">
+        <button
+          class="search-button"
+          mat-raised-button
+          color="primary"
+          (click)="search()"
+        >
+          Search
+        </button>
+        <button
+          class="reset-button"
+          mat-raised-button
+          color="primary"
+          (click)="resetSearchFilter()"
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+    <div fxLayout="row" class="div-menu-select">
+      <mat-label>Select Menu:</mat-label>
+      <mat-select
+        id="menu-select"
+        [value]="selectedMenu.id"
+        (selectionChange)="changeMenu($event.value)"
+      >
+        <mat-option
+          *ngFor="let menu of activeNonExpiredMenus"
+          id="{{ 'menu' + menu.id }}"
+          [value]="menu.id"
+        >
+          {{ menu.name }}
+        </mat-option>
+      </mat-select>
+    </div>
+  </mat-card>
+</div>
+
+<div>
+  <p-carousel
+    [value]="items"
+    [numVisible]="3"
+    [numScroll]="3"
+    [circular]="false"
+  >
+    <ng-template let-item pTemplate="item">
+      <mat-card class="item-card">
+        <div class="item-content">
+          <div>
+            <h2>{{ item.name }}</h2>
+            <h2>{{ item.description }}</h2>
+            <img
+              mat-card-lg-image
+              src="{{
+                item.image == '' || item.image == null
+                  ? 'assets/placeholder.jpg'
+                  : item.image
+              }}"
+              alt=""
+            />
+            <h2>Price: {{ item.sellingPrice }}RSD</h2>
+          </div>
+          <button
+            mat-raised-button
+            id="{{ 'carousel-item-btn' + item.id }}"
+            color="primary"
+            (click)="addItemToOrder.emit(item)"
+          >
+            Add To Order
+          </button>
+        </div>
+      </mat-card>
+    </ng-template>
+  </p-carousel>
+</div>

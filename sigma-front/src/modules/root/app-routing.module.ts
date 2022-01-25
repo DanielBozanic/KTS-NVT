@@ -41,6 +41,7 @@ const routes: Routes = [
     component: ReportsComponent,
     canActivate: [RoleGuardService],
   },
+  { path: 'waiterTables', component: WaiterTablesComponent },
   { path: '', redirectTo: '/waiterTables', pathMatch: 'full' },
 ];
 

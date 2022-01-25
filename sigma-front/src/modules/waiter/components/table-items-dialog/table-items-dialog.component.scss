@@ -1,0 +1,75 @@
+$background-color-light-blue: #deede6;
+
+%center-content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+mat-card{
+    margin: 1em;
+  }
+  
+  button{
+    margin: 1em;
+  }
+
+.table-items{
+    height: 75%;
+    width: 85%;
+    margin: 5px;
+  }
+  
+  .table-item{
+    display: block;
+    height: 3em;
+    width: 100%;
+    margin: 4px;
+  }
+  
+  .item-button{
+    float: right;
+  }
+  
+  .inline{
+    display: inline;
+  }
+  
+  .block{
+    display: block;
+  }
+  
+  .action-buttons{
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  
+  .table{
+    border-radius: 100%;
+    width: auto;
+  }
+  
+  .tables{
+    border-style: groove;
+  }
+  
+  .table-card {
+    @extend %center-content;
+    max-width: 700px;
+    background-color: $background-color-light-blue;
+  }
+  
+  table {
+    width: 100%;
+  
+    .column-name {
+      width: 45%;
+    }
+  
+    .column-selling-price {
+      width: 30%;
+    }
+  
+    .column-remove-button {
+      width: 25%;
+    }
+  }

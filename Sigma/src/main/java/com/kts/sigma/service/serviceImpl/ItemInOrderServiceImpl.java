@@ -253,28 +253,47 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			throw new ItemNotFoundException(id, "item in order");
 		}
 		
-		boolean allAreDone = true;
-		for (ItemInOrder i : item.getOrder().items) {
-			if(i.getState() != ItemInOrderState.TO_DELIVER && i.getId() != id)
-			{
-				allAreDone = false;
+		if(state == ItemInOrderState.TO_DELIVER) {
+			boolean allAreDone = true;
+			for (ItemInOrder i : item.getOrder().items) {
+				if(i.getState() == ItemInOrderState.IN_PROGRESS && i.getId() != id)
+				{
+					allAreDone = false;
+				}
 			}
-		}
-		
-		if(allAreDone)
-		{
-			item.getOrder().setState(OrderState.DONE);
-			oRepository.save(item.getOrder());
 			
-			RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
-			if(table != null && table.getState().equals(TableState.IN_PROGRESS)) {
-				table.setState(TableState.TO_DELIVER);
-				tablesRepo.save(table);
+			if(allAreDone)
+			{
+				item.getOrder().setState(OrderState.DONE);
+				oRepository.save(item.getOrder());
+				
+				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
+				if(table != null && table.getState().equals(TableState.IN_PROGRESS)) {
+					table.setState(TableState.TO_DELIVER);
+					tablesRepo.save(table);
+				}
 			}
-		}
-
-		if(state == ItemInOrderState.IN_PROGRESS)
-		{
+		}else if(state == ItemInOrderState.DONE) {
+			boolean allAreDone = true;
+			for (ItemInOrder i : item.getOrder().items) {
+				if(i.getState() != ItemInOrderState.DONE && i.getId() != id)
+				{
+					allAreDone = false;
+				}
+			}
+			
+			if(allAreDone)
+			{
+				item.getOrder().setState(OrderState.DONE);
+				oRepository.save(item.getOrder());
+				
+				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
+				if(table != null) {
+					table.setState(TableState.DONE);
+					tablesRepo.save(table);
+				}
+			}
+		}else if(state == ItemInOrderState.IN_PROGRESS){
 			if(employee instanceof Cook && item.getItem().item instanceof Food)
 			{
 				item.setEmployee(employee);
@@ -296,6 +315,13 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		dto.setName(returnItem.getItem().getItem().getName());
 		dto.setDescription(returnItem.getOrder().getTable().getTableNumber().toString());
 		dto.setOrderId(returnItem.getOrder().getId());
+		
+		if(returnItem.getItem().getItem() instanceof Food) {
+			dto.setFood(true);
+		}else {
+			dto.setFood(false);
+		}
+		
 		return dto;
 	}
 

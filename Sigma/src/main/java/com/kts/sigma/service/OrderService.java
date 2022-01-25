@@ -3,6 +3,7 @@ package com.kts.sigma.service;
 
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
+import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
 
@@ -27,7 +28,7 @@ public interface OrderService {
 
 	public ItemInOrderDTO addItemToOrder(ItemInOrderDTO item, Integer code, Integer orderId);
 
-	public void removeItemFromOrder(Integer itemId, Integer code, Integer orderId);
+	public ItemInOrder removeItemFromOrder(Integer itemId, Integer code, Integer orderId);
 
 	public void changeState(OrderState state, Integer code, Integer orderId);
 	

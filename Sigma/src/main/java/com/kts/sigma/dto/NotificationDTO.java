@@ -31,4 +31,5 @@ public class NotificationDTO {
 		this.success = success;
 	}
 	
+	
 }

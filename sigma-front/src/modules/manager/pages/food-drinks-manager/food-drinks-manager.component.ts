@@ -1,10 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import {
@@ -15,8 +10,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
 import { FoodDrinksManagerService } from '../../services/food-drinks-manager.service';
-import { DateValidator } from '../../validators/date-validator';
-import { PositiveNumberValidator } from '../../validators/positive-number-validator';
 
 @Component({
   selector: 'app-food-drinks-manager',
@@ -34,19 +27,13 @@ export class FoodDrinksManagerComponent implements OnInit {
   itemsInMenuData: Array<Item>;
   isLoading: boolean;
   selectedMenu: Menu;
+  selectedItem: Item;
   categories: Array<string>;
-  types: Array<string>;
   originalItemData: Array<Item>;
-  createNewMenuForm!: FormGroup;
-  createNewItemForm!: FormGroup;
-  foodIsTrue: boolean;
-  addItemInMenuForm!: FormGroup;
   searchForm!: FormGroup;
   RESPONSE_OK: number;
   RESPONSE_ERROR: number;
   verticalPosition: MatSnackBarVerticalPosition;
-  fileReader: FileReader;
-  selectedFile: string | null;
 
   constructor(
     private foodDrinksService: FoodDrinksManagerService,
@@ -67,15 +54,12 @@ export class FoodDrinksManagerComponent implements OnInit {
     );
     this.isLoading = false;
     this.selectedMenu = new Menu();
+    this.selectedItem = new Item();
     this.categories = ['ALL', 'APPETISER', 'SALAD', 'MAIN_COURSE', 'DESERT'];
-    this.types = ['APPETISER', 'SALAD', 'MAIN_COURSE', 'DESERT'];
     this.originalItemData = [];
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
     this.verticalPosition = 'top';
-    this.foodIsTrue = true;
-    this.fileReader = new FileReader();
-    this.selectedFile = null;
   }
 
   ngOnInit(): void {
@@ -97,40 +81,7 @@ export class FoodDrinksManagerComponent implements OnInit {
 
   @ViewChild('itemDialog') itemDialog!: TemplateRef<any>;
 
-  get startDate(): AbstractControl | null {
-    return this.createNewMenuForm.get('startDate');
-  }
-
-  get expirationDate(): AbstractControl | null {
-    return this.createNewMenuForm.get('expirationDate');
-  }
-
-  get sellingPrice(): AbstractControl | null {
-    return this.addItemInMenuForm.get('sellingPrice');
-  }
-
-  get buyingPrice(): AbstractControl | null {
-    return this.createNewItemForm.get('buyingPrice');
-  }
-
   initializeForms(): void {
-    this.createNewMenuForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      startDate: new FormControl('', Validators.required),
-      expirationDate: new FormControl(''),
-    });
-    this.addItemInMenuForm = new FormGroup({
-      id: new FormControl(),
-      sellingPrice: new FormControl(null, Validators.required),
-    });
-    this.createNewItemForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      food: new FormControl(true),
-      type: new FormControl('APPETISER'),
-      buyingPrice: new FormControl(null, Validators.required),
-      description: new FormControl('', Validators.required),
-      image: new FormControl(''),
-    });
     this.searchForm = new FormGroup({
       searchTerm: new FormControl(''),
     });
@@ -203,29 +154,23 @@ export class FoodDrinksManagerComponent implements OnInit {
   }
 
   openAddItemToMenuDialog(item: Item): void {
-    this.addItemInMenuForm.patchValue({
-      id: item.id,
-    });
-    let dialogRef = this.addItemInMenuDialog.open(this.itemInMenuDialog);
-    dialogRef.afterClosed().subscribe(() => {
-      this.addItemInMenuForm.reset();
-    });
+    this.selectedItem = item;
+    this.addItemInMenuDialog.open(this.itemInMenuDialog);
   }
 
-  addItemInMenu(): void {
-    this.foodDrinksService
-      .addItemInMenu(this.addItemInMenuForm.value, this.selectedMenu.id)
-      .subscribe(
-        (resp) => {
-          console.log(resp);
-          this.addItemInMenuDialog.closeAll();
-          this.getNumberOfActiveItemInMenuRecordsByMenuId(this.selectedMenu.id);
-          this.getItemsInMenuByCurrentPage(this.selectedMenu.id, false);
-        },
-        (err) => {
-          this.openSnackBar(err.error, this.RESPONSE_ERROR);
-        }
-      );
+  addItemInMenu(item: Item): void {
+    item.id = this.selectedItem.id;
+    this.foodDrinksService.addItemInMenu(item, this.selectedMenu.id).subscribe(
+      (resp) => {
+        console.log(resp);
+        this.addItemInMenuDialog.closeAll();
+        this.getNumberOfActiveItemInMenuRecordsByMenuId(this.selectedMenu.id);
+        this.getItemsInMenuByCurrentPage(this.selectedMenu.id, false);
+      },
+      (err) => {
+        this.openSnackBar(err.error, this.RESPONSE_ERROR);
+      }
+    );
   }
 
   removeItemFromMenu(itemId: number): void {
@@ -243,42 +188,28 @@ export class FoodDrinksManagerComponent implements OnInit {
   }
 
   openCreateNewItemDialog(): void {
-    let dialogRef = this.createNewItemDialog.open(this.itemDialog);
-    dialogRef.afterClosed().subscribe(() => {
-      this.createNewItemForm.reset();
-      this.createNewItemForm.patchValue({ food: true });
-      this.createNewItemForm.patchValue({
-        type: 'APPETISER',
-      });
-    });
+    this.createNewItemDialog.open(this.itemDialog);
   }
 
-  createNewItem(): void {
-    console.log(this.selectedFile);
-    this.createNewItemForm.patchValue({ image: this.selectedFile });
-    this.foodDrinksService
-      .createNewItem(this.createNewItemForm.value)
-      .subscribe(
-        (resp) => {
-          console.log(resp);
-          this.createNewItemDialog.closeAll();
-          this.getAllItems();
-        },
-        (err) => {
-          this.openSnackBar(err.error, this.RESPONSE_ERROR);
-        }
-      );
+  createNewItem(item: Item): void {
+    this.foodDrinksService.createNewItem(item).subscribe(
+      (resp) => {
+        console.log(resp);
+        this.createNewItemDialog.closeAll();
+        this.getAllItems();
+      },
+      (err) => {
+        this.openSnackBar(err.error, this.RESPONSE_ERROR);
+      }
+    );
   }
 
   openCreateNewMenuDialog(): void {
-    let dialogRef = this.createNewMenuDialog.open(this.menuDialog);
-    dialogRef.afterClosed().subscribe(() => {
-      this.createNewMenuForm.reset();
-    });
+    this.createNewMenuDialog.open(this.menuDialog);
   }
 
-  createNewMenu(): void {
-    this.foodDrinksService.addMenu(this.createNewMenuForm.value).subscribe(
+  createNewMenu(menu: Menu): void {
+    this.foodDrinksService.addMenu(menu).subscribe(
       (resp) => {
         console.log(resp);
         this.createNewMenuDialog.closeAll();
@@ -330,69 +261,6 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.getItemsInMenuByCurrentPage(this.selectedMenu.id, false);
-  }
-
-  foodValueChanged(value: boolean): void {
-    this.foodIsTrue = value;
-  }
-
-  changeFile(event: any): void {
-    this.fileReader.onload = (event: any) => {
-      if (!event.target.result.startsWith('data:image')) {
-        this.openSnackBar('Image files only allowed!', this.RESPONSE_ERROR);
-      } else {
-        this.selectedFile = event.target.result;
-      }
-    };
-    this.fileReader.onerror = () => {
-      this.selectedFile = null;
-    };
-    this.fileReader.readAsDataURL(event.target.files[0]);
-  }
-
-  hasErrorCreateNewMenuForm = (controlName: string, errorName: string) => {
-    return this.createNewMenuForm.controls[controlName].hasError(errorName);
-  };
-
-  hasErrorAddItemInMenuForm = (controlName: string, errorName: string) => {
-    return this.addItemInMenuForm.controls[controlName].hasError(errorName);
-  };
-
-  hasErrorCreateNewItemForm = (controlName: string, errorName: string) => {
-    return this.createNewItemForm.controls[controlName].hasError(errorName);
-  };
-
-  checkDate(): void {
-    let validStartDate = DateValidator(
-      this.createNewMenuForm.get('startDate')?.value
-    );
-    if (validStartDate !== null) {
-      this.createNewMenuForm
-        .get('startDate')
-        ?.setErrors([{ dateInvalid: validStartDate }]);
-    }
-  }
-
-  checkSellingPrice(): void {
-    let validSellingPrice = PositiveNumberValidator(
-      this.addItemInMenuForm.get('sellingPrice')?.value
-    );
-    if (validSellingPrice !== null) {
-      this.addItemInMenuForm
-        .get('sellingPrice')
-        ?.setErrors([{ positiveNumberInvalid: validSellingPrice }]);
-    }
-  }
-
-  checkBuyingPrice(): void {
-    let validBuyingPrice = PositiveNumberValidator(
-      this.createNewItemForm.get('buyingPrice')?.value
-    );
-    if (validBuyingPrice !== null) {
-      this.createNewItemForm
-        .get('buyingPrice')
-        ?.setErrors([{ positiveNumberInvalid: validBuyingPrice }]);
-    }
   }
 
   openSnackBar(msg: string, responseCode: number) {

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<form [formGroup]="createNewMenuForm" class="form">
+  <mat-form-field class="field-width">
+    <mat-label>Name</mat-label>
+    <input
+      id="menu-name-field"
+      type="text"
+      matInput
+      placeholder="Name"
+      formControlName="name"
+    />
+    <mat-error
+      id="menu-name-field-required-error-msg"
+      *ngIf="hasErrorCreateNewMenuForm('name', 'required')"
+      >Name is required!</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field class="field-width">
+    <mat-label>Start date</mat-label>
+    <input
+      id="start-date-field"
+      type="datetime-local"
+      matInput
+      formControlName="startDate"
+      (input)="checkDate()"
+    />
+    <mat-error
+      id="start-date-field-required-error-msg"
+      *ngIf="hasErrorCreateNewMenuForm('startDate', 'required')"
+      >Start date is required!</mat-error
+    >
+    <mat-error
+      id="start-date-field-past-date-error-msg"
+      *ngIf="
+        startDate?.invalid &&
+        !hasErrorCreateNewMenuForm('startDate', 'required')
+      "
+      >Start date can not be a past date!</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field class="field-width">
+    <mat-label>Expiration date</mat-label>
+    <input
+      id="expiration-date-field"
+      type="datetime-local"
+      matInput
+      formControlName="expirationDate"
+      (input)="checkDate()"
+    />
+  </mat-form-field>
+</form>
+<button
+  id="create-new-menu-btn-dialog"
+  (click)="createNewMenu()"
+  [disabled]="createNewMenuForm.invalid"
+  mat-raised-button
+  color="primary"
+>
+  Create New Menu
+</button>
