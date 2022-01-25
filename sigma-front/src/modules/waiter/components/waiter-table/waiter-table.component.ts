@@ -128,9 +128,14 @@ export class WaiterTableComponent implements OnInit {
                                 this.itemInOrderDataSource.data = data;
 
                                 const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
-                                console.log(this.currentItems)
+                                const noDelivery = this.currentItems.filter(item => item.state !== 'TO_DELIVER').length;
                                 if (delivered === this.currentItems.length) {
                                     this.table.state = 'DONE';
+                                    this.getTables.emit(this.table.zoneId);
+                                    this.closeOrderView();
+                                    window.location.reload();
+                                } else if (noDelivery === this.currentItems.length) {
+                                    this.table.state = 'IN_PROGRESS';
                                     this.getTables.emit(this.table.zoneId);
                                     this.closeOrderView();
                                     window.location.reload();

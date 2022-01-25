@@ -57,6 +57,11 @@ mat-card{
     max-width: 700px;
     background-color: $background-color-light-blue;
   }
+
+  app-waiter-table{
+    position: absolute;
+    z-index: 10;
+  }
   
   table {
     width: 100%;

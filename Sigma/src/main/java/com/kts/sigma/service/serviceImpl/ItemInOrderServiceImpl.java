@@ -275,10 +275,14 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			}
 		}else if(state == ItemInOrderState.DONE) {
 			boolean allAreDone = true;
+			boolean noDelivery = true;
 			for (ItemInOrder i : item.getOrder().items) {
 				if(i.getState() != ItemInOrderState.DONE && i.getId() != id)
 				{
 					allAreDone = false;
+				}
+				if(i.getState() == ItemInOrderState.TO_DELIVER && i.getId() != id) {
+					noDelivery = false;
 				}
 			}
 			
@@ -290,6 +294,12 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
 				if(table != null) {
 					table.setState(TableState.DONE);
+					tablesRepo.save(table);
+				}
+			}else if(noDelivery) {
+				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
+				if(table != null) {
+					table.setState(TableState.IN_PROGRESS);
 					tablesRepo.save(table);
 				}
 			}

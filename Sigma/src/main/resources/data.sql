@@ -61,12 +61,12 @@ INSERT INTO zone (name) VALUES ('1st floor');
 INSERT INTO zone (name) VALUES ('2nd floor');
 
 
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 2, 1, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 2, 2, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 2, 3, 2);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 4, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (2, 0, 5, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (4, 0, 6, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 7, 1);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (6, 0, 8, 2);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (10, 0, 9, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 2, 1, 1, 100, 100);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (6, 2, 2, 1, 200, 100);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 2, 3, 2, 300, 100);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 0, 4, 1, 100, 200);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (2, 0, 5, 1, 200, 200);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 0, 6, 1, 300, 200);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (3, 0, 7, 1, 100, 300);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (6, 0, 8, 2, 200, 300);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (10, 0, 9, 2, 300, 300);

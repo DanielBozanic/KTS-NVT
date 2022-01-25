@@ -17,11 +17,13 @@
     </form>
   </mat-card>
 
-  <mat-card *ngIf="tables.length !== 0">
-    <div class="tables" id="tables">
+  <mat-card *ngIf="tables.length !== 0" id="tableCard">
+    <div class="tables" id="tables"
+      style="text-align:center;background-image: url('../../../../assets/floorPlan.jpg'); background-size: 100% 100%;background-repeat: no-repeat;">
       <div class="inline" *ngFor="let table of tables">
         <app-waiter-table [table]="table" [webSocketItemChange]=" webSocketItemChange"
-          [webSocketOrders]="webSocketOrders" (sentEarlier)="sentEarlier()" (getTables)="getTables($event)">
+          [ngStyle]="{ 'left.px': table.x, 'top.px': table.y }" [webSocketOrders]="webSocketOrders"
+          (sentEarlier)="sentEarlier()" (getTables)="getTables($event)">
         </app-waiter-table>
       </div>
     </div>

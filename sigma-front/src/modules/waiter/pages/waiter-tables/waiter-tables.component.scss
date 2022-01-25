@@ -54,12 +54,17 @@ button{
 
 .tables{
   border-style: groove;
+  height: 100%;
 }
 
 .table-card {
   @extend %center-content;
   max-width: 700px;
   background-color: $background-color-light-blue;
+}
+
+#tableCard{
+  height: 600px;
 }
 
 table {
