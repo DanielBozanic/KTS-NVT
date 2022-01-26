@@ -16,6 +16,7 @@ export class TableItemsDialogComponent implements OnInit {
     @Output() redirectToAddItemsComponent: EventEmitter<any> = new EventEmitter();
     @Output() removeItem: EventEmitter<any> = new EventEmitter();
     @Output() deliver: EventEmitter<any> = new EventEmitter();
+    @Output() deliverAll: EventEmitter<any> = new EventEmitter();
     displayedColumnsItemsInOrder: string[];
 
     constructor() {
@@ -47,5 +48,8 @@ export class TableItemsDialogComponent implements OnInit {
         return visible;
     }
 
+    deliverAllVisible() {
+        return this.itemInOrderDataSource.data.find(item => item.state === 'TO_DELIVER');
+    }
 
 }

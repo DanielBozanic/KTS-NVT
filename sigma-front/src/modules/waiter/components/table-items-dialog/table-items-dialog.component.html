@@ -9,6 +9,10 @@
         (click)="redirectToAddItemsComponent.emit()">
         Add items
     </button>
+    <button class="floatRight" mat-raised-button color="primary" id="add-items-button" (click)="deliverAll.emit()"
+        *ngIf="deliverAllVisible()">
+        Deliver all
+    </button>
     <div class="data-table">
         <table mat-table [dataSource]="itemInOrderDataSource">
             <ng-container matColumnDef="name">

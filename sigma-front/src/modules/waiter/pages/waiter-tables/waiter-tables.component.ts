@@ -79,23 +79,6 @@ export class WaiterTablesComponent implements OnInit {
     this.sentRequestEarlier = true;
   }
 
-  // handleItemChange = (notification: NotificationDTO) => {
-  //   if (notification.success) {
-  //     if (this.sentRequestEarlier) {
-  //       this.openSnackBar(notification.message, this.RESPONSE_OK);
-  //     } else {
-  //       this.notifier.notify('info', notification.message);
-  //       this.globals.waiterNotifications++;
-  //     }
-  //     this.getTables(this.zoneId);
-  //   } else {
-  //     if (this.sentRequestEarlier) {
-  //       this.openSnackBar(notification.message, this.RESPONSE_ERROR);
-  //     }
-  //   }
-  //   this.sentRequestEarlier = false;
-  // }
-
   handleOrderChange = (notification: NotificationDTO) => {
     if (notification.success) {
       if (this.sentRequestEarlier) {

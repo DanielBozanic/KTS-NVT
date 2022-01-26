@@ -150,6 +150,22 @@ export class WaiterTableComponent implements OnInit {
         }
     }
 
+    async deliverAll() {
+        const dialogRef = this.codeVerificationDialog.open(this.codeDialog);
+        await dialogRef.afterClosed().toPromise();
+
+        if (this.code && this.table.orderId) {
+            this.service.deliverAllItems(this.table.orderId, this.code).subscribe(response => {
+                this.openSnackBar("Successfully delivered items", this.RESPONSE_OK)
+                this.closeOrderView();
+                window.location.reload();
+            }, (error) => {
+                this.openSnackBar(error.error, this.RESPONSE_ERROR);
+            });
+            this.code = 0;
+        }
+    }
+
     redirectToOrderComponent() {
         this.router.navigate(['/waiterOrder'], { state: { data: this.table } });
     }

@@ -14,6 +14,7 @@ import {
   API_ADD_ITEM_TO_ORDER,
   API_DELETE_ORDER,
   API_GET_ORDER,
+  API_DELIVER_ITEMS_IN_ORDER
 } from 'src/modules/root/api-routes';
 import { Order } from 'src/modules/root/models/order';
 import { Table } from 'src/modules/root/models/table';
@@ -24,7 +25,7 @@ import { Zone } from 'src/modules/root/models/zone';
   providedIn: 'root',
 })
 export class WaiterTablesService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllZones(): Observable<Zone[]> {
     return this.http.get<Zone[]>(API_GET_ALL_ZONES);
@@ -62,17 +63,22 @@ export class WaiterTablesService {
 
   addItemToOrder(id: number, code: number, item: Item): Observable<Item> {
     return this.http.put<Observable<Item>>(API_ADD_ITEM_TO_ORDER + `${id}/${code}`, item)
-    .pipe(catchError(this.errorHander));
+      .pipe(catchError(this.errorHander));
   }
 
-  removeItemFromOrder(orderId: number, code: number, itemId: number): Observable<void>{
+  removeItemFromOrder(orderId: number, code: number, itemId: number): Observable<void> {
     return this.http.delete<Observable<void>>(API_REMOVE_ITEM_FROM_ORDER + `${orderId}/${itemId}/${code}`)
-    .pipe(catchError(this.errorHander));
+      .pipe(catchError(this.errorHander));
   }
 
-  deleteOrder(id: number, code: number): Observable<void>{
+  deleteOrder(id: number, code: number): Observable<void> {
     return this.http.delete<Observable<void>>(API_DELETE_ORDER + `${id}/${code}`)
-    .pipe(catchError(this.errorHander));
+      .pipe(catchError(this.errorHander));
+  }
+
+  deliverAllItems(id: number, code: number): Observable<void> {
+    return this.http.put<Observable<void>>(API_DELIVER_ITEMS_IN_ORDER + `${id}/${code}`, {})
+      .pipe(catchError(this.errorHander));
   }
 
   errorHander(error: HttpErrorResponse): Observable<any> {
