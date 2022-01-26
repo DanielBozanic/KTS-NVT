@@ -6,17 +6,8 @@
         <h4>Zone:</h4>
         <mat-form-field appearance="fill">
           <mat-label>Choose zone</mat-label>
-          <mat-select
-            id="zone-select"
-            #z
-            (selectionChange)="getTables(z.value)"
-            formControlName="zoneSelect"
-          >
-            <mat-option
-              id="{{ 'zone-select-' + zone.id }}"
-              *ngFor="let zone of zones"
-              [value]="zone.id"
-            >
+          <mat-select id="zone-select" #z (selectionChange)="getTables(z.value)" formControlName="zoneSelect">
+            <mat-option id="{{ 'zone-select-' + zone.id }}" *ngFor="let zone of zones" [value]="zone.id">
               {{ zone.name }}
             </mat-option>
           </mat-select>
@@ -26,24 +17,15 @@
   </mat-card>
 
   <mat-card *ngIf="tables.length !== 0" id="tableCard">
-    <div
-      class="tables"
-      id="tables"
-      style="
+    <div class="tables" id="tables" style="
         text-align: center;
         background-image: url('../../../../assets/floorPlan.jpg');
         background-size: 100% 100%;
         background-repeat: no-repeat;
-      "
-    >
+      ">
       <div class="inline" *ngFor="let table of tables">
-        <app-waiter-table
-          [table]="table"
-          [webSocketItemChange]="webSocketItemChange"
-          [webSocketOrders]="webSocketOrders"
-          (sentEarlier)="sentEarlier()"
-          (getTables)="getTables($event)"
-        >
+        <app-waiter-table class="table" [table]="table" [webSocketItemChange]="webSocketItemChange"
+          [webSocketOrders]="webSocketOrders" (sentEarlier)="sentEarlier()" (getTables)="getTables($event)">
         </app-waiter-table>
       </div>
     </div>

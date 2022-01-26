@@ -2,81 +2,46 @@
 <mat-card class="table-card">
   <div fxLayout="row">
     <div class="div-create-new-zone-and-add-table-buttons">
-      <button
-        id="create-new-zone-btn"
-        mat-raised-button
-        color="primary"
-        (click)="openCreateNewZoneDialog()"
-      >
+      <button id="create-new-zone-btn" mat-raised-button color="primary" (click)="openCreateNewZoneDialog()">
         Create New Zone
       </button>
-      <button
-        id="add-table-to-selected-zone-btn"
-        mat-raised-button
-        color="primary"
-        (click)="openAddTableDialog()"
-      >
+      <button id="add-table-to-selected-zone-btn" mat-raised-button color="primary" (click)="openAddTableDialog()">
         Add table to selected zone
       </button>
     </div>
   </div>
   <div class="div-zone-select">
     <mat-label>Select Zone:</mat-label>
-    <mat-select
-      id="zone-select"
-      [value]="selectedZone.id"
-      (selectionChange)="changeZone($event.value)"
-    >
-      <mat-option
-        *ngFor="let zone of zones"
-        id="{{ 'zone' + zone.id }}"
-        [value]="zone.id"
-      >
+    <mat-select id="zone-select" [value]="selectedZone.id" (selectionChange)="changeZone($event.value)">
+      <mat-option *ngFor="let zone of zones" id="{{ 'zone' + zone.id }}" [value]="zone.id">
         {{ zone.name }}
       </mat-option>
     </mat-select>
   </div>
   <div class="table-plan container" id="tables">
     <ng-container *ngFor="let table of tablesForZone">
-      <button
-        [id]="table.id"
-        cdkDrag
-        cdkDragBoundary=".container"
-        (cdkDragEnded)="dragEnd($event)"
-        (dblclick)="openEditTableDialog(table)"
-        matTooltip="Table: {{ table.tableNumber }}
+      <button [id]="table.id" cdkDrag cdkDragBoundary=".container" (cdkDragEnded)="dragEnd($event)"
+        (dblclick)="openEditTableDialog(table)" matTooltip="Table: {{ table.tableNumber }}
         Number of chairs: {{ table.numberOfChairs }}
-        State: {{ table.state }}"
-        class="table"
-        mat-raised-button
-        [ngStyle]="{
+        State: {{ table.state }}" class="table" mat-raised-button [ngStyle]="{
           backgroundColor: tableColor(table),
           'left.px': table.x,
           'top.px': table.y
-        }"
-      ></button>
+        }">{{table.tableNumber}}</button>
     </ng-container>
   </div>
 </mat-card>
 
 <ng-template #newZoneDialog>
-  <app-create-zone-dialog
-    (parentCreateNewZone)="createNewZone($event)"
-  ></app-create-zone-dialog>
+  <app-create-zone-dialog (parentCreateNewZone)="createNewZone($event)"></app-create-zone-dialog>
 </ng-template>
 
 <ng-template #addTableDialog>
-  <app-table-dialog
-    (addOrEditFunction)="addTableToSelectedZone($event)"
-    (deleteTableFunction)="removeTableFromZone()"
-    addOrEditButton="Add table"
-  ></app-table-dialog>
+  <app-table-dialog (addOrEditFunction)="addTableToSelectedZone($event)" (deleteTableFunction)="removeTableFromZone()"
+    addOrEditButton="Add table"></app-table-dialog>
 </ng-template>
 
 <ng-template #editTableDialog>
-  <app-table-dialog
-    (addOrEditFunction)="editNumberOfChairs($event)"
-    (deleteTableFunction)="removeTableFromZone()"
-    addOrEditButton="Save"
-  ></app-table-dialog>
+  <app-table-dialog (addOrEditFunction)="editNumberOfChairs($event)" (deleteTableFunction)="removeTableFromZone()"
+    addOrEditButton="Save"></app-table-dialog>
 </ng-template>

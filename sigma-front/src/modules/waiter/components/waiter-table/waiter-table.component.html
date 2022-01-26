@@ -3,9 +3,10 @@
     backgroundColor: tableColor(),
     'left.px': table.x,
     'top.px': table.y
-  }" (click)="tableClick()">
-  Table {{ table.tableNumber }} <br />
-  {{ table.state }}
+  }" matTooltip="Table: {{ table.tableNumber }}
+  Number of chairs: {{ table.numberOfChairs }}
+  State: {{ table.state }}" (click)="tableClick()">
+  {{table.tableNumber}}
 </button>
 
 <ng-template #freeTableDialog>
