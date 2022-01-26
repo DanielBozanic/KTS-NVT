@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, TemplateRef, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar, MatSnackBarVerticalPosition } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
@@ -14,7 +14,7 @@ import { WaiterTablesService } from "../../services/waiter-tables.service";
     templateUrl: './waiter-table.component.html',
     styleUrls: ['./waiter-table.component.scss'],
 })
-export class WaiterTableComponent implements OnInit {
+export class WaiterTableComponent implements OnInit, OnChanges {
     @Input() table: Table;
     @Input() webSocketItemChange: WebSocketAPI;
     @Input() webSocketOrders: WebSocketAPI;
@@ -54,6 +54,10 @@ export class WaiterTableComponent implements OnInit {
     @ViewChild('codeVerificationDialog') codeDialog!: TemplateRef<any>;
 
     ngOnInit(): void {
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        this.table = changes.table.currentValue;
     }
 
     checkCode(code: number): void {
@@ -129,16 +133,9 @@ export class WaiterTableComponent implements OnInit {
 
                                 const delivered = this.currentItems.filter(item => item.state === 'DONE').length;
                                 const noDelivery = this.currentItems.filter(item => item.state !== 'TO_DELIVER').length;
-                                if (delivered === this.currentItems.length) {
-                                    this.table.state = 'DONE';
-                                    this.getTables.emit(this.table.zoneId);
+                                this.getTables.emit(this.table.zoneId);
+                                if (delivered === this.currentItems.length || noDelivery === this.currentItems.length) {
                                     this.closeOrderView();
-                                    window.location.reload();
-                                } else if (noDelivery === this.currentItems.length) {
-                                    this.table.state = 'IN_PROGRESS';
-                                    this.getTables.emit(this.table.zoneId);
-                                    this.closeOrderView();
-                                    window.location.reload();
                                 }
 
                             });
@@ -156,9 +153,9 @@ export class WaiterTableComponent implements OnInit {
 
         if (this.code && this.table.orderId) {
             this.service.deliverAllItems(this.table.orderId, this.code).subscribe(response => {
+                this.getTables.emit(this.table.zoneId);
                 this.openSnackBar("Successfully delivered items", this.RESPONSE_OK)
                 this.closeOrderView();
-                window.location.reload();
             }, (error) => {
                 this.openSnackBar(error.error, this.RESPONSE_ERROR);
             });

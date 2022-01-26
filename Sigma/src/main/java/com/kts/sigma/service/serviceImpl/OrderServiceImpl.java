@@ -340,6 +340,13 @@ public class OrderServiceImpl implements OrderService{
 		
 		Set<ItemInOrder> items = order.getItems();
 		
+		int done = 0;
+		for (ItemInOrder item : items) {
+			if(item.getState() == ItemInOrderState.DONE) {
+				done++;
+			}
+		}
+		
 		for (ItemInOrder item : items) {
 			if(item.getId() == itemId) {
 				iioService.deleteById(itemId);
@@ -355,6 +362,12 @@ public class OrderServiceImpl implements OrderService{
 					order.setTable(table);
 					order.setState(OrderState.CHARGED);
 					order.setTotalPrice(BigDecimal.ZERO);
+				}else if(items.size() == done) {
+					RestaurantTable table = order.getTable();
+					table.setState(TableState.DONE);
+					tableRepo.save(table);
+					order.setTable(table);
+					order.setState(OrderState.DONE);
 				}
 				
 				orderRepository.save(order);
