@@ -15,6 +15,7 @@ import { PositiveNumberValidator } from '../../validators/positive-number-valida
 export class TableDialogComponent implements OnInit {
   @Input() addOrEditButton: string = '';
   @Output() addOrEditFunction: EventEmitter<any> = new EventEmitter();
+  @Output() deleteTableFunction: EventEmitter<any> = new EventEmitter();
 
   tableForm!: FormGroup;
 
@@ -32,6 +33,10 @@ export class TableDialogComponent implements OnInit {
 
   addOrEditFunctionDialog(): void {
     this.addOrEditFunction.emit(this.numberOfChairs?.value);
+  }
+
+  removeTable(): void {
+    this.deleteTableFunction.emit();
   }
 
   hasErrorTableForm = (controlName: string, errorName: string) => {

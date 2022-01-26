@@ -38,8 +38,6 @@ export const API_GET_ACTIVE_NON_EXPIRED_MENUS =
 export const API_GET_ZONE = API_BASE + '/zones/';
 export const API_GET_ALL_ZONES = API_BASE + '/zones/getAll';
 export const API_GET_TABLES_FOR_ZONE = API_BASE + '/zones/tables/';
-export const API_GET_TABLE_FOR_ZONE_BY_CURRENT_PAGE =
-  API_BASE + '/zones/getTablesByCurrentPage';
 export const API_GET_NUMBER_OF_TABLES_FOR_ZONE_RECORDS =
   API_BASE + '/zones/getNumberOfTablesForZoneRecords';
 export const API_UPDATE_NUMBER_OF_CHAIRS =
@@ -52,6 +50,8 @@ export const API_GET_DRINKS_FOR_ORDER = API_BASE + '/orders/drinks/';
 export const API_GET_FOODS_FOR_ORDER = API_BASE + '/orders/foods/';
 export const API_ADD_TABLE = API_BASE + '/tables/addTable';
 export const API_CHANGE_TABLE_STATE = API_BASE + '/tables/';
+export const API_UPDATE_TABLE_POSITION =
+  API_BASE + '/tables/updateTablePosition';
 export const API_CHANGE_ITEM_STATE = API_BASE + '/item-in-order/';
 export const API_GET_ORDER = API_BASE + '/orders/';
 export const API_GET_ITEM_IN_ORDER = API_BASE + '/item-in-order/';

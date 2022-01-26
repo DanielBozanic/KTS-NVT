@@ -11,9 +11,12 @@ import com.kts.sigma.Exception.ItemNotFoundException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.TableDTO;
 import com.kts.sigma.model.Employee;
+import com.kts.sigma.model.OrderState;
+import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.repository.EmployeeRepository;
+import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.TableRepository;
 import com.kts.sigma.service.TableService;
 
@@ -25,6 +28,9 @@ public class TableServiceImpl implements TableService {
 	
 	@Autowired
 	private EmployeeRepository emRepo;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	
 	@Override
 	public Iterable<TableDTO> getAll() {
@@ -92,5 +98,32 @@ public class TableServiceImpl implements TableService {
 		
 		table.setState(state);
 		tableRepository.save(table);
+	}
+
+	@Override
+	public TableDTO updateTablePosition(TableDTO tableDto) {
+		RestaurantTable table = tableRepository.findById(tableDto.getId()).orElse(null);
+		if (table == null) {
+			throw new ItemNotFoundException(tableDto.getId(), "table");
+		}
+		
+		table.setX(tableDto.getX());
+		table.setY(tableDto.getY());
+		
+		table = tableRepository.save(table);
+		TableDTO resultDto = Mapper.mapper.map(table, TableDTO.class);
+		
+		if(table.getState().equals(TableState.IN_PROGRESS) || table.getState().equals(TableState.TO_DELIVER)
+				|| table.getState().equals(TableState.DONE)) {
+			List<RestaurantOrder> orders = orderRepository.findByTableId(table.getId());
+			
+			for (RestaurantOrder order : orders) {
+				if(!order.getState().equals(OrderState.CHARGED)) {
+					resultDto.setOrderId(order.getId());
+					break;
+				}
+			}
+		}
+		return resultDto;
 	}
 }

@@ -32,4 +32,14 @@
   >
     {{ addOrEditButton }}
   </button>
+  <ng-container *ngIf="addOrEditButton === 'Save'">
+    <button
+      style="margin-left: 10px"
+      (click)="removeTable()"
+      mat-raised-button
+      color="warn"
+    >
+      Remove
+    </button>
+  </ng-container>
 </form>

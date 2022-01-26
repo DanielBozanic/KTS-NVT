@@ -1,11 +1,9 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import {
   MatSnackBar,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
 import { Table } from 'src/modules/root/models/table';
 import { Zone } from 'src/modules/root/models/zone';
 import { ZoneManagerService } from '../../services/zone-manager.service';
@@ -16,14 +14,8 @@ import { ZoneManagerService } from '../../services/zone-manager.service';
   styleUrls: ['./zones-manager.component.scss'],
 })
 export class ZonesManagerComponent implements OnInit {
-  displayedColumnsTablesForZone: string[];
   zones: Array<Zone>;
-  currentPage: number;
-  pageSize: number;
-  totalRows: number;
   tablesForZone: Array<Table>;
-  tablesForZoneDataSource: MatTableDataSource<Table>;
-  isLoading: boolean;
   selectedZone: Zone;
   selectedTable: Table;
   RESPONSE_OK: number;
@@ -37,16 +29,8 @@ export class ZonesManagerComponent implements OnInit {
     private addTableToSelectedZoneDialog: MatDialog,
     private editTableSelectedZoneDialog: MatDialog
   ) {
-    this.currentPage = 0;
-    this.pageSize = 10;
-    this.totalRows = 0;
     this.zones = [];
     this.tablesForZone = [];
-    this.displayedColumnsTablesForZone = ['numberOfChairs', 'edit', 'remove'];
-    this.tablesForZoneDataSource = new MatTableDataSource<Table>(
-      this.tablesForZone
-    );
-    this.isLoading = false;
     this.selectedZone = new Zone();
     this.selectedTable = new Table();
     this.RESPONSE_OK = 0;
@@ -57,13 +41,6 @@ export class ZonesManagerComponent implements OnInit {
   ngOnInit(): void {
     this.getZones();
   }
-
-  ngAfterViewInit(): void {
-    this.tablesForZoneDataSource.paginator = this.paginatorTablesInZone;
-  }
-
-  @ViewChild(MatPaginator)
-  paginatorTablesInZone!: MatPaginator;
 
   @ViewChild('newZoneDialog') newZoneDialog!: TemplateRef<any>;
 
@@ -76,55 +53,23 @@ export class ZonesManagerComponent implements OnInit {
       this.zones = data;
       if (data.length !== 0) {
         this.selectedZone = data[0];
-        this.getNumberOfTablesForZoneRecords(data[0].id);
-        this.getTablesForZoneByCurrentPage(data[0].id, false);
+        this.getTablesForZone(data[0].id);
       } else {
         this.selectedZone = new Zone();
-        this.currentPage = 0;
-        this.totalRows = 0;
-        this.tablesForZoneDataSource.data = [];
       }
     });
   }
 
-  getNumberOfTablesForZoneRecords(zoneId: number): void {
-    this.zonesManagerService
-      .getNumberOfTablesForZoneRecords(zoneId)
-      .subscribe((data) => {
-        this.totalRows = data;
-      });
-  }
-
-  getTablesForZoneByCurrentPage(zoneId: number, deleting: boolean): void {
-    this.isLoading = true;
-    this.zonesManagerService
-      .getTablesForZoneByCurrentPage(zoneId, this.currentPage, this.pageSize)
-      .subscribe((data) => {
-        const tablesForZone = data;
-        this.tablesForZone = tablesForZone;
-        this.tablesForZoneDataSource.data = tablesForZone;
-        setTimeout(() => {
-          if (tablesForZone.length === 0 && deleting) {
-            if (this.currentPage !== 0) {
-              const setPrev = this.currentPage - 1;
-              this.currentPage = setPrev;
-              this.paginatorTablesInZone.pageIndex = setPrev;
-            }
-            this.getTablesForZoneByCurrentPage(zoneId, false);
-          } else {
-            this.paginatorTablesInZone.pageIndex = this.currentPage;
-          }
-          this.paginatorTablesInZone.length = this.totalRows;
-        });
-        this.isLoading = false;
-      });
+  getTablesForZone(zoneId: number): void {
+    this.zonesManagerService.getTablesForZone(zoneId).subscribe((data) => {
+      const tablesForZone = data;
+      this.tablesForZone = tablesForZone;
+    });
   }
 
   changeZone(zoneId: number): void {
     this.selectedZone = this.zones.filter((z) => z.id === zoneId)[0];
-    this.currentPage = 0;
-    this.getNumberOfTablesForZoneRecords(zoneId);
-    this.getTablesForZoneByCurrentPage(zoneId, false);
+    this.getTablesForZone(zoneId);
   }
 
   openCreateNewZoneDialog(): void {
@@ -157,12 +102,13 @@ export class ZonesManagerComponent implements OnInit {
     let table = new Table();
     table['numberOfChairs'] = numberOfChairs;
     table['zoneId'] = this.selectedZone.id;
+    table.x = 0;
+    table.y = 0;
     this.zonesManagerService.addTable(table).subscribe(
       (resp) => {
         console.log(resp);
         this.addTableToSelectedZoneDialog.closeAll();
-        this.getNumberOfTablesForZoneRecords(this.selectedZone.id);
-        this.getTablesForZoneByCurrentPage(this.selectedZone.id, false);
+        this.getTablesForZone(this.selectedZone.id);
       },
       (err) => {
         this.openSnackBar(err.error, this.RESPONSE_ERROR);
@@ -177,7 +123,7 @@ export class ZonesManagerComponent implements OnInit {
       (resp) => {
         console.log(resp);
         this.editTableSelectedZoneDialog.closeAll();
-        this.getTablesForZoneByCurrentPage(this.selectedZone.id, false);
+        this.getTablesForZone(this.selectedZone.id);
       },
       (err) => {
         this.openSnackBar(err.error, this.RESPONSE_ERROR);
@@ -185,11 +131,12 @@ export class ZonesManagerComponent implements OnInit {
     );
   }
 
-  removeTableFromZone(table: Table): void {
+  removeTableFromZone(): void {
+    let table = this.selectedTable;
     this.zonesManagerService.removeTableFromZone(table).subscribe(
       () => {
-        this.getNumberOfTablesForZoneRecords(this.selectedZone.id);
-        this.getTablesForZoneByCurrentPage(this.selectedZone.id, true);
+        this.editTableSelectedZoneDialog.closeAll();
+        this.getTablesForZone(this.selectedZone.id);
       },
       (err) => {
         this.openSnackBar(err.error, this.RESPONSE_ERROR);
@@ -197,10 +144,48 @@ export class ZonesManagerComponent implements OnInit {
     );
   }
 
-  pageChanged(event: PageEvent): void {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.pageIndex;
-    this.getTablesForZoneByCurrentPage(this.selectedZone.id, false);
+  tableColor(table: Table): string {
+    if (table.state === 'RESERVED') {
+      return 'lightgray';
+    } else if (table.state === 'IN_PROGRESS') {
+      return 'orange';
+    } else if (table.state === 'TO_DELIVER') {
+      return 'red';
+    } else if (table.state === 'FREE') {
+      return 'green';
+    } else {
+      return 'blue';
+    }
+  }
+
+  dragEnd(event: any): void {
+    let element = event.source.getRootElement();
+    let boundingClientRect = element.getBoundingClientRect();
+    let parentPosition = this.getPosition(element);
+    this.tablesForZone.forEach((table) => {
+      if (table.id == element.id) {
+        table.x = table.x + boundingClientRect.x - parentPosition.left;
+        table.y = table.y + boundingClientRect.y - parentPosition.top;
+        this.zonesManagerService
+          .updateTablePosition(table)
+          .subscribe((data) => {
+            console.log(data);
+            this.getTablesForZone(this.selectedZone.id);
+          });
+      }
+    });
+    event.source._dragRef.reset();
+  }
+
+  getPosition(el: any) {
+    let x = 0;
+    let y = 0;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      x += el.offsetLeft - el.scrollLeft;
+      y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: y, left: x };
   }
 
   openSnackBar(msg: string, responseCode: number) {

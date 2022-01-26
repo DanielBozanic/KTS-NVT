@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kts.sigma.service.ZoneService;
@@ -35,18 +34,7 @@ public class ZoneController {
 	public List<TableDTO> getTables(@PathVariable Integer id){
 		return zoneService.getTables(id);
 	}
-	
-	@GetMapping(value = "/getTablesByCurrentPage/{zoneId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<TableDTO>> getTablesByCurrentPage(@PathVariable Integer zoneId, 
-			@RequestParam("currentPage") Integer currentPage, @RequestParam("pageSize") Integer pageSize) {
-		return new ResponseEntity<>(zoneService.getTablesByCurrentPage(zoneId, currentPage, pageSize), HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "/getNumberOfTablesForZoneRecords/{zoneId}")
-	public ResponseEntity<Integer> getNumberOfTablesForZoneRecords(@PathVariable Integer zoneId) {
-		return new ResponseEntity<>(zoneService.getNumberOfTablesForZoneRecords(zoneId), HttpStatus.OK);
-	}
-	
+
 	@GetMapping("/{id}")
 	public ZoneDTO getOne(@PathVariable Integer id) {
 		return zoneService.findById(id);
