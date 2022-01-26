@@ -32,18 +32,20 @@ export class ReportsComponent implements OnInit {
 
   onSubmit(): void {
     const { startDate, endDate } = this.form.value;
-    this.reportManagerService
-      .postReportQuery({
-        startMonth: startDate,
-        endMonth: endDate,
-        salesPerMonth: [],
-        expensesPerMonth: [],
-      })
-      .subscribe((data) => {
-        const report = data;
-        this.setBarChartLabels(report.startMonth, report.endMonth);
-        this.setBarChartData(report.salesPerMonth, report.expensesPerMonth);
-      });
+    if (startDate != '' && endDate != '') {
+      this.reportManagerService
+        .postReportQuery({
+          startMonth: startDate,
+          endMonth: endDate,
+          salesPerMonth: [],
+          expensesPerMonth: [],
+        })
+        .subscribe((data) => {
+          const report = data;
+          this.setBarChartLabels(report.startMonth, report.endMonth);
+          this.setBarChartData(report.salesPerMonth, report.expensesPerMonth);
+        });
+    }
   }
 
   setBarChartLabels(date1: Date, date2: Date): void {
