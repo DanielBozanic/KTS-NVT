@@ -27,7 +27,4 @@ public interface TableRepository extends JpaRepository<RestaurantTable, Integer>
 	
 	@Query("select max(rt.tableNumber) from RestaurantTable rt")
 	Integer findMaxTableNumber();
-	
-	@Query("select count(rt) from RestaurantTable rt where rt.zone.id = ?1")
-	Integer getNumberOfTablesForZoneRecords(Integer zoneId);
 }

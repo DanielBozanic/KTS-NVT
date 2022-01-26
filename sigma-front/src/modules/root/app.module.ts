@@ -37,6 +37,7 @@ import { ItemSearchformComponent } from '../waiter/components/item-searchform/it
 import { ItemAdditionComponent } from '../waiter/components/item-addition/item-addition.component';
 import { WaiterTableComponent } from '../waiter/components/waiter-table/waiter-table.component';
 import { RoleGuardService } from '../authentication/guard-url';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -120,6 +121,7 @@ const customNotifierOptions: NotifierOptions = {
     FlexLayoutModule,
     NotifierModule.withConfig(customNotifierOptions),
     ChartsModule,
+    DragDropModule,
   ],
   providers: [HeaderComponent, RoleGuardService],
   bootstrap: [AppComponent],

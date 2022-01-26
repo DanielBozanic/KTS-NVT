@@ -13,4 +13,6 @@ public interface TableService {
 	public void deleteById(Integer id);
 	
 	public void changeState(Integer id, TableState state, Integer code);
+	
+	public TableDTO updateTablePosition(TableDTO tableDto);
 }
