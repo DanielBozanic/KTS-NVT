@@ -22,6 +22,8 @@ public class E2EConstants {
 
 	public static final String LOGIN_URL = FRONTEND_URL + "login";
 	
+	public static final String ZONES_URL = FRONTEND_URL + "zones";
+	
 	
 	// Backend Error Messages
 	public static final String INVALID_CODE_ERROR = "Access Forbidden, Invalid Code";
@@ -34,4 +36,6 @@ public class E2EConstants {
 	public static String getDateNotValidOrder(String startDate, String expirationDate) {
 		return "The given start date " + startDate + " can't be after the given end date " + expirationDate;
 	}
+	
+	public static final String ZONE_NAME_EXISTS_ERROR = "Zone with this name already exists!";
 }
