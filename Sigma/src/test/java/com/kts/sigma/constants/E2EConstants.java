@@ -21,7 +21,8 @@ public class E2EConstants {
 	public static final String ADMIN_PROFILE_URL = FRONTEND_URL + "profile";
 
 	public static final String LOGIN_URL = FRONTEND_URL + "login";
-	
+
+	public static final String REPORTS_URL = FRONTEND_URL + "reports";
 	
 	// Backend Error Messages
 	public static final String INVALID_CODE_ERROR = "Access Forbidden, Invalid Code";
