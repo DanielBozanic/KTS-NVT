@@ -22,7 +22,7 @@ public class RestaurantTable {
 	
     private Integer numberOfChairs;
     
-    private Integer tableNumber;
+    private Integer tableNumber, x, y;
     
     private TableState state;
    
@@ -65,8 +65,23 @@ public class RestaurantTable {
 		this.state = state;
 	}
 	
-	
-	 public Zone getZone() { return zone; }
+	 public Integer getX() {
+		return x;
+	}
+
+	public void setX(Integer x) {
+		this.x = x;
+	}
+
+	public Integer getY() {
+		return y;
+	}
+
+	public void setY(Integer y) {
+		this.y = y;
+	}
+
+	public Zone getZone() { return zone; }
 	  
 	 public void setZone(Zone zone) { this.zone = zone; }
 

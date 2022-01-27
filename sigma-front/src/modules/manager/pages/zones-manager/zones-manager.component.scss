@@ -8,15 +8,9 @@ $background-color-light-blue: #deede6;
 .table-card {
   @extend %center-content;
   margin-top: 20px;
-  max-width: 700px;
-  max-height: 700px;
+  width: 1500px;
+  height: 870px;
   background-color: $background-color-light-blue;
-}
-
-th.mat-header-cell {
-  font-size: 13px;
-  font-weight: bold;
-  color: black;
 }
 
 .div-zone-select {
@@ -34,50 +28,6 @@ th.mat-header-cell {
   }
 }
 
-.data-table {
-  display: block;
-  width: 100%;
-  overflow-x: auto;
-}
-
-.mat-table {
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 1rem;
-  display: table;
-  border-collapse: collapse;
-  margin: 0px;
-
-  .column-number-of-chairs {
-    width: 20%;
-  }
-
-  .column-edit-button {
-    width: 10%;
-  }
-
-  .column-remove-button {
-    width: 10%;
-  }
-}
-
-.mat-row,
-.mat-header-row {
-  display: table-row;
-}
-
-.mat-cell,
-.mat-header-cell {
-  word-wrap: initial;
-  display: table-cell;
-  padding: 0px 5px;
-  line-break: unset;
-  width: auto;
-  white-space: nowrap;
-  overflow: hidden;
-  vertical-align: middle;
-}
-
 .form {
   min-width: 500px;
   width: 100%;
@@ -85,4 +35,43 @@ th.mat-header-cell {
   .field-width {
     width: 100%;
   }
+}
+
+.table {
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.table-plan {
+  margin-top: 20px;
+  border-style: groove;
+  text-align: center;
+  background-image: url("../../../../assets/floorPlan.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.container {
+  height: 650px;
+  max-width: 1500px;
+  position: relative;
+}
+
+::ng-deep .mat-tooltip {
+  font-size: 20px;
+  white-space: pre-line !important;
 }

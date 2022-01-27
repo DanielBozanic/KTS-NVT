@@ -119,6 +119,11 @@ public class OrderController {
 	  orderService.changeState(state, code, orderId);
 	}
 	
+	@PutMapping("/deliverAll/{orderId}/{code}")
+	void deliverAllItems(@PathVariable Integer code, @PathVariable Integer orderId) {
+	  orderService.deliverAllItems(code, orderId);
+	}
+	
 	@MessageMapping({"/order-change/{orderId}/{state}"})
 	@SendTo("/restaurant/order")
 	public NotificationDTO changeOrderWithoutCodeNotification(@DestinationVariable OrderState state, @DestinationVariable Integer orderId) {

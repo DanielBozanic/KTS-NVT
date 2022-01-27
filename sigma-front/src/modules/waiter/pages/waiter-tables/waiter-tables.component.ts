@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
@@ -33,6 +33,7 @@ export class WaiterTablesComponent implements OnInit {
     public webSocketOrders: WebSocketAPI,
     private notifier: NotifierService,
     private globals: Globals,
+    private changeDetector: ChangeDetectorRef,
   ) {
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
@@ -72,29 +73,13 @@ export class WaiterTablesComponent implements OnInit {
     this.service.getTablesForZone(id).subscribe((data) => {
       this.tables = data;
       this.zoneId = id;
+      this.changeDetector.detectChanges();
     });
   }
 
   sentEarlier(): void {
     this.sentRequestEarlier = true;
   }
-
-  // handleItemChange = (notification: NotificationDTO) => {
-  //   if (notification.success) {
-  //     if (this.sentRequestEarlier) {
-  //       this.openSnackBar(notification.message, this.RESPONSE_OK);
-  //     } else {
-  //       this.notifier.notify('info', notification.message);
-  //       this.globals.waiterNotifications++;
-  //     }
-  //     this.getTables(this.zoneId);
-  //   } else {
-  //     if (this.sentRequestEarlier) {
-  //       this.openSnackBar(notification.message, this.RESPONSE_ERROR);
-  //     }
-  //   }
-  //   this.sentRequestEarlier = false;
-  // }
 
   handleOrderChange = (notification: NotificationDTO) => {
     if (notification.success) {

@@ -20,6 +20,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatExpansionModule,
     MatBadgeModule,
     MatNativeDateModule,
+    MatTooltipModule,
   ],
   exports: [
     MatButtonModule,
@@ -67,6 +69,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatExpansionModule,
     MatBadgeModule,
     MatNativeDateModule,
+    MatTooltipModule,
   ],
 })
 export class AngularMaterialModule {}

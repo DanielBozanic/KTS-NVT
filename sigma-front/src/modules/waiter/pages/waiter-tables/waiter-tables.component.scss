@@ -5,75 +5,72 @@ $background-color-light-blue: #deede6;
   margin-right: auto !important;
 }
 
-mat-card{
+.table-card {
+  @extend %center-content;
+  margin-top: 20px;
+  width: 1500px;
+  height: 870px;
+  background-color: $background-color-light-blue;
+}
+
+mat-card {
   margin: 1em;
 }
 
-.dropdown-zones{
-  margin: 3em;
+.dropdown-zones {
+  margin-bottom: 39px;
 }
 
-button{
+button {
   margin: 1em;
 }
 
-.table-items{
+.table-items {
   height: 75%;
   width: 85%;
   margin: 5px;
 }
 
-.table-item{
+.table-item {
   display: block;
   height: 3em;
   width: 100%;
   margin: 4px;
 }
 
-.item-button{
+.item-button {
   float: right;
 }
 
-.inline{
+.inline {
   display: inline;
 }
 
-.block{
+.block {
   display: block;
 }
 
-.action-buttons{
+.action-buttons {
   margin-left: 20px;
   margin-right: 20px;
 }
 
-.table{
-  border-radius: 100%;
-  width: auto;
-}
-
-.tables{
+.table-plan {
+  margin-top: 20px;
   border-style: groove;
+  text-align: center;
+  background-image: url("../../../../assets/floorPlan.jpg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
-.table-card {
-  @extend %center-content;
-  max-width: 700px;
-  background-color: $background-color-light-blue;
+.container {
+  height: 650px;
+  max-width: 1500px;
+  position: relative;
 }
 
-table {
-  width: 100%;
-
-  .column-name {
-    width: 45%;
-  }
-
-  .column-selling-price {
-    width: 30%;
-  }
-
-  .column-remove-button {
-    width: 25%;
-  }
+.div-zone-select {
+  margin-top: 20px;
+  font-weight: bold;
 }

@@ -256,7 +256,7 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 		if(state == ItemInOrderState.TO_DELIVER) {
 			boolean allAreDone = true;
 			for (ItemInOrder i : item.getOrder().items) {
-				if(i.getState() == ItemInOrderState.IN_PROGRESS && i.getId() != id)
+				if((i.getState() == ItemInOrderState.IN_PROGRESS || i.getState() == ItemInOrderState.NEW) && i.getId() != id)
 				{
 					allAreDone = false;
 				}
@@ -266,19 +266,24 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 			{
 				item.getOrder().setState(OrderState.DONE);
 				oRepository.save(item.getOrder());
-				
-				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
-				if(table != null && table.getState().equals(TableState.IN_PROGRESS)) {
-					table.setState(TableState.TO_DELIVER);
-					tablesRepo.save(table);
-				}
 			}
+			
+			RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
+			if(table != null && table.getState().equals(TableState.IN_PROGRESS)) {
+				table.setState(TableState.TO_DELIVER);
+				tablesRepo.save(table);
+			}
+			
 		}else if(state == ItemInOrderState.DONE) {
 			boolean allAreDone = true;
+			boolean noDelivery = true;
 			for (ItemInOrder i : item.getOrder().items) {
 				if(i.getState() != ItemInOrderState.DONE && i.getId() != id)
 				{
 					allAreDone = false;
+				}
+				if(i.getState() == ItemInOrderState.TO_DELIVER && i.getId() != id) {
+					noDelivery = false;
 				}
 			}
 			
@@ -290,6 +295,12 @@ public class ItemInOrderServiceImpl implements ItemInOrderService{
 				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
 				if(table != null) {
 					table.setState(TableState.DONE);
+					tablesRepo.save(table);
+				}
+			}else if(noDelivery) {
+				RestaurantTable table = tablesRepo.findById(item.getOrder().getTable().getId()).orElse(null);
+				if(table != null) {
+					table.setState(TableState.IN_PROGRESS);
 					tablesRepo.save(table);
 				}
 			}

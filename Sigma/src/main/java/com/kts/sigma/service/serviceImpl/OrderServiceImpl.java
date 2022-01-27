@@ -340,6 +340,13 @@ public class OrderServiceImpl implements OrderService{
 		
 		Set<ItemInOrder> items = order.getItems();
 		
+		int done = 0;
+		for (ItemInOrder item : items) {
+			if(item.getState() == ItemInOrderState.DONE) {
+				done++;
+			}
+		}
+		
 		for (ItemInOrder item : items) {
 			if(item.getId() == itemId) {
 				iioService.deleteById(itemId);
@@ -355,6 +362,12 @@ public class OrderServiceImpl implements OrderService{
 					order.setTable(table);
 					order.setState(OrderState.CHARGED);
 					order.setTotalPrice(BigDecimal.ZERO);
+				}else if(items.size() == done) {
+					RestaurantTable table = order.getTable();
+					table.setState(TableState.DONE);
+					tableRepo.save(table);
+					order.setTable(table);
+					order.setState(OrderState.DONE);
 				}
 				
 				orderRepository.save(order);
@@ -395,5 +408,42 @@ public class OrderServiceImpl implements OrderService{
 		order.setState(state);
 		orderRepository.save(order);
 		
+	}
+
+	@Override
+	public void deliverAllItems(Integer code, Integer orderId) {
+		RestaurantOrder order = orderRepository.findById(orderId).orElse(null);
+		if(order == null)
+		{
+			throw new ItemNotFoundException(orderId, "order");
+		}
+		
+		Employee worker = empRep.findByCode(code);
+		if(worker == null && !(worker instanceof Waiter) || worker.getId() != order.getWaiter().getId())
+		{
+			throw new AccessForbiddenException();
+		}
+		
+		int counter = 0;
+		for (ItemInOrder item : order.getItems()) {
+			if(item.getState() == ItemInOrderState.TO_DELIVER) {
+				item.setState(ItemInOrderState.DONE);
+				iioRepo.save(item);
+				counter++;
+			}else if(item.getState() == ItemInOrderState.DONE) {
+				counter++;
+			}
+		}
+		
+		RestaurantTable table = order.getTable();
+		if(counter == order.getItems().size()) {
+			order.setState(OrderState.DONE);
+			table.setState(TableState.DONE);
+		}else {
+			order.setState(OrderState.IN_PROGRESS);
+			table.setState(TableState.IN_PROGRESS);
+		}
+		orderRepository.save(order);
+		tableRepo.save(table);
 	}
 }

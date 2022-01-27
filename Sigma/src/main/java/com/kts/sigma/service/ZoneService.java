@@ -19,8 +19,4 @@ public interface ZoneService {
 	void removeTableFromZone(TableDTO tableDto);
 	
 	List<TableDTO> getTables(Integer id);
-	
-	List<TableDTO> getTablesByCurrentPage(Integer zoneId, Integer currentPage, Integer pageSize);
-	
-	Integer getNumberOfTablesForZoneRecords(Integer zoneId);
 }

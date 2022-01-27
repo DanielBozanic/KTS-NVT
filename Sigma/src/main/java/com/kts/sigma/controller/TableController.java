@@ -42,6 +42,11 @@ public class TableController {
 		tableService.changeState(id, state, code);
 	}
 	
+	@PutMapping(value = "/updateTablePosition", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<TableDTO> updateTablePosition(@RequestBody TableDTO tableDto) {
+		return new ResponseEntity<>(tableService.updateTablePosition(tableDto), HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Integer id) {
 		tableService.deleteById(id);

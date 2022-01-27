@@ -5,71 +5,95 @@ $background-color-light-blue: #deede6;
   margin-right: auto !important;
 }
 
-mat-card{
-    margin: 1em;
-  }
-  
-  button{
-    margin: 1em;
+mat-card {
+  margin: 1em;
+}
+
+button {
+  margin: 1em;
+}
+
+.table-items {
+  height: 75%;
+  width: 85%;
+  margin: 5px;
+}
+
+.table-item {
+  display: block;
+  height: 3em;
+  width: 100%;
+  margin: 4px;
+}
+
+.item-button {
+  float: right;
+}
+
+.inline {
+  display: inline;
+}
+
+.block {
+  display: block;
+}
+
+.action-buttons {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.table {
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.tables {
+  border-style: groove;
+}
+
+.table-card {
+  @extend %center-content;
+  max-width: 700px;
+  background-color: $background-color-light-blue;
+}
+
+app-waiter-table {
+  position: absolute;
+  z-index: 10;
+}
+
+table {
+  width: 100%;
+
+  .column-name {
+    width: 45%;
   }
 
-.table-items{
-    height: 75%;
-    width: 85%;
-    margin: 5px;
+  .column-selling-price {
+    width: 30%;
   }
-  
-  .table-item{
-    display: block;
-    height: 3em;
-    width: 100%;
-    margin: 4px;
+
+  .column-remove-button {
+    width: 25%;
   }
-  
-  .item-button{
-    float: right;
-  }
-  
-  .inline{
-    display: inline;
-  }
-  
-  .block{
-    display: block;
-  }
-  
-  .action-buttons{
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  
-  .table{
-    border-radius: 100%;
-    width: auto;
-  }
-  
-  .tables{
-    border-style: groove;
-  }
-  
-  .table-card {
-    @extend %center-content;
-    max-width: 700px;
-    background-color: $background-color-light-blue;
-  }
-  
-  table {
-    width: 100%;
-  
-    .column-name {
-      width: 45%;
-    }
-  
-    .column-selling-price {
-      width: 30%;
-    }
-  
-    .column-remove-button {
-      width: 25%;
-    }
-  }
+}
+
+::ng-deep .mat-tooltip {
+  font-size: 20px;
+  white-space: pre-line !important;
+}

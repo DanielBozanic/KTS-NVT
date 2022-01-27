@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.kts.sigma.Exception.ItemExistsException;
@@ -128,38 +126,5 @@ public class ZoneServiceImpl implements ZoneService{
 		}
 		
 		return tables;
-	}
-	
-	@Override
-	public List<TableDTO> getTablesByCurrentPage(Integer zoneId, Integer currentPage, Integer pageSize) {
-		Pageable page = PageRequest.of(currentPage, pageSize);
-		List<RestaurantTable> zoneTables = tableRepository.findByZoneIdAndCurrentPage(zoneId, page).toList();
-		
-		List<TableDTO> tables = new ArrayList<>();
-		
-		for (RestaurantTable table : zoneTables) {
-			TableDTO dto = Mapper.mapper.map(table, TableDTO.class);
-			
-			if(table.getState().equals(TableState.IN_PROGRESS) || table.getState().equals(TableState.TO_DELIVER)
-					|| table.getState().equals(TableState.DONE)) {
-				List<RestaurantOrder> orders = orderRepository.findByTableId(table.getId());
-				
-				for (RestaurantOrder order : orders) {
-					if(!order.getState().equals(OrderState.CHARGED)) {
-						dto.setOrderId(order.getId());
-						break;
-					}
-				}
-			}
-			
-			tables.add(dto);
-		}
-		
-		return tables;
-	}
-	
-	@Override
-	public Integer getNumberOfTablesForZoneRecords(Integer zoneId) {
-		return tableRepository.getNumberOfTablesForZoneRecords(zoneId);
 	}
 }

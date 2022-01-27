@@ -17,6 +17,10 @@ public class TableDTO {
     private Integer orderId;
     
     private TableState state;
+    
+    private Integer x;
+    
+    private Integer y;
 
 	public Integer getZoneId() {
 		return zoneId;
@@ -64,6 +68,22 @@ public class TableDTO {
 
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
+	}
+
+	public Integer getX() {
+		return x;
+	}
+
+	public void setX(Integer x) {
+		this.x = x;
+	}
+
+	public Integer getY() {
+		return y;
+	}
+
+	public void setY(Integer y) {
+		this.y = y;
 	}
 	
 }
