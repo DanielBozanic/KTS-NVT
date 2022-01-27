@@ -36,6 +36,7 @@ import { TableItemsDialogComponent } from '../waiter/components/table-items-dial
 import { ItemSearchformComponent } from '../waiter/components/item-searchform/item-searchform.component';
 import { ItemAdditionComponent } from '../waiter/components/item-addition/item-addition.component';
 import { WaiterTableComponent } from '../waiter/components/waiter-table/waiter-table.component';
+import { RoleGuardService } from '../authentication/guard-url';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -124,4 +125,4 @@ const customNotifierOptions: NotifierOptions = {
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}
