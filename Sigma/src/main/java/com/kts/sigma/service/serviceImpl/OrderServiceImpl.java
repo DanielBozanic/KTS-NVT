@@ -17,8 +17,6 @@ import com.kts.sigma.Exception.ItemNotValidException;
 import com.kts.sigma.Utility.Mapper;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
-import com.kts.sigma.model.Bartender;
-import com.kts.sigma.model.Cook;
 import com.kts.sigma.model.Drink;
 import com.kts.sigma.model.Employee;
 import com.kts.sigma.model.Food;
@@ -33,7 +31,6 @@ import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.repository.OrderRepository;
 import com.kts.sigma.repository.TableRepository;
-import com.kts.sigma.repository.UserRepository;
 import com.kts.sigma.service.ItemInOrderService;
 import com.kts.sigma.service.ItemService;
 import com.kts.sigma.service.OrderService;
@@ -106,6 +103,7 @@ public class OrderServiceImpl implements OrderService{
 	}
 	
 	@Override
+	@Transactional
 	public RestaurantOrder save(OrderDTO item, Integer code) {
 		
 		if(item.getTableId() == null) {
@@ -304,10 +302,13 @@ public class OrderServiceImpl implements OrderService{
 		
 		BigDecimal price = BigDecimal.ZERO;
 		
+		int id = -1;
+		
 		for(int i = 0; i < item.getQuantity(); i++) {
 			item.setOrderId(order.getId());
 			item.setState(ItemInOrderState.NEW);
 			ItemInOrder iio = iioService.saveWithoutCode(item);
+			id = iio.getId();
 			price = price.add(item.getSellingPrice());
 			
 			if(iio.getItem().getItem() instanceof Food) {
@@ -316,6 +317,8 @@ public class OrderServiceImpl implements OrderService{
 				item.setFood(false);
 			}
 		}
+		
+		item.setId(id);
 		
 		order.setTotalPrice(order.getTotalPrice().add(price));
 		orderRepository.save(order);

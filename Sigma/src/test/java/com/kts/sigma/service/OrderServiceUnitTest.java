@@ -326,6 +326,7 @@ public class OrderServiceUnitTest {
 		order.setWaiter(waiter);
 		
 		ItemInOrder iio = new ItemInOrder();
+		iio.setId(1);
 		iio.setItem(iim2);
 		iio.setOrder(order);
 		

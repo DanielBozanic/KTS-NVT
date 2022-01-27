@@ -34,6 +34,7 @@ import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.ItemInOrderState;
 import com.kts.sigma.model.Menu;
 import com.kts.sigma.model.RestaurantOrder;
+import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.User;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInMenuRepository;
@@ -314,8 +315,19 @@ public class ItemInOrderServiceUnitTest {
 		ItemInMenu menuItem = new ItemInMenu();
 		menuItem.item = new Food();
 		item.setItem(menuItem);
+		menuItem.item.setName("Pizza");
+		
+		RestaurantTable t = new RestaurantTable();
+		t.setTableNumber(6);
+		RestaurantOrder o = new RestaurantOrder();
+		o.setTable(t);
+		o.setId(2);
+		
+		ItemInOrder iio = new ItemInOrder();
+		iio.setItem(menuItem);
+		iio.setOrder(o);
 		given(itemInOrderRepositoryMock.findById(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1)).willReturn(Optional.of(item));
-		given(itemInOrderRepositoryMock.save(any(ItemInOrder.class))).willReturn(new ItemInOrder());
+		given(itemInOrderRepositoryMock.save(any(ItemInOrder.class))).willReturn(iio);
 		
 		itemInOrderService.changeState(
 				ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_1,

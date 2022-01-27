@@ -113,13 +113,13 @@ public class OrderControllerIntegrationtest {
 		order.setTable(table);
 		order = orderRepository.save(order);
 		
-		assertEquals(3, 3);
+		assertEquals(orderRepository.findAll().size(), 3);
 		
 		ResponseEntity<String> responseEntity = restTemplate
 				.exchange("/orders/" + order.getId() + "/1000", HttpMethod.DELETE, new HttpEntity<Object>(null), String.class);
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(orderRepository.findAll().size(), 3);
+		assertEquals(orderRepository.findAll().size() - 1, 1);
 	}
 	
 	@Test
@@ -208,7 +208,7 @@ public class OrderControllerIntegrationtest {
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(old.add(BigDecimal.valueOf(900)), found);
 		
-		//itemInOrderRepository.deleteById(responseEntity.getBody().getId());
+		itemInOrderRepository.deleteById(responseEntity.getBody().getId());
 	}
 	
 	@Test
