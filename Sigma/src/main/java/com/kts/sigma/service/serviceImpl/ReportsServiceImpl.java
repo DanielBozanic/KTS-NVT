@@ -4,6 +4,7 @@ import com.kts.sigma.Exception.DateNotValidException;
 import com.kts.sigma.dto.EmployeeDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.dto.ReportRequestDTO;
+import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.Report;
 import com.kts.sigma.service.OrderService;
 import com.kts.sigma.service.ReportsService;
@@ -95,6 +96,9 @@ public class ReportsServiceImpl implements ReportsService {
         for (OrderDTO order: restaurantOrders){
             Integer month = order.getOrderDateTime().getMonthValue();
             if(!isWithinRange(startDate,endDate,order.getOrderDateTime())){
+                continue;
+            }
+            if(order.getState() != OrderState.CHARGED){
                 continue;
             }
             int index = month - startMonth;
