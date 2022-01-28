@@ -203,7 +203,7 @@ public class WaiterTablesTest {
 		page.ensureIsDisplayedCodeVerificationForm();
 		page.setCodeVerificationInput("1000");
 		page.getCodeVerificationButton().click();
-		assertEquals("Coca cola removed from order.", page.getSnackbarMessage().getText());
+		assertEquals("Coca Cola removed from order.", page.getSnackbarMessage().getText());
 	}
 	
 	@Test

@@ -10,14 +10,18 @@ import org.junit.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.kts.sigma.constants.E2EConstants;
+import com.kts.sigma.e2e.pages.LoginPage;
 import com.kts.sigma.e2e.pages.PeoplePage;
 
 public class PeopleTest {
 
 	private WebDriver driver;
 	private PeoplePage peoplePage;
+	private LoginPage loginPage;
 	
 	@Before
 	public void initalize() {
@@ -27,6 +31,7 @@ public class PeopleTest {
 		
 		driver.manage().window().maximize();
 		peoplePage = new PeoplePage(driver);
+		loginPage = new LoginPage(driver);
 	}
 	
 	@After
@@ -34,8 +39,21 @@ public class PeopleTest {
 		driver.quit();
     }
 	
+	private void login() {
+		driver.get(E2EConstants.LOGIN_URL);
+		
+		loginPage.setUsernameInput("admin");
+		loginPage.setPasswordInput("password");
+		
+		loginPage.loginSubmitButtonClick();
+		
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.urlContains("profile"));
+	}
+	
 	@Test
 	public void addEmployeeEmptyInputFields() {
+		login();
+
 		driver.get(E2EConstants.PEOPLE_URL);
 		
 		peoplePage.ensureIsDisplayedAddButton();
@@ -54,6 +72,8 @@ public class PeopleTest {
 	
 	@Test
 	public void addEmployeeNegativePayment() {
+		login();
+		
 		driver.get(E2EConstants.PEOPLE_URL);
 		
 		peoplePage.ensureIsDisplayedAddButton();
@@ -71,6 +91,8 @@ public class PeopleTest {
 	
 	@Test
 	public void addEmployeeValidFields() {
+		login();
+		
 		driver.get(E2EConstants.PEOPLE_URL);
 		
 		int numberOfEmployeesBeforeAdd = peoplePage.getNumberOfPeople();
@@ -96,6 +118,8 @@ public class PeopleTest {
 	
 	@Test
 	public void editEmployeeNegativePayment() {
+		login();
+		
 		driver.get(E2EConstants.PEOPLE_URL);
 		
 		String xpath = "//tr[last()]/td[last() - 1]/button";
@@ -114,6 +138,8 @@ public class PeopleTest {
 	
 	@Test
 	public void editEmployeeValidFields() {
+		login();
+		
 		driver.get(E2EConstants.PEOPLE_URL);
 		
 		String xpath = "//tr[last()]/td[last() - 1]/button";
@@ -135,6 +161,8 @@ public class PeopleTest {
 	
 	@Test
 	public void deleteEmployee() {
+		login();
+		
 		driver.get(E2EConstants.PEOPLE_URL);
 		
 		int numberOfPeopleBeforeDelete = peoplePage.getNumberOfPeople();

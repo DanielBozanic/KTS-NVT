@@ -58,6 +58,9 @@ public class ZonesPage {
 	@FindBy(css = "#remove-table-btn")
 	private WebElement removeTableButton;
 	
+	@FindBy(xpath = "//*[@id=\"mat-select-value-1\"]")
+	private WebElement currentSelectedZone;
+	
 	public void ensureIsDisplayedCreateNewZoneForm() {
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("create-new-zone-btn-dialog")));
     }
@@ -67,20 +70,20 @@ public class ZonesPage {
     }
 	
 	public void ensureIsDisplayedAddTableForm() {
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("create-new-zone-btn-dialog")));
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("table-btn-dialog")));
     }
 	
 	public void ensureIsNotDisplayedAddTableForm() {
-        (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("create-new-zone-btn-dialog")));
+        (new WebDriverWait(driver, 10)).until(ExpectedConditions.invisibilityOfElementLocated(By.id("table-btn-dialog")));
     }
 	
 	public void ensureIsDisplayedEditTableForm() {
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("create-new-zone-btn-dialog")));
+        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("table-btn-dialog")));
         new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("remove-table-btn")));
     }
 	
 	public void ensureIsNotDisplayedEditTableForm() {
-		new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.id("create-new-zone-btn-dialog")));
+		new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.id("table-btn-dialog")));
 		new WebDriverWait(driver, 10).until(ExpectedConditions.invisibilityOfElementLocated(By.id("remove-table-btn")));
     }
 	
@@ -113,11 +116,6 @@ public class ZonesPage {
 		return firstTable;
 	}
 
-	public void dragAndDropFirstTable() {			
-        Actions act = new Actions(driver);						
-        act.dragAndDropBy(firstTable, 505, 347).build().perform();
-	}
-
 	public WebElement getCreateNewZoneButtonDialog() {
 		return createNewZoneButtonDialog;
 	}
@@ -132,6 +130,7 @@ public class ZonesPage {
 	}
 
 	public WebElement getNameFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("name-field-required-error-msg")));
 		return nameFieldRequiredErrorMsg;
 	}
 
@@ -149,10 +148,12 @@ public class ZonesPage {
 	}
 
 	public WebElement getNumberOfChairsRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("number-of-chairs-field-required-error-msg")));
 		return numberOfChairsRequiredErrorMsg;
 	}
 
 	public WebElement getNumberOfChairsNegativeNumberErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("number-of-chairs-field-negative-number-error-msg")));
 		return numberOfChairsNegativeNumberErrorMsg;
 	}
 
@@ -177,13 +178,18 @@ public class ZonesPage {
 	}
 	
 	public String getNumberOfChairsFirstTable() {
-		String tooltip = firstTable.getAttribute("title");
+		Actions action = new Actions(driver);
+		action.moveToElement(firstTable).perform();
+		String tooltip = driver.findElement(By.className("cdk-overlay-container")).getText();
 		String[] parts = tooltip.split("\n");
-		String numberOfChairs = parts[1].replaceAll("\\s+","").split(":")[1];
-		return numberOfChairs;
+		return parts[1].replaceFirst("^\\s*", "");
 	}
 	
 	public WebElement getLastTableFromZone() {
 		return driver.findElement(By.xpath("//*[@id = 'tables']/button[last()]")); 
+	}
+	
+	public WebElement getCurrentSelectedZone() {
+		return currentSelectedZone;
 	}
 }

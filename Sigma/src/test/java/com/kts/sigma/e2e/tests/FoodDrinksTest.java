@@ -11,14 +11,18 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.kts.sigma.constants.E2EConstants;
 import com.kts.sigma.e2e.pages.FoodDrinksPage;
+import com.kts.sigma.e2e.pages.LoginPage;
 
 public class FoodDrinksTest {
 
 	private WebDriver driver;
 	private FoodDrinksPage foodDrinksPage;
+	private LoginPage loginPage;
 	
 	@Before
 	public void initalize() {
@@ -28,6 +32,7 @@ public class FoodDrinksTest {
 		
 		driver.manage().window().maximize();
 		foodDrinksPage = new FoodDrinksPage(driver);
+		loginPage = new LoginPage(driver);
 	}
 	
 	@After
@@ -35,8 +40,21 @@ public class FoodDrinksTest {
 		driver.quit();
     }
 	
+	private void login() {
+		driver.get(E2EConstants.LOGIN_URL);
+		
+		loginPage.setUsernameInput("admin");
+		loginPage.setPasswordInput("password");
+		
+		loginPage.loginSubmitButtonClick();
+		
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.urlContains("profile"));
+	}
+	
 	@Test
 	public void createNewItemEmptyInputFields() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getCreateNewItemButton().click();
@@ -56,6 +74,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void createNewItemNegativeBuyingPrice() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getCreateNewItemButton().click();
@@ -73,6 +93,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void createNewItemValidInputs() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		int numberOfItemsBeforeAdd = foodDrinksPage.getNumberOfItems();
@@ -98,6 +120,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void createNewMenuEmptyInputFields() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getCreateNewMenuButton().click();
@@ -115,6 +139,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void createNewMenuPastStartDate() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getCreateNewMenuButton().click();
@@ -133,6 +159,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void createNewMenuExpirationDateBeforeStartDate() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getCreateNewMenuButton().click();
@@ -156,6 +184,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void createNewMenuValidInputs() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		int numberOfMenusBeforeAdd = foodDrinksPage.getNumberOfMenus();
@@ -183,6 +213,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void deleteSelectedMenu() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		int numberOfMenusBeforeDelete = foodDrinksPage.getNumberOfMenus();
@@ -197,6 +229,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void addItemInMenuEmptyField() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getSecondCarouselItemButton().click();
@@ -212,6 +246,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void addItemInMenuNegativeSellingPrice() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getSecondCarouselItemButton().click();
@@ -227,6 +263,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void addItemInMenuItemExistsInMenu() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.getFirstCarouselItemButton().click();
@@ -243,6 +281,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void addItemInMenuValidInputs() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		int numberOfItemsInMenuBeforeAdd = foodDrinksPage.getNumberOfItemsInMenu();
@@ -265,6 +305,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void removeItemFromMenu() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		int numberOfItemsInMenuBeforeRemove = foodDrinksPage.getNumberOfItemsInMenu();
@@ -281,6 +323,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void filterItems() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.setCategoryFilterSelect("MAIN_COURSE");
@@ -295,6 +339,8 @@ public class FoodDrinksTest {
 	
 	@Test
 	public void searchItems() {
+		login();
+		
 		driver.get(E2EConstants.FOOD_DRINKS_URL);
 		
 		foodDrinksPage.setSearchInputField("hett");
@@ -306,5 +352,19 @@ public class FoodDrinksTest {
 		assertTrue(foodDrinksPage.isItemPresent("Spaghetti"));
 		
 		foodDrinksPage.getResetButton().click();
+	}
+	
+	@Test
+	public void changeMenu() {
+		login();
+		
+		driver.get(E2EConstants.FOOD_DRINKS_URL);
+		
+		foodDrinksPage.setMenuSelect("2");
+		
+		assertEquals("Temp", foodDrinksPage.getCurrentSelectedMenu().getText());
+		assertEquals(1, foodDrinksPage.getNumberOfItemsInMenu());
+		
+		foodDrinksPage.setMenuSelect("1");
 	}
 }

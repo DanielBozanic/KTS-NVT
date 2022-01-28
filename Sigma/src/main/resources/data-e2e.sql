@@ -18,6 +18,7 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name, type) VALUES ('FOO
 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (100, 1, 1, true);
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (200, 3, 1, true);
+INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (300, 2, 2, true);
 
 INSERT INTO Zone (name) VALUES ('Ground floor');
 INSERT INTO Zone (name) VALUES ('Garden');
