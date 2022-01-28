@@ -1,5 +1,7 @@
 package com.kts.sigma.controller;
 
+import com.kts.sigma.constants.ItemInMenuConstants;
+import com.kts.sigma.model.Item;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ import com.kts.sigma.model.ItemInMenu;
 import com.kts.sigma.repository.ItemInMenuRepository;
 import com.kts.sigma.service.ItemInMenuService;
 
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -42,6 +46,24 @@ public class ItemInMenuControllerIntegrationTest {
 		ItemDTO[] orders = responseEntity.getBody();
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(4, orders.length);
+	}
+
+	@Test
+	public void getAllInMenu_ValidId_ReturnsAllItemsInMenu(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getAll/" + ItemInMenuConstants.VALID_MENU_ID, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(2, items.length);
+	}
+
+	@Test
+	public void getAllInMenu_InvalidId_ReturnsNothing(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getAll/" + ItemInMenuConstants.INVALID_MENU_ID, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(0, items.length);
 	}
 	
 	@Test
@@ -72,6 +94,58 @@ public class ItemInMenuControllerIntegrationTest {
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		
 		itemInMenuRepository.deleteById(responseEntity.getBody().getId());
+	}
+
+	@Test
+	public void getItemsByCurrentPage_ValidId_ReturnsItemsInMenuForPage(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getItemsByCurrentPage/?menuId=" +
+						ItemInMenuConstants.VALID_MENU_ID+ "&currentPage="+ItemInMenuConstants.CURRENT_PAGE
+						+"&pageSize="+ItemInMenuConstants.PAGE_SIZE, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(2, items.length);
+	}
+
+	@Test
+	public void getItemsByCurrentPage_InvalidId_ReturnsNothing(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getItemsByCurrentPage/?menuId=" +
+						ItemInMenuConstants.INVALID_MENU_ID+ "&currentPage="+ItemInMenuConstants.CURRENT_PAGE
+						+"&pageSize="+ItemInMenuConstants.PAGE_SIZE, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(0, items.length);
+	}
+
+	@Test
+	public void getItemsBySearchTerm_ValidId_ValidSearchTerm_ReturnsItemsInMenu(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getItemsBySearchTerm/" + ItemInMenuConstants.VALID_SEARCH_TERM + "?menuId=" +
+						ItemInMenuConstants.VALID_MENU_ID, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(0, items.length);
+	}
+
+	@Test
+	public void getItemsBySearchTerm_InvalidId_ReturnsNothing(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getItemsBySearchTerm/" + ItemInMenuConstants.VALID_SEARCH_TERM + "?menuId=" +
+						ItemInMenuConstants.INVALID_MENU_ID, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(0, items.length);
+	}
+
+	@Test
+	public void getItemsBySearchTerm_InvalidSearchTerm_ReturnsNothing(){
+		ResponseEntity<ItemDTO[]> responseEntity = restTemplate
+				.getForEntity("/item-in-menu/getItemsBySearchTerm/" + ItemInMenuConstants.INVALID_SEARCH_TERM + "?menuId=" +
+						ItemInMenuConstants.VALID_MENU_ID, ItemDTO[].class);
+		ItemDTO[] items = responseEntity.getBody();
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(0, items.length);
 	}
 	
 	@Test

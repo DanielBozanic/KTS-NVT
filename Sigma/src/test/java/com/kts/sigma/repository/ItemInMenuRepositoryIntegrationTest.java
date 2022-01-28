@@ -1,5 +1,6 @@
 package com.kts.sigma.repository;
 
+import com.kts.sigma.model.FoodType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,5 +85,23 @@ public class ItemInMenuRepositoryIntegrationTest {
 		Pageable page = PageRequest.of(ItemInMenuConstants.CURRENT_PAGE, ItemInMenuConstants.PAGE_SIZE);
 		List<ItemInMenu> itemsInMenu = itemInMenuRepository.findAllActiveItemsInMenuByCurrentPage(MenuConstants.DB_MENU_ID_1, page).toList();
 		assertEquals(ItemInMenuConstants.TOTAL_ACTIVE_ITEMS_IN_FIRST_MENU_CURRENT_PAGE.intValue(), itemsInMenu.size());
+	}
+
+	@Test
+	public void findAllActiveItemsInMenuByFoodType_ValidMenuId_ReturnsItemsInMenu(){
+		ArrayList<ItemInMenu> itemsInMenu = itemInMenuRepository.findAllActiveItemsInMenuByFoodType(MenuConstants.DB_MENU_ID_1, FoodType.DESERT);
+		assertEquals(MenuConstants.DB_TOTAL_DESSERTS_IN_MENU.intValue(), itemsInMenu.size());
+	}
+
+	@Test
+	public void findAllActiveItemsInMenuByFoodType_InvalidMenuId_ReturnsItemsInMenu(){
+		ArrayList<ItemInMenu> itemsInMenu = itemInMenuRepository.findAllActiveItemsInMenuByFoodType(MenuConstants.INVALID_MENU_ID, FoodType.APPETISER);
+		assertEquals(0, itemsInMenu.size());
+	}
+
+	@Test
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_ValidMenuId_ReturnsNumberOfActiveItemInMenu() {
+		Integer numberOfActive = itemInMenuRepository.getNumberOfActiveItemInMenuRecordsByMenuId(MenuConstants.DB_MENU_ID_1);
+		assertEquals(MenuConstants.DB_TOTAL_ACTIVE_ITEMS_IN_MENU_1, numberOfActive);
 	}
 }
