@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,8 +30,13 @@ import com.kts.sigma.constants.UserContants;
 import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.dto.TableDTO;
+import com.kts.sigma.model.ItemInMenu;
+import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.OrderState;
+import com.kts.sigma.model.RestaurantOrder;
+import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
+import com.kts.sigma.model.Waiter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -329,5 +336,26 @@ public class OrderServiceIntegrationTest {
 		dto.setItems(items);
 		
 		orderService.save(dto, 1000);
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+ 	public void deliverAll_ValidOrderValidCode_ReturnsNothing() {
+		orderService.deliverAllItems(1000, OrderConstants.DB_ORDER_ID_1);;
+		
+		OrderDTO found = orderService.findById(OrderConstants.DB_ORDER_ID_1);
+		
+		assertNotNull(found);
+	}
+	
+	@Test(expected = AccessForbiddenException.class)
+	public void deliverAll_InValidCode_ThrowsException() {
+		orderService.deliverAllItems(UserContants.INVALID_EMPLOYEE_CODE, OrderConstants.DB_ORDER_ID_1);;
+	}
+	
+	@Test(expected = ItemNotFoundException.class)
+	public void deliverAll_InValidOrder_ThrowsException() {
+		orderService.deliverAllItems(1000, OrderConstants.INVALID_ORDER_ID);;
 	}
 }

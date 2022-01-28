@@ -18,7 +18,7 @@ public class BartenderTest {
 	@Before
 	public void initalize() {
 		System.setProperty("webdriver.chrome.driver",
-                E2EConstants.CHROME_DRIVER_PATH);
+				OsUtils.isMacOs() ? E2EConstants.CHROME_DRIVER_PATH_MACOS : E2EConstants.CHROME_DRIVER_PATH);
 		driver = new ChromeDriver();
 		
 		driver.manage().window().maximize();

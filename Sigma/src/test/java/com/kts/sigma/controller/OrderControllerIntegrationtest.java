@@ -432,4 +432,22 @@ public class OrderControllerIntegrationtest {
 		
 		orderRepository.deleteById(responseEntity.getBody().getId());
 	}
+	
+	@Test
+	public void deliverAll_InvalidCode_ReturnsForbidden() {
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/orders/deliverAll/1/1001", HttpMethod.PUT, new HttpEntity<Object>(null), String.class);
+		assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+	}
+	
+	@Test
+	public void deliverAll_InvalidId_ReturnsNotFound() {
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/orders/deliverAll/1000/1000", HttpMethod.PUT, new HttpEntity<Object>(null), String.class);
+		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+	}
+	
+	@Test
+	public void deliverAll_ValidState_ReturnsOk() {
+		ResponseEntity<String> responseEntity = restTemplate.exchange("/orders/deliverAll/1/1000", HttpMethod.PUT, new HttpEntity<Object>(null), String.class);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+	}
 }
