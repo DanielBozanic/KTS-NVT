@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -41,7 +42,7 @@ public class ZonesTest {
     public void shutdownBrowser() {
 		driver.quit();
     }
-
+	
 	private void login() {
 		driver.get(E2EConstants.LOGIN_URL);
 		
@@ -252,8 +253,24 @@ public class ZonesTest {
 		zonesPage.setZoneSelect("2");
 		
 		assertEquals("Garden", zonesPage.getCurrentSelectedZone().getText());
-		assertEquals(2, zonesPage.getNumberOfTables());
+		assertEquals(8, zonesPage.getNumberOfTables());
 		
 		zonesPage.setZoneSelect("1");
+	}
+	
+	@Test
+	public void dragAndDropTable() {
+		login();
+		
+		driver.get(E2EConstants.ZONES_URL);
+		
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[@id='tables']/button[@id= '1']")));
+		int initialX = zonesPage.getFirstTable().getLocation().getX();
+		int initialY = zonesPage.getFirstTable().getLocation().getY();
+		
+		zonesPage.dragAndDropFirstTable();
+		
+		assertEquals(initialX + 3, zonesPage.getFirstTable().getLocation().getX());
+		assertEquals(initialY + 3, zonesPage.getFirstTable().getLocation().getY());
 	}
 }

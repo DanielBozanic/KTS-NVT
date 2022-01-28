@@ -192,4 +192,9 @@ public class ZonesPage {
 	public WebElement getCurrentSelectedZone() {
 		return currentSelectedZone;
 	}
+	
+	public void dragAndDropFirstTable() {
+		Actions act = new Actions(driver);
+		act.dragAndDropBy(firstTable, 3, 3).build().perform();
+	}
 }
