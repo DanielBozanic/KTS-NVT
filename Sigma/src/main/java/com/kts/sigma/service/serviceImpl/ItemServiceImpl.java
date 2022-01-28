@@ -78,6 +78,11 @@ public class ItemServiceImpl implements ItemService{
 	
 	@Override
 	public void deleteById(Integer id) {
+		Item item = itemRepository.findById(id).orElse(null);
+		if(item == null)
+		{
+			throw new ItemNotFoundException(id, "item");
+		}
 		itemRepository.deleteById(id);
 	}
 	

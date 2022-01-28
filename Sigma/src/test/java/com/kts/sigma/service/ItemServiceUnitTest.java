@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kts.sigma.repository.ItemInMenuRepository;
@@ -72,7 +74,7 @@ public class ItemServiceUnitTest {
 
         assertEquals(ItemConstants.DB_TOTAL_ITEMS.intValue(), result.size());
     }
-
+    
     @Test
     public void createNewItem_Valid_ReturnsCreatedItem() {
         ItemDTO item = new ItemDTO(
@@ -83,22 +85,41 @@ public class ItemServiceUnitTest {
         Item savedItem = itemService.createNewItem(item);
         verify(itemRepositoryMock,times(1)).save(any(Item.class));
     }
+    
+    @Test
+    public void findById_ValidId_ReturnsItem()
+    {
+    	Item item = new Item(ItemConstants.DB_FOOD_ID_1, "Spaghett", "Spaghett", BigDecimal.ZERO);
+    	
+    	given(itemRepositoryMock.findById(ItemConstants.DB_FOOD_ID_1)).willReturn(Optional.of(item));
+        itemService.findById(ItemConstants.DB_FOOD_ID_1);
+        verify(itemRepositoryMock, times(1)).findById(ItemConstants.DB_FOOD_ID_1);
+    }
 
     @Test
     public void deleteById_ValidId_ReturnsNothing()
     {
-        Item item = new Item(
-                ItemConstants.DB_DELETE_ITEM_ID,"","",
-                new BigDecimal(3000));
+    	Item item = new Item(ItemConstants.DB_FOOD_ID_1, "Spaghett", "Spaghett", BigDecimal.ZERO);
+    	
+    	given(itemRepositoryMock.findById(ItemConstants.DB_DELETE_ITEM_ID)).willReturn(Optional.of(item));
         itemService.deleteById(ItemConstants.DB_DELETE_ITEM_ID);
+        verify(itemRepositoryMock,times(1)).findById(ItemConstants.DB_DELETE_ITEM_ID);
     }
 
     @Test(expected = ItemNotFoundException.class)
-    public void findById_InvalidId_ReturnsNothing()
+    public void findById_InvalidId_ThrowsException()
     {
-        given(itemRepositoryMock.getOne(ItemConstants.INVALID_ITEM_ID)).willReturn(null);
+    	given(itemRepositoryMock.findById(ItemConstants.INVALID_ITEM_ID)).willReturn(Optional.empty());
         itemService.findById(ItemConstants.INVALID_ITEM_ID);
-        verify(itemRepositoryMock, times(1)).getOne(ItemConstants.INVALID_ITEM_ID);
+        verify(itemRepositoryMock, times(1)).findById(ItemConstants.INVALID_ITEM_ID);
+    }
+    
+    @Test(expected = ItemNotFoundException.class)
+    public void DeleteById_InvalidId_ThrowsException()
+    {
+    	given(itemRepositoryMock.findById(ItemConstants.INVALID_ITEM_ID)).willReturn(Optional.empty());
+        itemService.findById(ItemConstants.INVALID_ITEM_ID);
+        verify(itemRepositoryMock,times(1)).findById(ItemConstants.INVALID_ITEM_ID);
     }
 
 

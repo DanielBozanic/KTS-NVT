@@ -3,6 +3,7 @@ package com.kts.sigma;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import com.kts.sigma.controller.ItemControllerIntegrationTest;
 import com.kts.sigma.controller.ItemInMenuControllerIntegrationTest;
 import com.kts.sigma.controller.ItemInOrderControllerIntegrationTest;
 import com.kts.sigma.controller.JwtControllerIntegrationTest;
@@ -21,6 +22,7 @@ import com.kts.sigma.repository.PaymentRepositoryIntegrationTest;
 import com.kts.sigma.repository.TableRepositoryIntegrationTest;
 import com.kts.sigma.service.ItemInMenuServiceUnitTest;
 import com.kts.sigma.service.ItemInOrderServiceUnitTest;
+import com.kts.sigma.service.ItemServiceIntegrationTest;
 import com.kts.sigma.service.ItemServiceUnitTest;
 import com.kts.sigma.service.JwtUserDetailsServiceUnitTest;
 import com.kts.sigma.service.MenuServiceIntegrationTest;
@@ -65,6 +67,7 @@ import com.kts.sigma.service.ZoneServiceUnitTest;
 	TableServiceIntegrationTest.class,
 	UserServiceIntegrationTest.class,
 	ZoneServiceIntegrationTest.class,
+	ItemServiceIntegrationTest.class,
 	
 	//controller tests
 	ItemInMenuControllerIntegrationTest.class,
@@ -75,7 +78,8 @@ import com.kts.sigma.service.ZoneServiceUnitTest;
 	ReportsControllerIntegrationTest.class,
 	UserControllerIntegrationTest.class,
 	ZoneControllerIntegrationTest.class,
-	TableControllerIntegrationTest.class
+	TableControllerIntegrationTest.class,
+	ItemControllerIntegrationTest.class
 })
 public class TestSuite {
 

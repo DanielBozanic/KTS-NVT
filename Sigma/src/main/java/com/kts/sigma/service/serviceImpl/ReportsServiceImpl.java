@@ -2,10 +2,13 @@ package com.kts.sigma.service.serviceImpl;
 
 import com.kts.sigma.Exception.DateNotValidException;
 import com.kts.sigma.dto.EmployeeDTO;
+import com.kts.sigma.dto.ItemInOrderDTO;
 import com.kts.sigma.dto.OrderDTO;
 import com.kts.sigma.dto.ReportRequestDTO;
+import com.kts.sigma.model.ItemInOrder;
 import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.Report;
+import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.service.OrderService;
 import com.kts.sigma.service.ReportsService;
 import com.kts.sigma.service.UserService;
@@ -21,6 +24,9 @@ import java.util.*;
 public class ReportsServiceImpl implements ReportsService {
     private UserService userService; //check the pays
     private OrderService orderService; //check the payments.. tj total.. gledam itemInOrder, pa item in meenu za selling price
+    
+    @Autowired
+    private ItemInOrderRepository itemRepository;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -103,7 +109,16 @@ public class ReportsServiceImpl implements ReportsService {
             int index = Math.toIntExact(ChronoUnit.MONTHS.between(startDate, order.getOrderDateTime()));
             BigDecimal value = sales.get(index);
             sales.set(index, value.add(order.getTotalPrice()));
-            // add prices of item to expenses
+            
+            value = expenses.get(index);
+            for (ItemInOrderDTO i : order.getItems()) {
+				ItemInOrder item = itemRepository.findById(i.getId()).orElse(null);
+				
+				if(item != null) {
+					value = value.add(item.getItem().getItem().getBuyingPrice());
+				}
+			}
+            expenses.set(index, value);
         }
 
         report.setExpensesPerMonth(expenses);
