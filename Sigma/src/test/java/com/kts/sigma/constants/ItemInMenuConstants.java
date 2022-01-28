@@ -29,6 +29,4 @@ public class ItemInMenuConstants {
 	public final static String VALID_SEARCH_TERM= "Pizza";
 	public final static String INVALID_SEARCH_TERM= "Invalid_food";
 
-	public final static FoodType VALID_FOOD_TYPE= FoodType.MAIN_COURSE;
-
 }
