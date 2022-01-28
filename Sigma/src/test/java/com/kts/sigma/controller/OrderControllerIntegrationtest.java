@@ -35,6 +35,7 @@ import com.kts.sigma.model.Waiter;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInOrderRepository;
 import com.kts.sigma.repository.OrderRepository;
+import com.kts.sigma.repository.TableRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -51,6 +52,9 @@ public class OrderControllerIntegrationtest {
 	
 	@Autowired
 	private ItemInOrderRepository itemInOrderRepository;
+	
+	@Autowired
+	private TableRepository tableRepository;
 	
 	@Test
 	public void getAll_ValidState_ReturnsAllOrders() {
@@ -100,17 +104,22 @@ public class OrderControllerIntegrationtest {
 	
 	@Test
 	public void deleteById_ValidId_ReturnsNothing() {
+		RestaurantTable table = new RestaurantTable();
+		table.setState(TableState.IN_PROGRESS);
+		table = tableRepository.save(table);
+		
 		RestaurantOrder order = new RestaurantOrder();
 		order.setWaiter((Waiter) employeeRepository.findByCode(1000));
+		order.setTable(table);
 		order = orderRepository.save(order);
 		
-//		assertEquals(3, 3);
+		assertEquals(orderRepository.findAll().size(), 3);
 		
 		ResponseEntity<String> responseEntity = restTemplate
 				.exchange("/orders/" + order.getId() + "/1000", HttpMethod.DELETE, new HttpEntity<Object>(null), String.class);
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//		assertEquals(orderRepository.findAll().size(), 2);
+		assertEquals(orderRepository.findAll().size() - 1, 1);
 	}
 	
 	@Test
@@ -199,7 +208,7 @@ public class OrderControllerIntegrationtest {
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals(old.add(BigDecimal.valueOf(900)), found);
 		
-		//itemInOrderRepository.deleteById(responseEntity.getBody().getId());
+		itemInOrderRepository.deleteById(responseEntity.getBody().getId());
 	}
 	
 	@Test

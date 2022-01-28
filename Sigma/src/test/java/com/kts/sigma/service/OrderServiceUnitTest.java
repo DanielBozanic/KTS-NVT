@@ -48,6 +48,7 @@ import com.kts.sigma.model.Menu;
 import com.kts.sigma.model.OrderState;
 import com.kts.sigma.model.RestaurantOrder;
 import com.kts.sigma.model.RestaurantTable;
+import com.kts.sigma.model.TableState;
 import com.kts.sigma.model.Waiter;
 import com.kts.sigma.repository.EmployeeRepository;
 import com.kts.sigma.repository.ItemInMenuRepository;
@@ -80,6 +81,9 @@ public class OrderServiceUnitTest {
 	
 	@MockBean
 	TableRepository tableRepositoryMock;
+	
+	@MockBean
+	ItemInOrderService itemInOrderMock;
 	
 	@MockBean
 	EmployeeRepository employeeRepositoryMock;
@@ -204,6 +208,11 @@ public class OrderServiceUnitTest {
 		order.setId(OrderConstants.DB_ORDER_ID_1);
 		order.setWaiter(waiter);
 		
+		RestaurantTable table = new RestaurantTable();
+		table.setId(TableConstants.DB_TABLE_ID_1);
+		table.setState(TableState.IN_PROGRESS);
+		order.setTable(table);
+		
 		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		
@@ -316,15 +325,20 @@ public class OrderServiceUnitTest {
 		order.setTotalPrice(BigDecimal.valueOf(1000));
 		order.setWaiter(waiter);
 		
+		ItemInOrder iio = new ItemInOrder();
+		iio.setId(1);
+		iio.setItem(iim2);
+		iio.setOrder(order);
+		
 		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(order));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2)).willReturn(Optional.of(iim2));
+		given(itemInOrderMock.saveWithoutCode(item)).willReturn(iio);
 		
 		ItemInOrderDTO newItem = orderService.addItemToOrder(item, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
 		
 		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
-		verify(itemInMenuRepositoryMock, times(2)).findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2);
 	}
 	
 	@Test
@@ -362,13 +376,11 @@ public class OrderServiceUnitTest {
 		
 		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(orders.get(0)));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
-		given(itemInOrderRepositoryMock.findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3)).willReturn(Optional.of(iio3));
 		
 		orderService.removeItemFromOrder(OrderConstants.DB_ITEM_IN_ORDER1_ID_3, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
 		
 		verify(orderRepositoryMock, times(1)).findById(OrderConstants.DB_ORDER_ID_1);
 		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
-		verify(itemInOrderRepositoryMock, times(1)).findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3);
 	}
 	
 	@Test(expected = ItemNotFoundException.class)
@@ -407,46 +419,6 @@ public class OrderServiceUnitTest {
 		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.empty());
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		given(itemInOrderRepositoryMock.findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3)).willReturn(Optional.of(iio3));
-		
-		orderService.removeItemFromOrder(OrderConstants.DB_ITEM_IN_ORDER1_ID_3, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
-	}
-	
-	@Test(expected = ItemNotFoundException.class)
- 	public void removeItemFromOrder_InValidItem_ThrowsException() {
-		List<RestaurantOrder> orders = initializeOrders();
-		
-		Food food2 = new Food();
-		food2.setId(ItemConstants.DB_FOOD_ID_2);
-		food2.setName("Cesar Salad");
-		food2.setDescription("yummy");
-		food2.setType(FoodType.SALAD);
-		food2.setBuyingPrice(BigDecimal.valueOf(100.00));
-		
-		Menu menu = new Menu();
-		menu.setId(MenuConstants.DB_MENU_ID_1);
-		menu.setActive(true);
-		
-		ItemInMenu iim2 = new ItemInMenu();
-		iim2.setId(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2);
-		iim2.setItem(food2);
-		iim2.setMenu(menu);
-		iim2.setSellingPrice(BigDecimal.valueOf(250.00));
-		
-		ItemInOrder iio3 = new ItemInOrder();
-		iio3.setId(OrderConstants.DB_ITEM_IN_ORDER1_ID_3);
-		iio3.setOrder(orders.get(0));
-		iio3.setState(ItemInOrderState.NEW);
-		iio3.setItem(iim2);
-		
-		Waiter waiter = new Waiter();
-		waiter.setId(UserContants.DB_EMPLOYEE_ID_1);
-		waiter.setCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
-		
-		orders.get(0).setWaiter(waiter);
-		
-		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(orders.get(0)));
-		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
-		given(itemInOrderRepositoryMock.findById(OrderConstants.DB_ITEM_IN_ORDER1_ID_3)).willReturn(Optional.empty());
 		
 		orderService.removeItemFromOrder(OrderConstants.DB_ITEM_IN_ORDER1_ID_3, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
 	}
@@ -524,9 +496,16 @@ public class OrderServiceUnitTest {
 		
 		orders.get(0).setWaiter(waiter);
 		
+		ItemInOrder iio3 = new ItemInOrder();
+		iio3.setId(OrderConstants.DB_ITEM_IN_ORDER1_ID_3);
+		iio3.setOrder(orders.get(0));
+		iio3.setState(ItemInOrderState.NEW);
+		iio3.setItem(iim2);
+		
 		given(orderRepositoryMock.findById(OrderConstants.DB_ORDER_ID_1)).willReturn(Optional.of(orders.get(0)));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_2)).willReturn(Optional.empty());
+		given(itemInOrderMock.saveWithoutCode(item)).willThrow(ItemNotFoundException.class);
 		
 		ItemInOrderDTO newItem = orderService.addItemToOrder(item, UserContants.DB_EMPLOYEE_ID_1_CODE, OrderConstants.DB_ORDER_ID_1);
 	}
@@ -636,16 +615,15 @@ public class OrderServiceUnitTest {
 		o.setId(OrderConstants.NEW_ORDER_ID);
 		
 		given(tableRepositoryMock.findById(TableConstants.DB_TABLE_ID_1)).willReturn(Optional.of(table));
-		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.of(item));
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
+		given(orderRepositoryMock.getOne(OrderConstants.NEW_ORDER_ID)).willReturn(o);
 		given(orderRepositoryMock.save(Mockito.any())).willReturn(o);
 		
 		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
 		
 		verify(tableRepositoryMock, times(1)).findById(TableConstants.DB_TABLE_ID_1);
 		verify(employeeRepositoryMock, times(1)).findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE);
-		verify(itemInMenuRepositoryMock, times(2)).findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1);
-		verify(orderRepositoryMock, times(2)).save(Mockito.any());
+		verify(orderRepositoryMock, times(1)).save(Mockito.any());
 	}
 	
 	@Test(expected = AccessForbiddenException.class)
@@ -763,6 +741,7 @@ public class OrderServiceUnitTest {
 		given(itemInMenuRepositoryMock.findById(ItemInMenuConstants.DB_ITEM_IN_MENU_ID_1)).willReturn(Optional.empty());
 		given(employeeRepositoryMock.findByCode(UserContants.DB_EMPLOYEE_ID_1_CODE)).willReturn(waiter);
 		given(orderRepositoryMock.save(Mockito.any())).willReturn(o);
+		given(itemInOrderMock.saveWithoutCode(dto)).willThrow(ItemNotFoundException.class);
 		
 		RestaurantOrder returned = orderService.save(order, UserContants.DB_EMPLOYEE_ID_1_CODE);
 	}

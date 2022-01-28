@@ -73,9 +73,9 @@ import com.kts.sigma.service.ZoneServiceUnitTest;
 	MenuControllerIntegrationTest.class,
 	OrderControllerIntegrationtest.class,
 	ReportsControllerIntegrationTest.class,
-	TableControllerIntegrationTest.class,
 	UserControllerIntegrationTest.class,
-	ZoneControllerIntegrationTest.class
+	ZoneControllerIntegrationTest.class,
+	TableControllerIntegrationTest.class
 })
 public class TestSuite {
 

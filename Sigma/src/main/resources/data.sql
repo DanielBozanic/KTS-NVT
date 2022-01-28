@@ -24,11 +24,17 @@ INSERT INTO Item (ITEM_TYPE, buying_price, description, name, image) VALUES ('DR
 
 INSERT INTO Menu (name, start_date, active) VALUES ('Standard', '2021-12-10', true);
 
-INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 800, 1, 2);
-INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 1800, 2, 2);
-INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2012-06-18 10:34:09.000' AS DateTime), 0, 1200, 3, 2);
-
-
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-06-18 10:34:09.000' AS DateTime), 0, 800, 1, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-06-18 10:34:09.000' AS DateTime), 1, 300, 2, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-06-18 10:34:09.000' AS DateTime), 1, 800, 3, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-06-18 10:34:09.000' AS DateTime), 2, 800, 4, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-06-18 10:34:09.000' AS DateTime), 3, 800, 5, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-06-18 10:34:09.000' AS DateTime), 2, 800, 6, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-01-18 10:34:09.000' AS DateTime), 3, 800, 7, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-09-18 10:34:09.000' AS DateTime), 3, 800, 2, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2021-10-18 10:34:09.000' AS DateTime), 3, 800, 3, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-18 10:34:09.000' AS DateTime), 3, 800, 4, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-25 10:34:09.000' AS DateTime), 3, 800, 4, 2);
 
 
 INSERT INTO Item_In_Menu (selling_price, item_id, menu_id, active) VALUES (350, 1, 1, true);
@@ -48,11 +54,43 @@ INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 1);
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 2, 2);
-INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 3, 2);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 3, 2);
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 4, 3);
-INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 4, 3);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 4, 3);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 3, 3);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (3, 4, 4);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (3, 4, 4);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (3, 3, 4);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 5);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 5);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 5);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 6);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 6);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 6);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 7);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 7);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 7);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 8);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 8);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 8);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 9);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 9);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 9);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 10);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 10);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 10);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 11);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 4, 11);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 3, 11);
 
 
 INSERT INTO Zone (name) VALUES ('Ground floor');
@@ -61,12 +99,12 @@ INSERT INTO zone (name) VALUES ('1st floor');
 INSERT INTO zone (name) VALUES ('2nd floor');
 
 
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 2, 1, 1, 100, 100);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (6, 2, 2, 1, 200, 100);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 2, 3, 2, 300, 100);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 0, 4, 1, 100, 200);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (2, 0, 5, 1, 200, 200);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 0, 6, 1, 300, 200);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (3, 0, 7, 1, 100, 300);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (6, 0, 8, 2, 200, 300);
-INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (10, 0, 9, 2, 300, 300);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 2, 1, 1, 170, 200);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (6, 2, 2, 1, 320, 200);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 2, 3, 2, 330, 200);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 3, 4, 1, 170, 285);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (2, 1, 5, 1, 320, 285);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (4, 4, 6, 1, 500, 285);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (3, 0, 7, 1, 720, 255);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (6, 0, 8, 2, 170, 285);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (10, 0, 9, 2, 330, 285);

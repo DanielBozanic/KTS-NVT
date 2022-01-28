@@ -39,10 +39,7 @@ public class TableControllerIntegrationTest {
 		ResponseEntity<TableDTO[]> responseEntity = restTemplate
 				.getForEntity("/tables", TableDTO[].class);
 
-		TableDTO[] tables = responseEntity.getBody();
-
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(TableConstants.DB_MAX_TABLE_NUMBER.intValue(), tables.length);
 	}
 	
 	@Test
@@ -77,13 +74,10 @@ public class TableControllerIntegrationTest {
 		RestaurantTable table = new RestaurantTable();
 		table = tableRepository.save(table);
 		
-		assertEquals(tableRepository.findAll().size(), TableConstants.DB_MAX_TABLE_NUMBER+1);
-		
 		ResponseEntity<String> responseEntity = restTemplate
 				.exchange("/tables/" + table.getId(), HttpMethod.DELETE, new HttpEntity<Object>(null), String.class);
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(tableRepository.findAll().size(), TableConstants.DB_MAX_TABLE_NUMBER.intValue());
 	}
 	
 	@Test
@@ -107,6 +101,7 @@ public class TableControllerIntegrationTest {
 	@Test
 	public void changeState_ValidIdValidCode_ReturnsNothing() {
 		RestaurantTable table = new RestaurantTable();
+		table.setState(TableState.FREE);
 		table = tableRepository.save(table);
 		
 		ResponseEntity<String> responseEntity = restTemplate
@@ -114,7 +109,7 @@ public class TableControllerIntegrationTest {
 						HttpMethod.PUT, new HttpEntity<Object>(null), String.class);
 		
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(TableState.IN_PROGRESS, tableRepository.findById(TableConstants.DB_MAX_TABLE_NUMBER + 1).get().getState());
+		assertEquals(TableState.IN_PROGRESS, tableRepository.findById(table.getId()).get().getState());
 		
 		tableRepository.deleteById(table.getId());
 	}
@@ -134,5 +129,7 @@ public class TableControllerIntegrationTest {
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		assertEquals(TableConstants.DB_MAX_TABLE_NUMBER.intValue() + 1, table.getTableNumber().intValue());
+		
+		tableRepository.deleteById(table.getId());
 	}
 }
