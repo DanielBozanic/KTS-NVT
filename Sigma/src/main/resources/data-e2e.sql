@@ -42,6 +42,7 @@ INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VA
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 14, 2);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 15, 2);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 16, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id, x, y) VALUES (3, 2, 17, 1, 600, 600);
 
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-06 10:34:09.000' AS DateTime), 1, 700, 3, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-06 10:59:09.000' AS DateTime), 2, 400, 4, 2);
@@ -56,6 +57,7 @@ INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, wai
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 0, 400, 14, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 1, 400, 15, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 1, 400, 16, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 2, 800, 17, 2);
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
@@ -85,3 +87,5 @@ INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 10);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 1, 10);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 1, 10);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 1, 11);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (3, 1, 12);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (3, 1, 12);

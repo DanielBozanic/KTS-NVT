@@ -48,6 +48,9 @@ public class WaiterTablesPage {
 	@FindBy(css = "#table-button-8")
 	private WebElement tableButton8;
 	
+	@FindBy(css = "#table-button-17")
+	private WebElement tableButton17;
+	
 	@FindBy(css = "#code-verification-button")
 	private WebElement codeVerificationButton;
 	
@@ -75,11 +78,17 @@ public class WaiterTablesPage {
 	@FindBy(css = "#deliver-item-6")
 	private WebElement deliverItem6;
 	
+	@FindBy(css = "#deliver-item-11")
+	private WebElement deliverItem11;
+	
 	@FindBy(css = "#remove-item-2")
 	private WebElement removeItem2;
 	
 	@FindBy(css = "#deliver-item-7")
 	private WebElement deliverItem7;
+	
+	@FindBy(css = "#deliver-items-button")
+	private WebElement deliverItemsButton;
 	
 	public WebElement getZoneSelect() {
 		return zoneSelect;
@@ -125,6 +134,10 @@ public class WaiterTablesPage {
 	public WebElement getTableButton8() {
 		return tableButton8;
 	}
+	
+	public WebElement getTableButton17() {
+		return tableButton17;
+	}
 
 	public WebElement getCodeVerificationButton() {
 		return codeVerificationButton;
@@ -162,12 +175,20 @@ public class WaiterTablesPage {
 		return deliverItem6;
 	}
 	
+	public WebElement getDeliverItem11() {
+		return deliverItem11;
+	}
+	
 	public WebElement getRemoveItem2() {
 		return removeItem2;
 	}
 
 	public WebElement getDeliverItem7() {
 		return deliverItem7;
+	}
+
+	public WebElement getDeliverItemsButton() {
+		return deliverItemsButton;
 	}
 
 	public void setCodeVerificationInput(String code) {

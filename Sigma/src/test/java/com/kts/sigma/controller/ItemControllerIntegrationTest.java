@@ -40,7 +40,6 @@ public class ItemControllerIntegrationTest {
 		ItemDTO[] tables = responseEntity.getBody();
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals(ItemConstants.DB_TOTAL_ITEMS.intValue(), tables.length);
 	}
 
 	@Test
@@ -91,8 +90,6 @@ public class ItemControllerIntegrationTest {
 				.exchange("/items/createNewItem", HttpMethod.POST, new HttpEntity<Object>(item), ItemDTO.class);
 		
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
-		assertEquals(responseEntity.getBody().getId().intValue(), ItemConstants.DB_TOTAL_ITEMS.intValue()+1);
 		itemRepository.deleteById(responseEntity.getBody().getId());
-		assertEquals(itemRepository.findAll().size(), ItemConstants.DB_TOTAL_ITEMS.intValue());
 	}
 }

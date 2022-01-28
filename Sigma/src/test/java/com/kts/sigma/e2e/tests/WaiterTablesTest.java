@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import com.kts.sigma.constants.E2EConstants;
+import com.kts.sigma.e2e.pages.Utilities;
 import com.kts.sigma.e2e.pages.WaiterOrderPage;
 import com.kts.sigma.e2e.pages.WaiterTablesPage;
 
@@ -39,7 +40,7 @@ public class WaiterTablesTest {
 		driver.get(E2EConstants.TABLES_URL);
 		
 		page.setZoneSelect(2);
-		assertEquals(2, page.getNumberOfTables());
+		assertEquals(8, page.getNumberOfTables());
 	}
 	
 	@Test
@@ -308,5 +309,25 @@ public class WaiterTablesTest {
 		
 		orderPage.getOrderCreationButton().click();
 		assertEquals("You could have just clicked cancel...", page.getSnackbarMessage().getText());
+	}
+	
+	@Test
+	public void deliverItems() {
+		driver.get(E2EConstants.TABLES_URL);
+		
+		page.ensureIsDisplayedTables();
+		page.getTableButton17().click();
+		page.ensureIsDisplayedOrderForm();
+		page.getDeliverItemsButton().click();
+		page.ensureIsDisplayedCodeVerificationForm();
+		page.setCodeVerificationInput("1001");
+		page.getCodeVerificationButton().click();
+		assertEquals(E2EConstants.INVALID_CODE_ERROR, page.getSnackbarMessage().getText());
+		
+		page.ensureIsDisplayedOrderForm();
+		page.getDeliverItemsButton().click();
+		page.ensureIsDisplayedCodeVerificationForm();
+		page.setCodeVerificationInput("1000");
+		page.getCodeVerificationButton().click();
 	}
 }
