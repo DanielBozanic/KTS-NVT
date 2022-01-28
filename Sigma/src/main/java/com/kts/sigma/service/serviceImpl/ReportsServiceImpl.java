@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -68,8 +67,8 @@ public class ReportsServiceImpl implements ReportsService {
 
         Integer startMonth = startDate.getMonthValue();
         Integer endMonth = endDate.getMonthValue();
+        long monthsBetween = ChronoUnit.MONTHS.between(startDate, endDate) + 1;
 
-        //check year
         if(startMonth == -1){
             throw new DateNotValidException(request.startMonth);
         }else if(endMonth == -1) {
@@ -80,28 +79,28 @@ public class ReportsServiceImpl implements ReportsService {
         List<BigDecimal> expenses = new ArrayList<>();
         List<BigDecimal> sales = new ArrayList<>();
 
-        //add the check if they're not suspended during that period or not hired
-        BigDecimal totalPayEmployees = BigDecimal.ZERO; //total for one month
-        for (EmployeeDTO employee : allUsers){
-            if(employee.isActive()){
-                totalPayEmployees = totalPayEmployees.add(employee.getPaymentBigDecimal());
+        //for expenses
+        LocalDateTime currentDate = startDate;
+        for(int i = 1; i <= monthsBetween; i++){
+            BigDecimal totalPayEmployees = BigDecimal.ZERO; //total for one month
+            for (EmployeeDTO employee : allUsers){
+                if(employee.isActive() && employee.getDateOfEmployment().isBefore(currentDate)){
+                    totalPayEmployees = totalPayEmployees.add(employee.getPaymentBigDecimal());
+                }
             }
-        }
-
-        for(int i = startMonth.intValue(); i <= endMonth.intValue(); i++){
-            expenses.add(totalPayEmployees); //added pay expenses
+            expenses.add(totalPayEmployees);
             sales.add(BigDecimal.ZERO);
+            currentDate = currentDate.plusMonths(1);
         }
 
         for (OrderDTO order: restaurantOrders){
-            Integer month = order.getOrderDateTime().getMonthValue();
             if(!isWithinRange(startDate,endDate,order.getOrderDateTime())){
                 continue;
             }
             if(order.getState() != OrderState.CHARGED){
                 continue;
             }
-            int index = month - startMonth;
+            int index = Math.toIntExact(ChronoUnit.MONTHS.between(startDate, order.getOrderDateTime()));
             BigDecimal value = sales.get(index);
             sales.set(index, value.add(order.getTotalPrice()));
             // add prices of item to expenses
