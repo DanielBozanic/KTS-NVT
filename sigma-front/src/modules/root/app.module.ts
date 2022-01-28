@@ -38,6 +38,7 @@ import { ItemAdditionComponent } from '../waiter/components/item-addition/item-a
 import { WaiterTableComponent } from '../waiter/components/waiter-table/waiter-table.component';
 import { RoleGuardService } from '../authentication/guard-url';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { WaiterGuardService } from '../authentication/waiter-guard';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -123,8 +124,8 @@ const customNotifierOptions: NotifierOptions = {
     ChartsModule,
     DragDropModule,
   ],
-  providers: [HeaderComponent, RoleGuardService],
+  providers: [HeaderComponent, RoleGuardService, WaiterGuardService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule {}
+export class AppModule { }

@@ -2,7 +2,9 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar, MatSnackBarVerticalPosition } from "@angular/material/snack-bar";
 import { MatTableDataSource } from "@angular/material/table";
-import { Router } from "@angular/router";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { Observable } from "rxjs";
+import { Globals } from "src/modules/root/globals";
 import { Item } from "src/modules/root/models/item";
 import { Order } from "src/modules/root/models/order";
 import { Table } from "src/modules/root/models/table";
@@ -36,6 +38,7 @@ export class WaiterTableComponent implements OnInit, OnChanges {
         private router: Router,
         private codeVerificationDialog: MatDialog,
         private snackBar: MatSnackBar,
+        private globals: Globals,
     ) {
         this.itemInOrderDataSource = new MatTableDataSource<Item>(
             this.currentItems
@@ -164,10 +167,12 @@ export class WaiterTableComponent implements OnInit, OnChanges {
     }
 
     redirectToOrderComponent() {
+        this.globals.called = true;
         this.router.navigate(['/waiterOrder'], { state: { data: this.table } });
     }
 
     redirectToAddItemsComponent() {
+        this.globals.called = true;
         this.closeOrderView();
         this.router.navigate(['/waiterAddItems'], { state: { data: this.table } });
     }
