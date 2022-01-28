@@ -71,6 +71,15 @@ public class UserControllerIntegrationTest {
 	}
 	
 	@Test
+	public void getNumberOfActiveEmployeeRecords_ValidState_ReturnsNumberOfActiveEmployeeRecords() {
+		ResponseEntity<Integer> responseEntity = restTemplate.getForEntity(
+				"/users/getNumberOfActiveEmployeeRecords", Integer.class);
+		
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(3, responseEntity.getBody().intValue());
+	}
+	
+	@Test
 	public void addNewManager_UsernameExists_ReturnsBadRequest() {
 		ManagerDTO managerDto = new ManagerDTO();
 		managerDto.setName("Marko");

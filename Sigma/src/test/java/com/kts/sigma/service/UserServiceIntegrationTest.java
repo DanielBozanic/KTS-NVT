@@ -42,6 +42,12 @@ public class UserServiceIntegrationTest {
 		assertEquals(UserContants.DB_TOTAL_ACTIVE_EMPLOYEES_CURRENT_PAGE.intValue(), found.size());
 	}
 	
+	@Test
+	public void getNumberOfActiveEmployeeRecords_ValidState_ReturnsNumberOfActiveEmployeeRecords() {
+		Integer number = userService.getNumberOfActiveEmployeeRecords();
+		assertEquals(3, number.intValue());
+	}
+	
 	@Test(expected = ItemExistsException.class)
 	public void addNewManager_UsernameExists_ThrowsException() {
 		ManagerDTO managerDto = new ManagerDTO();

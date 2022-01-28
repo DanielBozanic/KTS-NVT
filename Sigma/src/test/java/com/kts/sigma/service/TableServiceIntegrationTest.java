@@ -105,4 +105,27 @@ public class TableServiceIntegrationTest {
 	public void changeState_InValidCode_ThrowsException() {
 		tableService.changeState(TableConstants.DB_TABLE_ID_1, TableState.IN_PROGRESS, UserContants.INVALID_EMPLOYEE_CODE);
 	}
+	
+	@Test(expected = ItemNotFoundException.class)
+	public void updateTablePosition_InvalidTableId_ThrowsException() {
+		TableDTO tableDto = new TableDTO();
+		tableDto.setId(-100);
+		tableService.updateTablePosition(tableDto);
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void updateTablePosition_ValidInputs_ReturnsUpdatedTable() {
+		TableDTO tableDto = new TableDTO();
+		tableDto.setId(TableConstants.DB_TABLE_ID_1);
+		tableDto.setX(100);
+		tableDto.setY(300);
+		tableDto.setState(TableState.FREE);
+		
+		TableDTO updatedTable = tableService.updateTablePosition(tableDto);
+		
+		assertEquals(100, updatedTable.getX().intValue());
+		assertEquals(300, updatedTable.getY().intValue());
+	}
 }

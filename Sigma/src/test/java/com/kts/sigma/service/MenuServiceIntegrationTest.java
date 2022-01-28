@@ -46,6 +46,17 @@ public class MenuServiceIntegrationTest {
 		assertEquals(MenuConstants.DB_TOTAL_ACTIVE_MENUS_NON_EXPIRED.intValue(), found.size());
 	}
 	
+	@Test(expected = ItemNotFoundException.class)
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_InvalidMenuId_ThrowsException() {
+		menuService.getNumberOfActiveItemInMenuRecordsByMenuId(-100);
+	}
+	
+	@Test
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_ValidMenuId_ReturnsNumberOfActiveItemInMenuRecords() {
+		Integer number = menuService.getNumberOfActiveItemInMenuRecordsByMenuId(MenuConstants.DB_MENU_ID_1);
+		assertEquals(2, number.intValue());
+	}
+	
 	@Test(expected = DateNotValidOrderException.class)
 	public void addMenu_StartDateAfterEndDate_ThrowsException() {
 		MenuDTO menuDto = new MenuDTO();

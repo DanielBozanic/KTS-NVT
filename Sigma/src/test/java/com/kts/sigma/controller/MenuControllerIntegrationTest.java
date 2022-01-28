@@ -68,6 +68,22 @@ public class MenuControllerIntegrationTest {
 	}
 	
 	@Test
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_InvalidMenuId_ReturnsNotFound() {
+		ResponseEntity<String> responseEntity = restTemplate
+				.getForEntity("/menu/getNumberOfActiveItemInMenuRecordsByMenuId/-100", String.class);
+		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+	}
+	
+	@Test
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_ValidMenuId_ReturnsNumberOfActiveItemInMenuRecords( ) {
+		ResponseEntity<Integer> responseEntity = restTemplate
+				.getForEntity("/menu/getNumberOfActiveItemInMenuRecordsByMenuId/" + 
+						MenuConstants.DB_MENU_ID_1, Integer.class);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(2, responseEntity.getBody().intValue());
+	}
+	
+	@Test
 	public void addMenu_StartDateAfterEndDate_ReturnsBadRequest() {
 		MenuDTO menuDto = new MenuDTO();
 		menuDto.setName("Winter");

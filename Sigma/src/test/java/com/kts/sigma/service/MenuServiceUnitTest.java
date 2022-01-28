@@ -123,6 +123,33 @@ public class MenuServiceUnitTest {
 		assertEquals(MenuConstants.DB_TOTAL_ACTIVE_MENUS_NON_EXPIRED.intValue(), found.size());
 	}
 	
+	@Test(expected = ItemNotFoundException.class)
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_InvalidMenuId_ThrowsException() {
+		given(menuRepositoryMock.getActiveMenu(-100)).willReturn(null);
+		
+		menuService.getNumberOfActiveItemInMenuRecordsByMenuId(-100);
+		
+		verify(menuRepositoryMock, times(1)).getActiveMenu(-100);
+	}
+	
+	@Test
+	public void getNumberOfActiveItemInMenuRecordsByMenuId_ValidMenuId_ReturnsNumberOfActiveItemInMenuRecords() {
+		Menu menu1 = new Menu();
+		menu1.setId(MenuConstants.DB_MENU_ID_1);
+		menu1.setExpirationDate(LocalDateTime.of(2022, 10, 7, 0, 0));
+		menu1.setActive(true);
+		
+		given(menuRepositoryMock.getActiveMenu(MenuConstants.DB_MENU_ID_1)).willReturn(menu1);
+		given(itemInMenuRepositoryMock.getNumberOfActiveItemInMenuRecordsByMenuId(MenuConstants.DB_MENU_ID_1)).willReturn(2);
+		
+		Integer number = menuService.getNumberOfActiveItemInMenuRecordsByMenuId(MenuConstants.DB_MENU_ID_1);
+		
+		verify(menuRepositoryMock, times(1)).getActiveMenu(MenuConstants.DB_MENU_ID_1);
+		verify(itemInMenuRepositoryMock, times(1)).getNumberOfActiveItemInMenuRecordsByMenuId(MenuConstants.DB_MENU_ID_1);
+		
+		assertEquals(2, number.intValue());
+	}
+	
 	@Test(expected = DateNotValidOrderException.class)
 	public void addMenu_StartDateAfterEndDate_ThrowsException() {
 		MenuDTO menuDto = new MenuDTO();

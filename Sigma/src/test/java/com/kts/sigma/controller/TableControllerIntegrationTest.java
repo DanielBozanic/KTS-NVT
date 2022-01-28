@@ -16,10 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.kts.sigma.constants.TableConstants;
 import com.kts.sigma.constants.UserContants;
-import com.kts.sigma.constants.ZoneConstants;
-import com.kts.sigma.dto.EmployeeDTO;
 import com.kts.sigma.dto.TableDTO;
-import com.kts.sigma.dto.ZoneDTO;
 import com.kts.sigma.model.RestaurantTable;
 import com.kts.sigma.model.TableState;
 import com.kts.sigma.repository.TableRepository;
@@ -131,5 +128,39 @@ public class TableControllerIntegrationTest {
 		assertEquals(TableConstants.DB_MAX_TABLE_NUMBER.intValue() + 1, table.getTableNumber().intValue());
 		
 		tableRepository.deleteById(table.getId());
+	}
+	
+	@Test
+	public void updateTablePosition_InvalidTableId_ReturnsNotFound() {
+		TableDTO tableDto = new TableDTO();
+		tableDto.setId(-100);
+		tableDto.setX(100);
+		tableDto.setY(300);
+		tableDto.setState(TableState.FREE);
+		
+		ResponseEntity<String> responseEntity = restTemplate
+				.exchange("/tables/updateTablePosition", 
+						HttpMethod.PUT, new HttpEntity<TableDTO>(tableDto), String.class);
+		
+		assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+	}
+	
+	@Test
+	public void updateTablePosition_ValidInputs_ReturnsUpdatedTable() {
+		TableDTO tableDto = new TableDTO();
+		tableDto.setId(TableConstants.DB_TABLE_ID_1);
+		tableDto.setX(100);
+		tableDto.setY(300);
+		tableDto.setState(TableState.FREE);
+		
+		ResponseEntity<TableDTO> responseEntity = restTemplate
+				.exchange("/tables/updateTablePosition", 
+						HttpMethod.PUT, new HttpEntity<TableDTO>(tableDto), TableDTO.class);
+		
+		TableDTO updatedTable = responseEntity.getBody();
+		
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(100, updatedTable.getX().intValue());
+		assertEquals(300, updatedTable.getY().intValue());
 	}
 }
