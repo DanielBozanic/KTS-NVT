@@ -15,5 +15,7 @@ public class ItemInOrderConstants {
 	public final static Integer INVALID_ITEM_IN_ORDER_ID = 100;
 	public final static Integer DB_DELETE_ITEM_IN_ORDER_ID = 8;
 	
-	public final static Integer TOTAL_ITEMS_IN_ORDER = 7;
+	public final static Integer TOTAL_ITEMS_IN_ORDER = 5;
+	public final static Integer TOTAL_FOOD_ITEMS_FOR_ORDER1 = 2;
+	public final static Integer TOTAL_DRINK_ITEMS_FOR_ORDER1 = 2;
 }

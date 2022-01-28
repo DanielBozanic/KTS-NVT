@@ -90,8 +90,6 @@ public class ItemInOrderServiceUnitTest {
 		items.add(new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_3, menuItem));
 		items.add(new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_4, menuItem));
 		items.add(new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_5, menuItem));
-		items.add(new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_6, menuItem));
-		items.add(new ItemInOrder(ItemInOrderConstants.DB_ITEM_IN_ORDER_ID_7, menuItem));
 		
 		given(itemInOrderRepositoryMock.findAll()).willReturn(items);
 		

@@ -6,6 +6,8 @@ public class UserContants {
 	public static final Integer DB_EMPLOYEE_ID_1 = 1;
 	public static final Integer DB_EMPLOYEE_ID_2 = 2;
 	public static final Integer DB_EMPLOYEE_ID_3 = 3;
+	public static final Integer DB_COOK_EMPLOYEE = 4;
+	public static final Integer DB_COOK_EMPLOYEE_CODE = 3456;
 	
 	public static final Integer DB_EMPLOYEE_ID_1_CODE = 2345;
 	public static final Integer INVALID_EMPLOYEE_CODE = 3457;

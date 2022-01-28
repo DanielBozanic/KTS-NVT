@@ -20,7 +20,9 @@ import com.kts.sigma.repository.MenuRepositoryIntegrationTest;
 import com.kts.sigma.repository.OrderRepositoryIntegrationTest;
 import com.kts.sigma.repository.PaymentRepositoryIntegrationTest;
 import com.kts.sigma.repository.TableRepositoryIntegrationTest;
+import com.kts.sigma.service.ItemInMenuServiceIntegrationTest;
 import com.kts.sigma.service.ItemInMenuServiceUnitTest;
+import com.kts.sigma.service.ItemInOrderServiceIntegrationTest;
 import com.kts.sigma.service.ItemInOrderServiceUnitTest;
 import com.kts.sigma.service.ItemServiceIntegrationTest;
 import com.kts.sigma.service.ItemServiceUnitTest;
@@ -68,6 +70,9 @@ import com.kts.sigma.service.ZoneServiceUnitTest;
 	UserServiceIntegrationTest.class,
 	ZoneServiceIntegrationTest.class,
 	ItemServiceIntegrationTest.class,
+	ItemInOrderServiceIntegrationTest.class,
+	ItemInMenuServiceIntegrationTest.class,
+
 	
 	//controller tests
 	ItemInMenuControllerIntegrationTest.class,
