@@ -106,14 +106,17 @@ public class PeoplePage {
 	}
 	
 	public WebElement getAddEmployeeNameRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("add-employee-name-field-error-msg")));
 		return addEmployeeNameInputFieldErrorMsg;
 	}
 	
 	public WebElement getAddEmployeePaymentRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("add-employee-payment-field-required-error-msg")));
 		return addEmployeePaymentInputFieldRequiredErrorMsg;
 	}
 	
 	public WebElement getAddEmployeePaymentNegativeErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("add-employee-payment-field-negative-number-error-msg")));
 		return addEmployeePaymentInputFieldNegativeNumberErrorMsg;
 	}
 	
@@ -148,6 +151,7 @@ public class PeoplePage {
 	}
 	
 	public WebElement getEditEmployeePaymentNegativeErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("edit-employee-payment-field-negative-number-error-msg")));
 		return editEmployeePaymentInputFieldNegativeNumberErrorMsg;
 	}
 	
@@ -158,6 +162,7 @@ public class PeoplePage {
 	public boolean isEmployeePresent(String name) {
 		String xpath = String.format("//td[contains(text(),'%s')]", name);
 		try {
+			(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
 			return driver.findElement(By.xpath(xpath)).isDisplayed();
 		} catch (NoSuchElementException e) {
 			return false;

@@ -115,6 +115,9 @@ public class FoodDrinksPage {
 	@FindBy(xpath = "//*[@id='item-carousel']/div/div/div/button[2]")
 	private WebElement rightCarouselNavigationButton;
 	
+	@FindBy(xpath = "//*[@id=\"mat-select-value-3\"]")
+	private WebElement currentSelectedMenu;
+	
 	public WebElement getCategoryFilterSelect() {
 		return categoryFilterSelect;
 	}
@@ -171,10 +174,12 @@ public class FoodDrinksPage {
 	}
 	
 	public WebElement getSellingPriceFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("selling-price-field-required-error-msg")));
 		return sellingPriceFieldRequiredErrorMsg;
 	}
 	
 	public WebElement getSellingPriceFieldNegativeNumberErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("selling-price-field-negative-number-error-msg")));
 		return sellingPriceFieldNegativeNumberErrorMsg;
 	}
 	
@@ -221,14 +226,17 @@ public class FoodDrinksPage {
 	}
 	
 	public WebElement getMenuNameFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("menu-name-field-required-error-msg")));
 		return menuNameFieldRequiredErrorMsg;
 	}
 	
 	public WebElement getStartDateFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("start-date-field-required-error-msg")));
 		return startDateFieldRequiredErrorMsg;
 	}
 	
 	public WebElement getStartDateFieldPastDateErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("start-date-field-past-date-error-msg")));
 		return startDateFieldPastDateErrorMsg;
 	}
 	
@@ -293,18 +301,22 @@ public class FoodDrinksPage {
 	}
 	
 	public WebElement getItemNameFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("item-name-field-required-error-msg")));
 		return itemNameFieldRequiredErrorMsg;
 	}
 	
 	public WebElement getBuyingPriceFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("buying-price-field-required-error-msg")));
 		return buyingPriceFieldRequiredErrorMsg;
 	}
 	
 	public WebElement getBuyingPriceFieldNegativeNumberErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("buying-price-field-negative-number-error-msg")));
 		return buyingPriceFieldNegativeNumberErrorMsg;
 	}
 	
 	public WebElement getDescriptionFieldRequiredErrorMsg() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("description-field-required-error-msg")));
 		return descriptionFieldRequiredErrorMsg;
 	}
 	
@@ -337,12 +349,17 @@ public class FoodDrinksPage {
 		lastMenu.click();
 	}
 	
+	public WebElement getCurrentSelectedMenu() {
+		return currentSelectedMenu;
+	}
+	
 	public boolean isItemPresent(String name) {
 		String xpath = String.format("//*[@id='item-carousel']/div/div/div/div/div/div/mat-card/div/div/h2[contains(text(),'%s')]", name);
 		try {
 			if (rightCarouselNavigationButton.isEnabled()) {
 				rightCarouselNavigationButton.click();
 			}
+			(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
 			return driver.findElement(By.xpath(xpath)).isDisplayed();
 		} catch (NoSuchElementException e) {
 			return false;
@@ -352,6 +369,7 @@ public class FoodDrinksPage {
 	public boolean isItemInMenuPresent(String name) {
 		String xpath = String.format("//td[contains(text(),'%s')]", name);
 		try {
+			(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
 			return driver.findElement(By.xpath(xpath)).isDisplayed();
 		} catch (NoSuchElementException e) {
 			return false;

@@ -2,8 +2,9 @@ package com.kts.sigma.e2e.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,14 +13,18 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.kts.sigma.constants.E2EConstants;
+import com.kts.sigma.e2e.pages.LoginPage;
 import com.kts.sigma.e2e.pages.ZonesPage;
 
 public class ZonesTest {
 
 	private WebDriver driver;
 	private ZonesPage zonesPage;
+	private LoginPage loginPage;
 	
 	@Before
 	public void initalize() {
@@ -29,15 +34,29 @@ public class ZonesTest {
 		
 		driver.manage().window().maximize();
 		zonesPage = new ZonesPage(driver);
+		loginPage = new LoginPage(driver);
 	}
 	
 	@After
     public void shutdownBrowser() {
 		driver.quit();
     }
+
+	private void login() {
+		driver.get(E2EConstants.LOGIN_URL);
+		
+		loginPage.setUsernameInput("admin");
+		loginPage.setPasswordInput("password");
+		
+		loginPage.loginSubmitButtonClick();
+		
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.urlContains("profile"));
+	}
 	
 	@Test
 	public void createNewZoneEmptyField() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		zonesPage.getCreateNewZoneButton().click();
@@ -52,6 +71,8 @@ public class ZonesTest {
 	
 	@Test
 	public void createNewZoneNameExists() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		zonesPage.getCreateNewZoneButton().click();
@@ -68,6 +89,8 @@ public class ZonesTest {
 	
 	@Test
 	public void createNewZoneValidInput() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		int numberOfZonesBeforeAdd = zonesPage.getNumberOfZones();
@@ -75,7 +98,7 @@ public class ZonesTest {
 		zonesPage.getCreateNewZoneButton().click();
 		zonesPage.ensureIsDisplayedCreateNewZoneForm();
 		
-		zonesPage.setNameField("2nd floor");
+		zonesPage.setNameField("TEST ZONE" + UUID.randomUUID());
 		
 		assertTrue(zonesPage.getCreateNewZoneButtonDialog().isEnabled());
 		zonesPage.getCreateNewZoneButtonDialog().click();
@@ -89,6 +112,8 @@ public class ZonesTest {
 	
 	@Test
 	public void addTableToSelectedZoneEmptyField() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		zonesPage.getAddTableToSelectedZoneButton().click();
@@ -103,12 +128,15 @@ public class ZonesTest {
 	
 	@Test
 	public void addTableToSelectedZoneNegativeNumber() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		zonesPage.getAddTableToSelectedZoneButton().click();
 		zonesPage.ensureIsDisplayedAddTableForm();
 		
 		zonesPage.setNumberOfChairsField("-5");
+		zonesPage.getNumberOfChairsField().sendKeys(Keys.TAB);
 		
 		assertTrue(zonesPage.getNumberOfChairsNegativeNumberErrorMsg().isDisplayed());
 		assertFalse(zonesPage.getTableButtonDialog().isEnabled());
@@ -116,6 +144,8 @@ public class ZonesTest {
 	
 	@Test
 	public void addTableToSelectedZoneValidInput() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		int numberOfTablesBeforeAdd = zonesPage.getNumberOfTables();
@@ -137,6 +167,8 @@ public class ZonesTest {
 	
 	@Test
 	public void editTableEmptyInput() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		Actions act = new Actions(driver);
@@ -153,6 +185,8 @@ public class ZonesTest {
 	
 	@Test
 	public void editTableNegativeNumber() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		Actions act = new Actions(driver);
@@ -160,6 +194,7 @@ public class ZonesTest {
 		zonesPage.ensureIsDisplayedEditTableForm();
 		
 		zonesPage.setNumberOfChairsField("-5");
+		zonesPage.getNumberOfChairsField().sendKeys(Keys.TAB);
 		
 		assertTrue(zonesPage.getNumberOfChairsNegativeNumberErrorMsg().isDisplayed());
 		assertFalse(zonesPage.getTableButtonDialog().isEnabled());
@@ -167,6 +202,8 @@ public class ZonesTest {
 	
 	@Test
 	public void editTableValidInput() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		Actions act = new Actions(driver);
@@ -181,12 +218,13 @@ public class ZonesTest {
 		zonesPage.ensureIsNotDisplayedEditTableForm();
 		
 		String numberOfChairsAfterEdit = zonesPage.getNumberOfChairsFirstTable();
-		
-		assertEquals("5", numberOfChairsAfterEdit);
+		assertEquals("Number of chairs: 5", numberOfChairsAfterEdit);
 	}
 	
 	@Test
 	public void deleteTableFromZone() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
 		int numberOfTablesBeforeRemove = zonesPage.getNumberOfTables();
@@ -206,15 +244,16 @@ public class ZonesTest {
 	}
 	
 	@Test
-	public void dragTableInZone() {
+	public void changeZone() {
+		login();
+		
 		driver.get(E2EConstants.ZONES_URL);
 		
-		int initialX = 733;
-		int initialY = 258;
+		zonesPage.setZoneSelect("2");
 		
-		zonesPage.dragAndDropFirstTable();
+		assertEquals("Garden", zonesPage.getCurrentSelectedZone().getText());
+		assertEquals(2, zonesPage.getNumberOfTables());
 		
-		assertNotEquals(initialX, zonesPage.getFirstTable().getLocation().getX());
-		assertNotEquals(initialY, zonesPage.getFirstTable().getLocation().getY());
+		zonesPage.setZoneSelect("1");
 	}
 }
