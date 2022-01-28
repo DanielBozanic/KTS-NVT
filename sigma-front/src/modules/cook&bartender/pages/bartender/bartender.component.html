@@ -14,7 +14,8 @@
               </div>
 
             </div>
-            <button mat-raised-button color="primary" (click)="setOrderToInProgress(item.id)">
+            <button mat-raised-button color="primary" (click)="setOrderToInProgress(item.id)"
+              id="{{ 'start-order-btn' + item.id }}">
               Start Making
             </button>
           </div>
@@ -42,7 +43,7 @@
               </h2>
 
               <button mat-raised-button color="primary" (click)="setItemStateToInProgress(item.id)"
-                [ngStyle]="{ 'background-color': 'grey'}">
+                [ngStyle]="{ 'background-color': 'grey'}" id="{{ 'start-item-btn' + item.id }}">
                 Start
               </button>
               <mat-divider [inset]="true" *ngIf="!last">
@@ -62,7 +63,7 @@
               </button>
 
               <button mat-raised-button color="primary" (click)="setItemStateToDeliver(item.id, order)"
-                [ngStyle]="{ 'background-color': 'grey'}">
+                [ngStyle]="{ 'background-color': 'grey'}" id="{{ 'done-item-btn' + item.id }}">
                 Done
               </button>
               <mat-divider [inset]="true" *ngIf="!last">
@@ -76,10 +77,6 @@
                 {{item.name}}
               </h2>
 
-              <button mat-raised-button color="primary" (click)="setItemStateToInProgress(item.id)"
-                [ngStyle]="{ 'background-color': 'red'}">
-                Undo
-              </button>
               <mat-divider [inset]="true" *ngIf="!last">
                 <mat-divider></mat-divider>
               </mat-divider>
@@ -96,15 +93,5 @@
 </div>
 
 <ng-template #codeVerificationDialog>
-
-  <form class="example-form">
-    <h2> Verification </h2>
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Enter code:</mat-label>
-      <input matInput value="" [formControl]="codeFromDialog">
-    </mat-form-field>
-    <br>
-    <button mat-raised-button color="primary" (click)="checkCode()">Ok</button>
-    <button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" (click)="closeCodeDialog()">Cancel</button>
-  </form>
+  <app-code-verification-dialog (parentCheckCode)="checkCode($event)"></app-code-verification-dialog>
 </ng-template>

@@ -33,11 +33,27 @@ INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VA
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 9, 2);
 INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 0, 10, 2);
 
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 11, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 12, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 13, 2);
+
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 14, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 15, 2);
+INSERT INTO Restaurant_Table (number_of_chairs, state, table_number, zone_id) VALUES (3, 1, 16, 2);
+
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-06 10:34:09.000' AS DateTime), 1, 700, 3, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-06 10:59:09.000' AS DateTime), 2, 400, 4, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 0, 700, 6, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 2, 100, 7, 2);
 INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 0, 100, 8, 2);
+
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 0, 400, 11, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 1, 400, 12, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 1, 400, 13, 2);
+
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 0, 400, 14, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 1, 400, 15, 2);
+INSERT INTO Restaurant_Order (order_date_time, state, total_price, table_id, waiter_id) VALUES (CAST(N'2022-1-07 10:34:09.000' AS DateTime), 1, 400, 16, 2);
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 1);
@@ -53,3 +69,17 @@ INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 2, 2);
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 2, 2);
 
 INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (2, 1, 4);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 6);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 7);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 2, 7);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 2, 7);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 2, 7);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 2, 8);
+
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 9);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 10);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (0, 1, 10);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 1, 10);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 1, 10);
+INSERT INTO Item_In_Order (state, item_id, order_id) VALUES (1, 1, 11);

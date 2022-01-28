@@ -14,7 +14,8 @@
 							</div>
 
 						</div>
-						<button mat-raised-button color="primary" (click)="setOrderToInProgress(item.id)">
+						<button mat-raised-button color="primary" (click)="setOrderToInProgress(item.id)"
+							id="{{ 'start-order-btn' + item.id }}">
 							Start Making
 						</button>
 					</div>
@@ -27,7 +28,7 @@
 	<div class="expansion-panel">
 		<div class="inline" *ngFor="let order of ordersInProgress">
 
-			<mat-expansion-panel class="expansion-panel" [expanded]="true">
+			<mat-expansion-panel class="expansion-panel" [expanded]="true" id="{{ 'orders-in-progress' + order.id }}">
 				<mat-expansion-panel-header>
 					<mat-panel-title>
 						<h2>Table: {{order.tableId}}</h2>
@@ -36,13 +37,14 @@
 				<mat-list>
 					<div *ngFor="let item of order.items; last as last">
 
-						<mat-list-item class="inline" *ngIf="item.state==='NEW'" [ngStyle]="{'background-color': '#D8D8D8'}">
+						<mat-list-item class="inline" *ngIf="item.state==='NEW'"
+							[ngStyle]="{'background-color': '#D8D8D8'}">
 							<h2 matLine>
 								{{item.name}}
 							</h2>
 
 							<button mat-raised-button color="primary" (click)="setItemStateToInProgress(item.id)"
-								[ngStyle]="{ 'background-color': 'grey'}">
+								[ngStyle]="{ 'background-color': 'grey'}" id="{{ 'start-item-btn' + item.id }}">
 								Start
 							</button>
 							<mat-divider [inset]="true" *ngIf="!last">
@@ -62,7 +64,7 @@
 							</button>
 
 							<button mat-raised-button color="primary" (click)="setItemStateToDeliver(item.id, order)"
-								[ngStyle]="{ 'background-color': 'grey'}">
+								[ngStyle]="{ 'background-color': 'grey'}" id="{{ 'done-item-btn' + item.id }}">
 								Done
 							</button>
 							<mat-divider [inset]="true" *ngIf="!last">
@@ -76,10 +78,6 @@
 								{{item.name}}
 							</h2>
 
-							<button mat-raised-button color="primary" (click)="setItemStateToInProgress(item.id)"
-								[ngStyle]="{ 'background-color': 'red'}">
-								Undo
-							</button>
 							<mat-divider [inset]="true" *ngIf="!last">
 								<mat-divider></mat-divider>
 							</mat-divider>
@@ -96,15 +94,5 @@
 <notifier-container></notifier-container>
 
 <ng-template #codeVerificationDialog>
-
-	<form class="example-form">
-		<h2> Verification </h2>
-		<mat-form-field class="example-full-width" appearance="fill">
-			<mat-label>Enter code:</mat-label>
-			<input matInput value="" [formControl]="codeFromDialog">
-		</mat-form-field>
-		<br>
-		<button mat-raised-button color="primary" (click)="checkCode()">Ok</button>
-		<button mat-raised-button color="primary" [ngStyle]="{'float': 'right'}" (click)="closeCodeDialog()">Cancel</button>
-	</form>
+	<app-code-verification-dialog (parentCheckCode)="checkCode($event)"></app-code-verification-dialog>
 </ng-template>

@@ -85,11 +85,8 @@ export class BartenderComponent implements OnInit {
     this.codeVerificationDialog.closeAll();
   }
 
-  checkCode(): void {
-    let code = this.validatingForm.get('code')?.value;
-    this.code = parseInt(code);
-    this.validatingForm.reset();
-    this.codeVerificationDialog.closeAll();
+  checkCode(code: number): void {
+    this.code = code;
   }
 
   get codeFromDialog() {

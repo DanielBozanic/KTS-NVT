@@ -85,13 +85,6 @@ export class CookComponent implements OnInit {
     this.codeVerificationDialog.closeAll();
   }
 
-  checkCode(): void {
-    let code = this.validatingForm.get('code')?.value;
-    this.code = parseInt(code);
-    this.validatingForm.reset();
-    this.codeVerificationDialog.closeAll();
-  }
-
   get codeFromDialog() {
     return this.validatingForm.get('code') as FormControl;
   }
@@ -245,5 +238,9 @@ export class CookComponent implements OnInit {
       verticalPosition: this.verticalPosition,
       panelClass: responseCode === this.RESPONSE_OK ? 'back-green' : 'back-red',
     });
+  }
+
+  checkCode(code: number): void {
+    this.code = code;
   }
 }

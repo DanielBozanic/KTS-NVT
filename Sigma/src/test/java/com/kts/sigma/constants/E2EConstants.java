@@ -22,6 +22,10 @@ public class E2EConstants {
 
 	public static final String LOGIN_URL = FRONTEND_URL + "login";
 	
+	public static final String COOK_URL = FRONTEND_URL + "cook";
+	
+	public static final String BARTENDER_URL = FRONTEND_URL + "bartender";
+	
 	
 	// Backend Error Messages
 	public static final String INVALID_CODE_ERROR = "Access Forbidden, Invalid Code";
