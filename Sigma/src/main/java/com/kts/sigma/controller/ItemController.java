@@ -56,6 +56,11 @@ public class ItemController {
 		return new ResponseEntity<>(itemService.getItemsByFoodType(foodType), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/getDrinks", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<ItemDTO>> getDrinks() {
+		return new ResponseEntity<>(itemService.getDrinks(), HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Integer id) {
 		itemService.deleteById(id);

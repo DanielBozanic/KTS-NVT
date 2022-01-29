@@ -55,7 +55,14 @@ export class FoodDrinksManagerComponent implements OnInit {
     this.isLoading = false;
     this.selectedMenu = new Menu();
     this.selectedItem = new Item();
-    this.categories = ['ALL', 'APPETISER', 'SALAD', 'MAIN_COURSE', 'DESERT'];
+    this.categories = [
+      'ALL',
+      'APPETISER',
+      'SALAD',
+      'MAIN_COURSE',
+      'DESERT',
+      'DRINKS',
+    ];
     this.originalItemData = [];
     this.RESPONSE_OK = 0;
     this.RESPONSE_ERROR = -1;
@@ -235,6 +242,10 @@ export class FoodDrinksManagerComponent implements OnInit {
   filterByCategory(category: string): void {
     if (category === 'ALL') {
       this.items = this.originalItemData;
+    } else if (category === 'DRINKS') {
+      this.foodDrinksService.getDrinks().subscribe((data) => {
+        this.items = data;
+      });
     } else {
       this.foodDrinksService.getItemsByFoodType(category).subscribe((data) => {
         this.items = data;

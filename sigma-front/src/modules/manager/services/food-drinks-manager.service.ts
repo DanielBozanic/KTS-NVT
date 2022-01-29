@@ -14,6 +14,7 @@ import {
   API_REMOVE_ITEM_FROM_MENU,
   API_ADD_ITEM_IN_MENU,
   API_CREATE_NEW_ITEM,
+  API_GET_ALL_DRINKS,
 } from 'src/modules/root/api-routes';
 import { Item } from 'src/modules/root/models/item';
 import { Menu } from 'src/modules/root/models/menu';
@@ -48,6 +49,10 @@ export class FoodDrinksManagerService {
     return this.http.get<Array<Item>>(
       `${API_GET_ITEMS_BY_SEARCH_TERM}${searchTerm}`
     );
+  }
+
+  getDrinks(): Observable<Array<Item>> {
+    return this.http.get<Array<Item>>(API_GET_ALL_DRINKS);
   }
 
   getItemsInMenuByCurrentPage(

@@ -13,6 +13,7 @@ export const API_GET_EMPLOYEE = API_BASE + '/users/';
 export const API_GET_ALL_ITEMS = API_BASE + '/items';
 export const API_GET_ITEMS_BY_FOOD_TYPE =
   API_BASE + '/items/getItemsByFoodType/';
+export const API_GET_ALL_DRINKS = API_BASE + '/items' + '/getDrinks';
 export const API_GET_ITEMS_BY_SEARCH_TERM =
   API_BASE + '/items/getItemsBySearchTerm/';
 export const API_GET_ITEMS_BY_CURRENT_PAGE =

@@ -22,4 +22,6 @@ public interface ItemService {
 	ArrayList<ItemDTO> getItemsBySearchTerm(String searchTerm);
 	
 	ArrayList<ItemDTO> getItemsByFoodType(FoodType foodType);
+	
+	List<ItemDTO> getDrinks();
 }

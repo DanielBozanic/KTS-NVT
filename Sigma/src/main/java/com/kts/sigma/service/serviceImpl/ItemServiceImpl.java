@@ -14,6 +14,7 @@ import com.kts.sigma.model.Drink;
 import com.kts.sigma.model.Food;
 import com.kts.sigma.model.FoodType;
 import com.kts.sigma.model.Item;
+import com.kts.sigma.repository.DrinkRepository;
 import com.kts.sigma.repository.FoodRepository;
 import com.kts.sigma.repository.ItemRepository;
 import com.kts.sigma.service.ItemService;
@@ -26,6 +27,9 @@ public class ItemServiceImpl implements ItemService{
 	
 	@Autowired
 	private FoodRepository foodRepository;
+	
+	@Autowired
+	private DrinkRepository drinkRepository;
 	
 	@Override
 	public Iterable<ItemDTO> getAll() {
@@ -127,5 +131,18 @@ public class ItemServiceImpl implements ItemService{
 			results.add(dto);
 		}
 		return results;
+	}
+
+	@Override
+	public List<ItemDTO> getDrinks() {
+		List<ItemDTO> drinksDto = new ArrayList<ItemDTO>();
+		List<Drink> drinks = drinkRepository.findAll();
+		
+		for (Drink d : drinks) {
+			ItemDTO dto = Mapper.mapper.map(d, ItemDTO.class);
+			dto.setFood(false);
+			drinksDto.add(dto);
+		}
+		return drinksDto;
 	}
 }
