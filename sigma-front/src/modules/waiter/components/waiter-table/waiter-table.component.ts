@@ -139,6 +139,7 @@ export class WaiterTableComponent implements OnInit, OnChanges {
                                 this.getTables.emit(this.table.zoneId);
                                 if (delivered === this.currentItems.length || noDelivery === this.currentItems.length) {
                                     this.closeOrderView();
+                                    window.location.reload();
                                 }
 
                             });
@@ -159,6 +160,7 @@ export class WaiterTableComponent implements OnInit, OnChanges {
                 this.getTables.emit(this.table.zoneId);
                 this.openSnackBar("Successfully delivered items", this.RESPONSE_OK)
                 this.closeOrderView();
+                window.location.reload();
             }, (error) => {
                 this.openSnackBar(error.error, this.RESPONSE_ERROR);
             });
