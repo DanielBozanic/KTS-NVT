@@ -2,6 +2,7 @@ package com.kts.sigma.e2e.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
@@ -270,7 +271,7 @@ public class ZonesTest {
 		
 		zonesPage.dragAndDropFirstTable();
 		
-		assertEquals(initialX + 3, zonesPage.getFirstTable().getLocation().getX());
-		assertEquals(initialY + 3, zonesPage.getFirstTable().getLocation().getY());
+		assertNotEquals(initialX, zonesPage.getFirstTable().getLocation().getX());
+		assertNotEquals(initialY, zonesPage.getFirstTable().getLocation().getY());
 	}
 }
