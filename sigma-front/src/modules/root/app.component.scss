@@ -3,7 +3,9 @@ mat-sidenav-container {
 }
 mat-sidenav-content {
 	height: 100%;
-	background-image: url(../../assets/back.jpeg);
+	background-image: url(../../assets/background.jpg);
+	background-size: 100% 100%;
+  	background-repeat: no-repeat;
 }
 mat-sidenav {
 	height: 100%;
