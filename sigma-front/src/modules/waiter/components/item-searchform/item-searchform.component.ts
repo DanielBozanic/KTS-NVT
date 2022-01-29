@@ -22,7 +22,14 @@ export class ItemSearchformComponent implements OnInit {
     this.items = [];
     this.activeNonExpiredMenus = [];
     this.selectedMenu = new Menu();
-    this.categories = ['ALL', 'APPETISER', 'SALAD', 'MAIN_COURSE', 'DESERT'];
+    this.categories = [
+      'ALL',
+      'APPETISER',
+      'SALAD',
+      'MAIN_COURSE',
+      'DESERT',
+      'DRINKS',
+    ];
     this.originalItemData = [];
   }
 
@@ -69,6 +76,10 @@ export class ItemSearchformComponent implements OnInit {
   filterByCategory(category: string): void {
     if (category === 'ALL') {
       this.items = this.originalItemData;
+    } else if (category === 'DRINKS') {
+      this.waiterOrderService.getDrinks().subscribe((data) => {
+        this.items = data;
+      });
     } else {
       this.waiterOrderService
         .getItemsByFoodType(this.selectedMenu.id, category)
